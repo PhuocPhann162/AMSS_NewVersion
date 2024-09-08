@@ -1,0 +1,6 @@
+@AMSS_HostAddress = http://localhost:5219
+
+GET {{AMSS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
