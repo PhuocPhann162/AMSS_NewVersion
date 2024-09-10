@@ -1,6 +1,7 @@
 ﻿using AMSS.Models.Dto.Farm;
 using AMSS.Models.Polygon;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,34 +9,34 @@ namespace AMSS.Models
 {
     public class Field
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        [Required]
-        public string Name { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
         [Required]
-        public double Area { get; set; }
+        public string? Name { get; set; } = string.Empty;
+
+        public double? Area { get; set; }
 
         public string? Status { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
-        public int? FarmId { get; set; }
+        public Guid? FarmId { get; set; }
         [ForeignKey("FarmId")]
-        public virtual Farm Farm { get; set; }
+        [DeleteBehavior(DeleteBehavior.ClientSetNull)]
+        public virtual Farm Farm { get; set; } = null!;
 
-        public int? LocationId { get; set; }
+        public Guid? LocationId { get; set; }
         [ForeignKey("LocationId")]
         [ValidateNever]
-        public virtual Location Location { get; set; }
+        [DeleteBehavior(DeleteBehavior.ClientSetNull)]
+        public virtual Location Location { get; set; } = null!;
 
-        [Required]
-        public int PolygonAppId { get; set; }
-        public virtual PolygonApp PolygonApp { get; set; }
-
-        public virtual IEnumerable<FieldCrop> FieldCrops { get; set; }
-
-        public virtual SoilQuality SoilQuality { get; set; }
-
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public Guid? PolygonAppId { get; set; } 
+        public virtual PolygonApp PolygonApp { get; set; } = null!;
+        public virtual SoilQuality SoilQuality { get; set; } = new();
+        public virtual ICollection<FieldCrop> FieldCrops { get; set; } = new List<FieldCrop>();
     }
 }

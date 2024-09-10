@@ -6,7 +6,7 @@ namespace AMSS.Models.Dto.User
 {
     public class UserDto
     {
-        public string Id { get; set; }
+        public Guid? Id { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? FullName { get; set; }
@@ -23,7 +23,7 @@ namespace AMSS.Models.Dto.User
 
         public bool IsActive { get; set; }
 
-        public string RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }
 
         [StringLength(500)]
         public string? Avatar { get; set; }
@@ -32,6 +32,7 @@ namespace AMSS.Models.Dto.User
         public Role? Role { get; set; }
 
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set;}
+        public DateTime UpdatedAt { get; set; }
+        public DateTime DeletedAt { get; set; }
     }
 }

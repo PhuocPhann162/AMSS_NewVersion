@@ -9,7 +9,7 @@ namespace AMSS.Models.Dto.Crop
     public class CreateCropDto
     {
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         public string? Cycle { get; set; }
 
@@ -33,17 +33,16 @@ namespace AMSS.Models.Dto.Crop
 
         public string? Description { get; set; }
 
-        public double CultivatedArea { get; set; }
+        public double? CultivatedArea { get; set; }
 
-        public DateTime PlantedDate { get; set; }
+        public DateTime? PlantedDate { get; set; }
 
-        public DateTime ExpectedDate { get; set; }
+        public DateTime? ExpectedDate { get; set; }
 
+        public int? Quantity { get; set; }
 
-        public int Quantity { get; set; }
+        public Guid? CropTypeId { get; set; }
 
-        public int? CropTypeId { get; set; }
-
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
     }
 }

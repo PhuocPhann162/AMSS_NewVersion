@@ -21,19 +21,17 @@ namespace AMSS.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IJwtTokenGenerator _jwtTokenService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IJwtTokenGenerator _jwtTokenService;
         private APIResponse _response;
 
 
-        public AuthController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
             IMapper mapper, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenService)
         {
-            _db = db;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
@@ -47,7 +45,7 @@ namespace AMSS.Controllers
         {
             try
             {
-                ApplicationUser user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName.ToLower() == loginRequestDto.UserName.ToLower());
+                ApplicationUser user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName!.ToLower() == loginRequestDto.UserName.ToLower() && !u.IsDeleted);
                 if (user == null)
                 {
                     _response.IsSuccess = false;
@@ -86,7 +84,7 @@ namespace AMSS.Controllers
                 await _unitOfWork.UserRepository.UpdateRefreshToken(user.Id, refreshToken);
 
                 var userDto = _mapper.Map<UserDto>(user);
-                userDto.Role = Enum.Parse<Role>(roles.FirstOrDefault());
+                userDto.Role = Enum.Parse<Role>(roles.FirstOrDefault()!);
 
                 LoginResponseDto loginResponseDto = new()
                 {
@@ -116,7 +114,7 @@ namespace AMSS.Controllers
                 _response.IsSuccess = false;
                 return NotFound(_response);
             }
-            ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.UserName.ToLower() == registrationDto.UserName.ToLower());
+            ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.UserName!.ToLower() == registrationDto.UserName.ToLower() && !u.IsDeleted);
 
             if (userFromDb != null)
             {
@@ -171,7 +169,7 @@ namespace AMSS.Controllers
                 }
                 else
                 {
-                    throw new Exception(result.Errors.FirstOrDefault().Description);
+                    throw new Exception(result.Errors.FirstOrDefault()?.Description);
                 }
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.SuccessMessage = "Registration new account successfully";
@@ -194,14 +192,14 @@ namespace AMSS.Controllers
             {
                 var accessToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
 
-                if (String.IsNullOrEmpty(tokenRequestDto.RefreshToken))
+                if (string.IsNullOrEmpty(tokenRequestDto.RefreshToken))
                 {
                     _response.IsSuccess = false;
                     _response.ErrorMessages.Add("Unaccepted token");
                     return BadRequest(_response);
                 }
 
-                if(String.IsNullOrEmpty(accessToken))
+                if(string.IsNullOrEmpty(accessToken))
                 {
                     _response.IsSuccess = false;
                     _response.ErrorMessages.Add("Unauthorized");
@@ -216,8 +214,8 @@ namespace AMSS.Controllers
                     _response.ErrorMessages.Add("Unauthorized");
                     return Unauthorized(_response);
                 }
-                var userEmail = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-                var user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName == userEmail);
+                var userEmail = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName == userEmail && !u.IsDeleted);
                 if(user.RefreshToken != tokenRequestDto.RefreshToken || !_jwtTokenService.ValidateTokenExpire(tokenRequestDto.RefreshToken))
                 {
                     _response.IsSuccess = false;
@@ -228,7 +226,7 @@ namespace AMSS.Controllers
 
                 var roles = await _userManager.GetRolesAsync(user);
                 var newAccessToken = _jwtTokenService.GenerateToken(user, roles);
-                if(String.IsNullOrEmpty(newAccessToken))
+                if(string.IsNullOrEmpty(newAccessToken))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.Unauthorized;

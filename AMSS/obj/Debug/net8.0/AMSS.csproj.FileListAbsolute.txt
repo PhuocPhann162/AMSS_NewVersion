@@ -391,3 +391,4 @@ C:\Users\Asus\source\repos\ASPNET\AMSS_Version2\AMSS\obj\Debug\net8.0\refint\AMS
 C:\Users\Asus\source\repos\ASPNET\AMSS_Version2\AMSS\obj\Debug\net8.0\AMSS.pdb
 C:\Users\Asus\source\repos\ASPNET\AMSS_Version2\AMSS\obj\Debug\net8.0\AMSS.genruntimeconfig.cache
 C:\Users\Asus\source\repos\ASPNET\AMSS_Version2\AMSS\obj\Debug\net8.0\ref\AMSS.dll
+C:\Users\Asus\source\repos\ASPNET\AMSS_Version2\AMSS\obj\Debug\net8.0\AMSS.sourcelink.json

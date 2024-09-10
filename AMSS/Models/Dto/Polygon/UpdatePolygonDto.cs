@@ -4,7 +4,7 @@ namespace AMSS.Models.Dto.Polygon
 {
     public class UpdatePolygonDto
     {
-        public int Id { get; set; }
-        public IEnumerable<Position> Positions { get; set; }
+        public Guid Id { get; set; }
+        public IEnumerable<Position>? Positions { get; set; }
     }
 }

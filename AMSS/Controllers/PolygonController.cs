@@ -95,17 +95,10 @@ namespace AMSS.Controllers
                 if (ModelState.IsValid)
                 {
                     var newPolygon = _mapper.Map<PolygonApp>(createPolygonDto);
-                    
+
 
                     await _unitOfWork.PolygonAppRepository.CreateAsync(newPolygon);
-                    _unitOfWork.SaveAsync();
 
-                    foreach (var pos in createPolygonDto.Positions)
-                    {
-                        pos.PolygonAppId = newPolygon.Id;
-                        pos.PolygonApp = newPolygon;
-                        _unitOfWork.PositionRepository.CreateAsync(pos);
-                    }
                     _unitOfWork.SaveAsync();
 
                     _response.Result = newPolygon;

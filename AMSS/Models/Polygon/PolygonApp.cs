@@ -6,15 +6,22 @@ namespace AMSS.Models.Polygon
 {
     public class PolygonApp
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public string? Color { get; set; }
-        public int? Type { get; set; }
 
-        public virtual Farm Farm { get; set; }
+        [Range(0, 1)]
+        public int? Type { get; set; } = 0;
 
-        public virtual Field Field { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
 
-        public virtual ICollection<Position> Positions { get; set; }
+        public virtual Farm Farm { get; set; } = null!;
+        public virtual Field Field { get; set; } = null!;
+        public virtual ICollection<Position> Positions { get; set; } = new List<Position>();
     }
 }

@@ -39,7 +39,7 @@ namespace AMSS.Controllers
         {
             try
             {
-                List<ApplicationUser> lstUsers = await _unitOfWork.UserRepository.GetAllAsync();
+                List<ApplicationUser> lstUsers = await _unitOfWork.UserRepository.GetAllAsync(u => !u.IsDeleted);
 
                 if (lstUsers == null)
                 {
@@ -51,7 +51,7 @@ namespace AMSS.Controllers
 
                 foreach (var user in lstUsers)
                 {
-                    user.Role = Enum.Parse<Role>(_userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault());
+                    user.Role = Enum.Parse<Role>(_userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault()!);
                 }
 
                 if (!string.IsNullOrEmpty(searchString))
@@ -86,7 +86,7 @@ namespace AMSS.Controllers
         {
             try
             {
-                var userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.Id == id);
+                var userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.Id == id && !u.IsDeleted);
                 if (userFromDb == null)
                 {
                     _response.IsSuccess = false;
@@ -131,10 +131,10 @@ namespace AMSS.Controllers
         {
             try
             {
-                var oldRole = _userManager.GetRolesAsync(await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId))
+                var oldRole = _userManager.GetRolesAsync(await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId && !u.IsDeleted))
                .GetAwaiter().GetResult().FirstOrDefault();
 
-                ApplicationUser applicationUser = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId);
+                ApplicationUser applicationUser = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId && !u.IsDeleted);
                 if (!(role == oldRole))
                 {
                     if (oldRole != null)
@@ -173,7 +173,7 @@ namespace AMSS.Controllers
                         _response.ErrorMessages.Add("Invalid User ID");
                         return StatusCode(StatusCodes.Status500InternalServerError, _response);
                     }
-                    ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId, false);
+                    ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId && !u.IsDeleted, false);
                     if (userFromDb == null)
                     {
                         _response.IsSuccess = false;

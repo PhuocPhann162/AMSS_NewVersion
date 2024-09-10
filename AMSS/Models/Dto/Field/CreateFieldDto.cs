@@ -5,21 +5,22 @@ namespace AMSS.Models.Dto.Field
     public class CreateFieldDto
     {
         [Required]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public double Area { get; set; }
+        public double? Area { get; set; }
 
         public string? Status { get; set; }
 
         [Required]
-        public int FarmId { get; set; }
+        public Guid? FarmId { get; set; }
         [Required]
-        public int LocationId { get; set; }
+        public Guid? LocationId { get; set; }
 
         [Required]
-        public int PolygonAppId { get; set; }
+        public Guid? PolygonAppId { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }

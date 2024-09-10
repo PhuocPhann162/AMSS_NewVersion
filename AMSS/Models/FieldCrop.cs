@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using Stripe;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,17 +8,20 @@ namespace AMSS.Models
 {
     public class FieldCrop
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
-        public int FieldId { get; set; }
+        public Guid FieldId { get; set; }
         [ForeignKey("FieldId")]
         [ValidateNever]
-        public Field Field { get; set; }
+        [DeleteBehavior(DeleteBehavior.ClientSetNull)]
+        public virtual Field Field { get; set; } = null!;
 
-        public int CropId { get; set; }
+        public Guid CropId { get; set; }
         [ForeignKey("CropId")]
         [ValidateNever]
-        public Crop Crop { get; set; }
+        [DeleteBehavior(DeleteBehavior.ClientSetNull)]
+        public virtual Crop Crop { get; set; } = null!;
     }
 }

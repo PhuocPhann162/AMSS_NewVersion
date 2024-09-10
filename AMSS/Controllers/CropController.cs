@@ -33,7 +33,8 @@ namespace AMSS.Controllers
         {
             try
             {
-                IEnumerable<Crop> lstCrops = await _unitOfWork.CropRepository.GetAllAsync(includeProperties: "CropType");
+                IEnumerable<Crop> lstCrops = await _unitOfWork.CropRepository
+                    .GetAllAsync(includeProperties: "CropType");
                 var lstCropDtos = _mapper.Map<IEnumerable<CropDto>>(lstCrops);
                 if (lstCrops == null)
                 {
@@ -57,18 +58,19 @@ namespace AMSS.Controllers
 
         [HttpGet("getCropById/{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> GetCropById(int id)
+        public async Task<ActionResult<APIResponse>> GetCropById(string id)
         {
             try
             {
-                if (id == 0)
+                if (string.IsNullOrEmpty(id))
                 {
                     _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("Oops ! Something wrong when get crop by id");
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
+                    _response.ErrorMessages.Add("Oops ! Not Found Crop ID");
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
                 }
-                Crop crop = await _unitOfWork.CropRepository.GetAsync(u => u.Id == id, includeProperties: "CropType");
+                Crop crop = await _unitOfWork.CropRepository
+                    .GetAsync(u => u.Id.Equals(Guid.Parse(id)), includeProperties: "CropType");
                 CropDto cropDto = _mapper.Map<CropDto>(crop);
                 if (crop == null)
                 {
@@ -91,11 +93,13 @@ namespace AMSS.Controllers
         }
 
         [HttpGet("getAllByFieldId/{fieldId}")]
-        public async Task<ActionResult<APIResponse>> GetCropsByFieldId(int fieldId)
+        public async Task<ActionResult<APIResponse>> GetCropsByFieldId(string fieldId)
         {
             try
             {
-                List<FieldCrop> fieldCropFromDb = await _unitOfWork.FieldCropRepository.GetAllAsync(u => u.FieldId == fieldId, includeProperties: "Crop");
+                List<FieldCrop> fieldCropFromDb = await _unitOfWork.FieldCropRepository
+                    .GetAllAsync(u => u.FieldId.Equals(Guid.Parse(fieldId)), includeProperties: "Crop");
+
                 if (fieldCropFromDb == null)
                 {
                     _response.IsSuccess = false;
@@ -165,13 +169,13 @@ namespace AMSS.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> UpdateCrop(int id, [FromForm] UpdateCropDto updateCropDto)
+        public async Task<ActionResult<APIResponse>> UpdateCrop(string id, [FromForm] UpdateCropDto updateCropDto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (updateCropDto == null || id != updateCropDto.Id)
+                    if (updateCropDto == null || !updateCropDto.Id.Equals(Guid.Parse(id)))
                     {
                         _response.IsSuccess = false;
                         _response.ErrorMessages.Add("This crop does not exist!");
@@ -179,7 +183,7 @@ namespace AMSS.Controllers
                         return BadRequest();
                     }
 
-                    Crop cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id == id, false);
+                    Crop cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)), false);
 
                     if (cropFromDb == null)
                     {
@@ -221,13 +225,14 @@ namespace AMSS.Controllers
             }
         }
 
+        // TODO - ISDELTE
         [HttpDelete("{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> DeleteCrop(int id)
+        public async Task<ActionResult<APIResponse>> DeleteCrop(string id)
         {
             try
             {
-                if (id == 0)
+                if (string.IsNullOrEmpty(id))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -235,7 +240,7 @@ namespace AMSS.Controllers
                     return BadRequest(_response);
                 }
 
-                Crop cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id == id);
+                Crop cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
                 if (cropFromDb == null)
                 {
                     _response.IsSuccess = false;

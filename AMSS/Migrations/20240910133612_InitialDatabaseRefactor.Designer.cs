@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240418044834_InitializeDatabaseAgain")]
-    partial class InitializeDatabaseAgain
+    [Migration("20240910133612_InitialDatabaseRefactor")]
+    partial class InitialDatabaseRefactor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,20 +34,25 @@ namespace AMSS.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Avatar")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -59,9 +64,13 @@ namespace AMSS.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -80,7 +89,8 @@ namespace AMSS.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -92,21 +102,24 @@ namespace AMSS.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("StreetAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
@@ -128,68 +141,119 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("AMSS.Models.Crop", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CareLevel")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CropTypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CropTypeId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("CultivatedArea")
+                    b.Property<double?>("CultivatedArea")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("ExpectedDate")
+                    b.Property<string>("Cycle")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FieldCropId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Icon")
+                    b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Edible")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("PlantedDate")
+                    b.Property<DateTime?>("ExpectedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Quantity")
+                    b.Property<string>("GrowthRate")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("HardinessZone")
                         .HasColumnType("int");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool?>("Indoor")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Maintenance")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("PlantedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Propogation")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Soil")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Watering")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CropTypeId");
-
-                    b.HasIndex("FieldCropId");
 
                     b.ToTable("Crops");
                 });
 
             modelBuilder.Entity("AMSS.Models.CropType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -198,24 +262,33 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("AMSS.Models.Farm", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Area")
+                    b.Property<double?>("Area")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OwnerName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid?>("PolygonAppId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -224,31 +297,43 @@ namespace AMSS.Migrations
 
                     b.HasIndex("LocationId");
 
+                    b.HasIndex("PolygonAppId")
+                        .IsUnique()
+                        .HasFilter("[PolygonAppId] IS NOT NULL");
+
                     b.ToTable("Farms");
                 });
 
             modelBuilder.Entity("AMSS.Models.Field", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Area")
+                    b.Property<double?>("Area")
+                        .IsRequired()
                         .HasColumnType("float");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FarmId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("FarmId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PolygonAppId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -258,30 +343,78 @@ namespace AMSS.Migrations
 
                     b.HasIndex("FarmId");
 
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("PolygonAppId")
+                        .IsUnique()
+                        .HasFilter("[PolygonAppId] IS NOT NULL");
+
                     b.ToTable("Fields");
+                });
+
+            modelBuilder.Entity("AMSS.Models.FieldCrop", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CropId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CropId");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("FieldCrops");
                 });
 
             modelBuilder.Entity("AMSS.Models.Location", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<float?>("Lat")
-                        .HasColumnType("real");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<float?>("Lng")
-                        .HasColumnType("real");
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Lat")
+                        .IsRequired()
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Lng")
+                        .IsRequired()
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Road")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -293,56 +426,130 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("AMSS.Models.Polygon.PolygonApp", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("FarmId")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FieldId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FarmId")
-                        .IsUnique()
-                        .HasFilter("[FarmId] IS NOT NULL");
-
-                    b.HasIndex("FieldId")
-                        .IsUnique()
-                        .HasFilter("[FieldId] IS NOT NULL");
 
                     b.ToTable("PolygonApps");
                 });
 
             modelBuilder.Entity("AMSS.Models.Polygon.Position", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<float>("Lat")
-                        .HasColumnType("real");
+                    b.Property<decimal?>("Lat")
+                        .IsRequired()
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PolygonAppId")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("Lng")
+                        .IsRequired()
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<float>("lng")
-                        .HasColumnType("real");
+                    b.Property<Guid?>("PolygonAppId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PolygonAppId");
 
                     b.ToTable("Positions");
+                });
+
+            modelBuilder.Entity("AMSS.Models.SoilQuality", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<float?>("Chlorophyll")
+                        .HasColumnType("real");
+
+                    b.Property<Guid?>("FieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("InfoTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float?>("Iron")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("Nitrate")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("Oxygen")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("PH")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("Phyto")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("Phytoplankton")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("Salinity")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("Silicate")
+                        .HasColumnType("real");
+
+                    b.Property<int?>("SoilMoisture")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilMoisture100cm")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilMoisture10cm")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilMoisture40cm")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilTemperature")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilTemperature100cm")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilTemperature10cm")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SoilTemperature40cm")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FieldId")
+                        .IsUnique()
+                        .HasFilter("[FieldId] IS NOT NULL");
+
+                    b.ToTable("SoilQualitys");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -481,18 +688,10 @@ namespace AMSS.Migrations
             modelBuilder.Entity("AMSS.Models.Crop", b =>
                 {
                     b.HasOne("AMSS.Models.CropType", "CropType")
-                        .WithMany()
-                        .HasForeignKey("CropTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AMSS.Models.Field", "Field")
-                        .WithMany()
-                        .HasForeignKey("FieldCropId");
+                        .WithMany("Crops")
+                        .HasForeignKey("CropTypeId");
 
                     b.Navigation("CropType");
-
-                    b.Navigation("Field");
                 });
 
             modelBuilder.Entity("AMSS.Models.Farm", b =>
@@ -501,7 +700,13 @@ namespace AMSS.Migrations
                         .WithMany()
                         .HasForeignKey("LocationId");
 
+                    b.HasOne("AMSS.Models.Polygon.PolygonApp", "PolygonApp")
+                        .WithOne("Farm")
+                        .HasForeignKey("AMSS.Models.Farm", "PolygonAppId");
+
                     b.Navigation("Location");
+
+                    b.Navigation("PolygonApp");
                 });
 
             modelBuilder.Entity("AMSS.Models.Field", b =>
@@ -510,20 +715,34 @@ namespace AMSS.Migrations
                         .WithMany("Fields")
                         .HasForeignKey("FarmId");
 
+                    b.HasOne("AMSS.Models.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("AMSS.Models.Polygon.PolygonApp", "PolygonApp")
+                        .WithOne("Field")
+                        .HasForeignKey("AMSS.Models.Field", "PolygonAppId");
+
                     b.Navigation("Farm");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("PolygonApp");
                 });
 
-            modelBuilder.Entity("AMSS.Models.Polygon.PolygonApp", b =>
+            modelBuilder.Entity("AMSS.Models.FieldCrop", b =>
                 {
-                    b.HasOne("AMSS.Models.Farm", "Farm")
-                        .WithOne("PolygonApp")
-                        .HasForeignKey("AMSS.Models.Polygon.PolygonApp", "FarmId");
+                    b.HasOne("AMSS.Models.Crop", "Crop")
+                        .WithMany("FieldCrops")
+                        .HasForeignKey("CropId")
+                        .IsRequired();
 
                     b.HasOne("AMSS.Models.Field", "Field")
-                        .WithOne("PolygonApp")
-                        .HasForeignKey("AMSS.Models.Polygon.PolygonApp", "FieldId");
+                        .WithMany("FieldCrops")
+                        .HasForeignKey("FieldId")
+                        .IsRequired();
 
-                    b.Navigation("Farm");
+                    b.Navigation("Crop");
 
                     b.Navigation("Field");
                 });
@@ -533,10 +752,18 @@ namespace AMSS.Migrations
                     b.HasOne("AMSS.Models.Polygon.PolygonApp", "PolygonApp")
                         .WithMany("Positions")
                         .HasForeignKey("PolygonAppId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("PolygonApp");
+                });
+
+            modelBuilder.Entity("AMSS.Models.SoilQuality", b =>
+                {
+                    b.HasOne("AMSS.Models.Field", "Field")
+                        .WithOne("SoilQuality")
+                        .HasForeignKey("AMSS.Models.SoilQuality", "FieldId");
+
+                    b.Navigation("Field");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -590,22 +817,37 @@ namespace AMSS.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AMSS.Models.Crop", b =>
+                {
+                    b.Navigation("FieldCrops");
+                });
+
+            modelBuilder.Entity("AMSS.Models.CropType", b =>
+                {
+                    b.Navigation("Crops");
+                });
+
             modelBuilder.Entity("AMSS.Models.Farm", b =>
                 {
                     b.Navigation("Fields");
-
-                    b.Navigation("PolygonApp")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("AMSS.Models.Field", b =>
                 {
-                    b.Navigation("PolygonApp")
+                    b.Navigation("FieldCrops");
+
+                    b.Navigation("SoilQuality")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("AMSS.Models.Polygon.PolygonApp", b =>
                 {
+                    b.Navigation("Farm")
+                        .IsRequired();
+
+                    b.Navigation("Field")
+                        .IsRequired();
+
                     b.Navigation("Positions");
                 });
 #pragma warning restore 612, 618

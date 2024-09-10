@@ -54,18 +54,18 @@ namespace AMSS.Controllers
         }
 
         [HttpGet("getLocationById/{id:int}")]
-        public async Task<ActionResult<APIResponse>> GetLocationById(int id)
+        public async Task<ActionResult<APIResponse>> GetLocationById(string id)
         {
             try
             {
-                if (id == 0)
+                if (string.IsNullOrEmpty(id))
                 {
                     _response.IsSuccess = false;
                     _response.ErrorMessages.Add("Oops ! Something wrong when get Location by id");
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                Location location = await _unitOfWork.LocationRepository.GetAsync(u => u.Id == id);
+                Location location = await _unitOfWork.LocationRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
                 if (location == null)
                 {
                     _response.IsSuccess = false;
@@ -125,13 +125,13 @@ namespace AMSS.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> UpdateLocation(int id, [FromForm] LocationDto updateLocationDto)
+        public async Task<ActionResult<APIResponse>> UpdateLocation(string id, [FromForm] LocationDto updateLocationDto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (updateLocationDto == null || id != updateLocationDto.Id)
+                    if (updateLocationDto == null || updateLocationDto.Id.Equals(Guid.Parse(id)))
                     {
                         _response.IsSuccess = false;
                         _response.ErrorMessages.Add("This Location does not exist!");
@@ -139,7 +139,7 @@ namespace AMSS.Controllers
                         return BadRequest();
                     }
 
-                    Location locationFromDb = await _unitOfWork.LocationRepository.GetAsync(u => u.Id == id, false);
+                    Location locationFromDb = await _unitOfWork.LocationRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)), false);
 
                     if (locationFromDb == null)
                     {
@@ -177,11 +177,11 @@ namespace AMSS.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> DeleteLocation(int id)
+        public async Task<ActionResult<APIResponse>> DeleteLocation(string id)
         {
             try
             {
-                if (id == 0)
+                if (string.IsNullOrEmpty(id))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -189,7 +189,7 @@ namespace AMSS.Controllers
                     return BadRequest(_response);
                 }
 
-                Location locationFromDb = await _unitOfWork.LocationRepository.GetAsync(u => u.Id == id);
+                Location locationFromDb = await _unitOfWork.LocationRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
                 if (locationFromDb == null)
                 {
                     _response.IsSuccess = false;

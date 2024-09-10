@@ -10,14 +10,14 @@ namespace AMSS.Models.Dto.Polygon
     public class PolygonDto
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string? Color { get; set; }
         public int? Type { get; set; }
 
-        public FarmDto Farm { get; set; }
+        public FarmDto? Farm { get; set; }
        
-        public FieldDto Field { get; set; }
+        public FieldDto? Field { get; set; }
 
-        public IEnumerable<Position> Positions { get; set; }
+        public IEnumerable<Position>? Positions { get; set; }
     }
 }

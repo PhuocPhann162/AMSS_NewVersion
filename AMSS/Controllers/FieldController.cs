@@ -12,6 +12,7 @@ using System.Text.Json;
 using AMSS.Utility;
 using Azure.Core.GeoJson;
 using AMSS.Models.Polygon;
+using AMSS.Models.Dto.Polygon;
 
 namespace AMSS.Controllers
 {
@@ -41,7 +42,8 @@ namespace AMSS.Controllers
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
-                    lstFieldsDto = lstFieldsDto.Where(u => u.Name.ToLower().Contains(searchString.ToLower()) || u.Farm.Name.ToLower().Contains(searchString.ToLower())).ToList();
+                    lstFieldsDto = lstFieldsDto.Where(u => u.Name.ToLower().Contains(searchString.ToLower()) 
+                                                    || u.Farm.Name.ToLower().Contains(searchString.ToLower())).ToList();
                 }
 
                 if (!string.IsNullOrEmpty(status))
@@ -78,18 +80,19 @@ namespace AMSS.Controllers
 
         [HttpGet("getFieldById/{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> GetFieldById(int id)
+        public async Task<ActionResult<APIResponse>> GetFieldById(string id)
         {
             try
             {
-                if (id == 0)
+                if (string.IsNullOrEmpty(id))
                 {
                     _response.IsSuccess = false;
                     _response.ErrorMessages.Add("Oops ! Something wrong when get crop by id");
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                Field fieldFromDb = await _unitOfWork.FieldRepository.GetAsync(u => u.Id == id, includeProperties: "Location,PolygonApp,Farm,SoilQuality");
+                Field fieldFromDb = await _unitOfWork.FieldRepository
+                    .GetAsync(u => u.Id.Equals(Guid.Parse(id)), includeProperties: "Location,PolygonApp,Farm,SoilQuality");
                 if (fieldFromDb == null)
                 {
                     _response.IsSuccess = false;
@@ -97,7 +100,8 @@ namespace AMSS.Controllers
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
-                fieldFromDb.PolygonApp.Positions = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == fieldFromDb.PolygonApp.Id);
+                fieldFromDb.PolygonApp.Positions = await _unitOfWork.PositionRepository
+                                .GetAllAsync(u => u.PolygonAppId == fieldFromDb.PolygonApp.Id);
                 FieldDto FieldDto = _mapper.Map<FieldDto>(fieldFromDb);
                 _response.Result = FieldDto;
                 _response.StatusCode = HttpStatusCode.OK;
@@ -153,13 +157,13 @@ namespace AMSS.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> UpdateField(int id, [FromBody] UpdateFieldDto updateFieldDto)
+        public async Task<ActionResult<APIResponse>> UpdateField(string id, [FromBody] UpdateFieldDto updateFieldDto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (updateFieldDto == null || id != updateFieldDto.Id)
+                    if (updateFieldDto == null || updateFieldDto.Id.Equals(Guid.Parse(id)))
                     {
                         _response.IsSuccess = false;
                         _response.ErrorMessages.Add("This Field does not exist!");
@@ -167,8 +171,9 @@ namespace AMSS.Controllers
                         return BadRequest();
                     }
 
-                    Field fieldFromDb = await _unitOfWork.FieldRepository.GetAsync(u => u.Id == id, includeProperties: "Location,PolygonApp");
-                    List<Position> lstPositionsFromDb = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == fieldFromDb.PolygonAppId);
+                    Field fieldFromDb = await _unitOfWork.FieldRepository
+                        .GetAsync(u => u.Id.Equals(Guid.Parse(id)), includeProperties: "Location,PolygonApp");
+                    
                     if (fieldFromDb == null)
                     {
                         _response.IsSuccess = false;
@@ -178,40 +183,27 @@ namespace AMSS.Controllers
                     }
 
 
-                    // Update Position for Polygon
-
                     if (updateFieldDto.Positions != null)
                     {
-                        int noPositions = lstPositionsFromDb.Count();
-                        var updatePositions = updateFieldDto.Positions.ToList(); 
+                        fieldFromDb.PolygonApp.Positions.Clear();
 
-                        for (int i = 0; i < noPositions; i++) 
+                        foreach (var positionDto in updateFieldDto.Positions)
                         {
-                            var posFromDb = lstPositionsFromDb[i];
-                            posFromDb.Lat = updatePositions[i].Lat;
-                            posFromDb.lng = updatePositions[i].lng;
-                            await _unitOfWork.PositionRepository.Update(posFromDb);
+
+                            fieldFromDb.PolygonApp.Positions.Add(positionDto);
                         }
 
-                        if (noPositions < updateFieldDto.Positions.Count())
-                        {
-                            for (int i = noPositions; i < updateFieldDto.Positions.Count(); i++)
-                            {
-                                updatePositions[i].PolygonAppId = fieldFromDb.PolygonAppId;
-                                updatePositions[i].PolygonApp = fieldFromDb.PolygonApp;
-                                await _unitOfWork.PositionRepository.CreateAsync(updatePositions[i]);
-                            }
-                        }
-                        await _unitOfWork.PositionRepository.SaveAsync();
+                        await _unitOfWork.PolygonAppRepository.Update(fieldFromDb.PolygonApp);
+                        
                     }
 
                     if(updateFieldDto.Location != null)
                     {
                         // Update Field Location
-                        var locationFromDb = _unitOfWork.LocationRepository.GetAsync(u => u.Id == fieldFromDb.LocationId).GetAwaiter().GetResult();
+                        var locationFromDb = _unitOfWork.LocationRepository
+                            .GetAsync(u => u.Id == fieldFromDb.LocationId).GetAwaiter().GetResult();
                         locationFromDb = _mapper.Map<Location>(updateFieldDto.Location);
                         await _unitOfWork.LocationRepository.Update(fieldFromDb.Location);
-                        await _unitOfWork.LocationRepository.SaveAsync();
                     }
 
                     // Update Field Props
@@ -258,11 +250,11 @@ namespace AMSS.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> DeleteField(int id)
+        public async Task<ActionResult<APIResponse>> DeleteField(string id)
         {
             try
             {
-                if (id == 0)
+                if (string.IsNullOrEmpty(id))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -270,7 +262,8 @@ namespace AMSS.Controllers
                     return BadRequest(_response);
                 }
 
-                Field fieldFromDb = await _unitOfWork.FieldRepository.GetAsync(u => u.Id == id, includeProperties: "Location,PolygonApp");
+                Field fieldFromDb = await _unitOfWork.FieldRepository
+                    .GetAsync(u => u.Id.Equals(Guid.Parse(id)), includeProperties: "Location,PolygonApp");
                 List<Position> lstPositionsFromDb = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == fieldFromDb.PolygonAppId);
                 // Delete Location 
                 await _unitOfWork.LocationRepository.RemoveAsync(fieldFromDb.Location);

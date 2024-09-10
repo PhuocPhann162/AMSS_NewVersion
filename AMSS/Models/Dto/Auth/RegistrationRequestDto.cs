@@ -8,10 +8,10 @@ namespace AMSS.Models.Dto.Auth
     {
         [Required]
         [EmailAddress]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         [Required]
         [MaxLength(45)]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
         public string? PhoneNumber { get; set; }
         public string? StreetAddress { get; set; }
@@ -23,11 +23,8 @@ namespace AMSS.Models.Dto.Auth
         [Required]
         [MinLength(8)]
         [MaxLength(32)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Role? Role { get; set; }
-
-
-        
     }
 }
