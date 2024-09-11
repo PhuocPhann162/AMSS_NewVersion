@@ -37,8 +37,15 @@ namespace AMSS.Controllers
         {
             try
             {
-                IEnumerable<Field> lstFields = await _unitOfWork.FieldRepository.GetAllFieldWithDetailAsync();
+                IEnumerable<Field> lstFields = await _unitOfWork.FieldRepository.GetAllAsync(includeProperties: "Location,PolygonApp,FieldCrops,Farm");
+
+                foreach (var f in lstFields)
+                {
+                    f.PolygonApp.Positions = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == f.PolygonApp.Id);
+                }
+
                 var lstFieldsDto = _mapper.Map<IEnumerable<FieldDto>>(lstFields);
+
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -190,7 +197,7 @@ namespace AMSS.Controllers
                         foreach (var positionDto in updateFieldDto.Positions)
                         {
 
-                            fieldFromDb.PolygonApp.Positions.Add(positionDto);
+                            fieldFromDb.PolygonApp.Positions.Add(_mapper.Map<Position>(positionDto));
                         }
 
                         await _unitOfWork.PolygonAppRepository.Update(fieldFromDb.PolygonApp);

@@ -1,4 +1,5 @@
 ﻿using AMSS.Models.Dto.Location;
+using AMSS.Models.Dto.Position;
 using AMSS.Models.Polygon;
 
 namespace AMSS.Models.Dto.Field
@@ -10,6 +11,6 @@ namespace AMSS.Models.Dto.Field
         public string? Status { get; set; }
         public double? Area { get; set; }
         public LocationDto? Location { get; set; }
-        public IEnumerable<Position>? Positions { get; set; }
+        public IEnumerable<PositionDto>? Positions { get; set; }
     }
 }

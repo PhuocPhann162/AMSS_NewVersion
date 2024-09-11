@@ -16,6 +16,7 @@ namespace AMSS.Repositories
         public async Task<List<Field>> GetAllFieldWithDetailAsync()
         {
             return await _db.Fields
+            .AsNoTracking()
             .Include(f => f.Location)
             .Include(f => f.PolygonApp)
             .ThenInclude(p => p.Positions)

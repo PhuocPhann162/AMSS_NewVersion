@@ -37,19 +37,14 @@ namespace AMSS.Controllers
             try
             {
                 List<Farm> lstFarms = await _unitOfWork.FarmRepository.GetAllAsync(includeProperties: "Location,PolygonApp");
+
+                foreach (var f in lstFarms)
+                {
+                    f.PolygonApp.Positions = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == f.PolygonApp.Id);
+                }
+
                 var lstFarmsDto = _mapper.Map<List<FarmDto>>(lstFarms);
 
-                lstFarmsDto.Select(f => f.PolygonApp.Positions = _unitOfWork.PositionRepository
-                            .GetAllAsync(u => u.PolygonAppId == f.PolygonApp.Id && !u.IsDeleted).GetAwaiter().GetResult());
-
-                foreach (var f in lstFarmsDto)
-                {
-                    if (f.PolygonApp != null)
-                    {
-                        f.PolygonApp.Positions = await _unitOfWork.PositionRepository
-                            .GetAllAsync(u => u.PolygonAppId == f.PolygonApp.Id && !u.IsDeleted);
-                    }
-                }
 
                 if (!string.IsNullOrEmpty(searchString))
                 {

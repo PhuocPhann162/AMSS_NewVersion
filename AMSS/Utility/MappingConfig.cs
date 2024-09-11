@@ -6,6 +6,7 @@ using AMSS.Models.Dto.Field;
 using AMSS.Models.Dto.FieldCrop;
 using AMSS.Models.Dto.Location;
 using AMSS.Models.Dto.Polygon;
+using AMSS.Models.Dto.Position;
 using AMSS.Models.Dto.User;
 using AMSS.Models.Polygon;
 using AutoMapper;
@@ -48,6 +49,9 @@ namespace AMSS.Utility
                 // Polygon 
                 config.CreateMap<PolygonApp, PolygonDto>().ReverseMap();
                 config.CreateMap<PolygonApp, CreatePolygonDto>().ReverseMap();
+
+                // Position 
+                config.CreateMap<Position, PositionDto>().ReverseMap();
             });
 
             return mappingConfig;

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using AMSS.Models.Dto.Farm;
 using AMSS.Models.Dto.Field;
+using AMSS.Models.Dto.Position;
 
 namespace AMSS.Models.Dto.Polygon
 {
@@ -18,6 +19,6 @@ namespace AMSS.Models.Dto.Polygon
        
         public FieldDto? Field { get; set; }
 
-        public IEnumerable<Position>? Positions { get; set; }
+        public IEnumerable<PositionDto> Positions { get; set; } 
     }
 }
