@@ -7,25 +7,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
-    public class Farm
+    public class Farm : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string? Name { get; set; }
-
         public double? Area { get; set; }
 
         [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string? OwnerName { get; set; }
-
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
 
 
         public Guid? LocationId { get; set; } = Guid.Empty;

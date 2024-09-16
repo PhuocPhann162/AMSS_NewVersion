@@ -2,7 +2,6 @@ using AMSS.Data;
 using AMSS.Models;
 using AMSS.Repositories;
 using AMSS.Repositories.IRepository;
-using AMSS.Repository.IRepository;
 using AMSS.Services;
 using AMSS.Services.IService;
 using AMSS.Utility;
@@ -64,8 +63,16 @@ builder.Services.AddAuthentication(u =>
 });
 
 // Config Scope of Dependence Injection
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICropService, CropService>();
+builder.Services.AddScoped<ICropTypeService, CropTypeService>();
+builder.Services.AddScoped<IFieldService, FieldService>();
+builder.Services.AddScoped<IFarmService, FarmService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IPolygonAppService, PolygonAppService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // CORS config
 builder.Services.AddCors();
@@ -154,10 +161,14 @@ void ApplyMigration()
 {
     using (var scope = app.Services.CreateScope())
     {
-        var _db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        if (_db.Database.GetMigrations().Count() > 0)
+        try
         {
+            var _db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             _db.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during migration: {ex.Message}");
         }
     }
 }

@@ -5,11 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
-    public class SoilQuality
+    public class SoilQuality : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        [Column("InfoTime", TypeName = "datetime")]
         public DateTime InfoTime { get; set; }
         public float? Chlorophyll { get; set; }
         public float? Iron { get; set; }

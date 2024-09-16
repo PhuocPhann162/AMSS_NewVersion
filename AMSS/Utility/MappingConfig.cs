@@ -49,6 +49,7 @@ namespace AMSS.Utility
                 // Polygon 
                 config.CreateMap<PolygonApp, PolygonDto>().ReverseMap();
                 config.CreateMap<PolygonApp, CreatePolygonDto>().ReverseMap();
+                config.CreateMap<PolygonApp, UpdatePolygonDto>().ReverseMap();
 
                 // Position 
                 config.CreateMap<Position, PositionDto>().ReverseMap();

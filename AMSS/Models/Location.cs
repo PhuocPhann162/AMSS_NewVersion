@@ -3,12 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
-    public class Location
+    public class Location : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [Required]
         [MaxLength(500)]
         public string Address { get; set; } = string.Empty;
@@ -25,10 +21,6 @@ namespace AMSS.Models
         public string? State { get; set; }
         public string? District { get; set; }
         public string? Road { get; set; }
-        public string? PostalCode { get; set; }
-
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
+        public string? PostCode { get; set; }
     }
 }

@@ -7,21 +7,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
-    public class Field
+    public class Field : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [Required]
         public string? Name { get; set; } = string.Empty;
-
         public double? Area { get; set; }
-
         public string? Status { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
+        
 
         public Guid? FarmId { get; set; }
         [ForeignKey("FarmId")]

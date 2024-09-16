@@ -1,51 +1,32 @@
 ﻿using AMSS.Enums;
 using AMSS.Models;
-using AMSS.Models.Dto.Crop;
-using AMSS.Models.Dto.Farm;
 using AMSS.Models.Dto.Polygon;
-using AMSS.Models.Polygon;
-using AMSS.Repositories;
-using AMSS.Repositories.IRepository;
-using AMSS.Utility;
-using AutoMapper;
+using AMSS.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using System.Net.Mime;
 
 namespace AMSS.Controllers
 {
     [Route("api/polygon")]
     [ApiController]
-    public class PolygonController : ControllerBase
+    public class PolygonController : BaseController<PolygonController>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        protected APIResponse _response;
-        public PolygonController(IUnitOfWork unitOfWork, IMapper mapper)
+
+        private readonly IPolygonAppService _polygonAppService;
+
+        public PolygonController(IPolygonAppService polygonAppService)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _response = new();
+            _polygonAppService = polygonAppService;
         }
 
         [HttpGet("getAll")]
-        public async Task<ActionResult<APIResponse>> GetAllPolygons()
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<IEnumerable<PolygonDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllPolygons()
         {
-            try
-            {
-                IEnumerable<PolygonApp> lstPolygon = await _unitOfWork.PolygonAppRepository.GetAllAsync();
-                var lstPolygonDto = _mapper.Map<IEnumerable<PolygonDto>>(lstPolygon);
-                _response.Result = lstPolygonDto;
-                _response.StatusCode = HttpStatusCode.OK;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add(ex.Message);
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                return StatusCode(StatusCodes.Status500InternalServerError, _response);
-            }
+            var response = await _polygonAppService.GetAllPolygonsAsync();
+            return ProcessResponseMessage(response);
         }
 
         //[HttpGet("getPolygonByFarmId/{id:int}")]
@@ -88,73 +69,23 @@ namespace AMSS.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> CreatePolygon(CreatePolygonDto createPolygonDto)
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<PolygonDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreatePolygon(CreatePolygonDto createPolygonDto)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var newPolygon = _mapper.Map<PolygonApp>(createPolygonDto);
-
-
-                    await _unitOfWork.PolygonAppRepository.CreateAsync(newPolygon);
-
-                    _unitOfWork.SaveAsync();
-
-                    _response.Result = newPolygon;
-                    _response.StatusCode = HttpStatusCode.Created;
-                    _response.SuccessMessage = "Polygon created successfully";
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.IsSuccess = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    _response.ErrorMessages.Add("Something wrong when creating new Farm");
-                    return BadRequest(_response);
-                }
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add(ex.Message);
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                return StatusCode(StatusCodes.Status500InternalServerError, _response);
-            }
+            var response = await _polygonAppService.CreatePolygonAsync(createPolygonDto);
+            return ProcessResponseMessage(response);
         }
+
 
         [HttpPut]
         [Authorize(Roles = nameof(Role.ADMIN))]
-        public async Task<ActionResult<APIResponse>> UpdatePolygon(UpdatePolygonDto updatePolygonDto)
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<PolygonDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePolygon(UpdatePolygonDto updatePolygonDto)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var newPolygon = _mapper.Map<PolygonApp>(updatePolygonDto);
-                    var result = await _unitOfWork.PolygonAppRepository.Update(newPolygon);
-                    _unitOfWork.SaveAsync();
-
-                    _response.Result = result;
-                    _response.StatusCode = HttpStatusCode.Created;
-                    _response.SuccessMessage = "Polygon created successfully";
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.IsSuccess = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    _response.ErrorMessages.Add("Something wrong when creating new Farm");
-                    return BadRequest(_response);
-                }
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add(ex.Message);
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                return StatusCode(StatusCodes.Status500InternalServerError, _response);
-            }
+            var response = await _polygonAppService.UpdatePolygonAsync(updatePolygonDto);
+            return ProcessResponseMessage(response);
         }
     }
 }

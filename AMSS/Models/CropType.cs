@@ -4,12 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
-    public class CropType
+    public class CropType : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string? Name { get; set; }
@@ -21,10 +17,6 @@ namespace AMSS.Models
         [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string? Type { get; set; }
-
-        public DateTime? CreatedAt{ get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt{ get; set; }
-        public DateTime? DeletedAt{ get; set; }
 
         public virtual ICollection<Crop> Crops { get; set; } = new List<Crop>();
     }

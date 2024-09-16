@@ -6,12 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
-    public class Crop
+    public class Crop : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [Required]
         [MaxLength(1000)]
         [Column(TypeName = "nvarchar(1000)")]
@@ -70,11 +66,6 @@ namespace AMSS.Models
 
         [Range(0, double.PositiveInfinity)]
         public int? Quantity { get; set; } = 0;
-
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
-
 
         public Guid? CropTypeId { get; set; }
         [ForeignKey("CropTypeId")]

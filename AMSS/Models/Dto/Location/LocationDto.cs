@@ -15,7 +15,7 @@ namespace AMSS.Models.Dto.Location
         public string? State { get; set; }
         public string? District { get; set; }
         public string? Road { get; set; }
-        public string? PostalCode { get; set; }
+        public string? PostCode { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

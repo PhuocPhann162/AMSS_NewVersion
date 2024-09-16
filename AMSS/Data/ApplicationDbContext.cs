@@ -21,10 +21,11 @@ namespace AMSS.Data
         public DbSet<CropType> CropTypes { get; set; }
         public DbSet<SoilQuality> SoilQualitys { get; set; }
         public DbSet<FieldCrop> FieldCrops { get; set; }
+        public DbSet<CountryContinent> CountryContinents { get; set; }
+        public DbSet<Province> Provinces { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.EnableSensitiveDataLogging();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

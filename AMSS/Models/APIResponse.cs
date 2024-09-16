@@ -2,7 +2,7 @@
 
 namespace AMSS.Models
 {
-    public class APIResponse
+    public class APIResponse<T>
     {
         public APIResponse()
         {
@@ -13,6 +13,7 @@ namespace AMSS.Models
         public bool IsSuccess { get; set; } = true;
         public string? SuccessMessage { get; set; }
         public List<string> ErrorMessages { get; set; }
-        public object Result { get; set; }
+        public object? Result { get; set; }
+        public object? Pagination { get; set; }
     }
 }
