@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using AMSS.Models.Dto.Field;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AMSS.Models
+namespace AMSS.Models.Dto.SoilQuality
 {
-    public class SoilQuality : BaseModel<Guid>
+    public class SoilQualityDto
     {
-        [Column("InfoTime", TypeName = "datetime")]
         public DateTime InfoTime { get; set; } = DateTime.Now;
         public float? Chlorophyll { get; set; }
         public float? Iron { get; set; }
@@ -28,9 +27,6 @@ namespace AMSS.Models
         public int? SoilTemperature100cm { get; set; }
 
         public Guid? FieldId { get; set; }
-        [ForeignKey("FieldId")]
-        [ValidateNever]
-        [DeleteBehavior(DeleteBehavior.ClientSetNull)]
-        public virtual Field Field { get; set; } = null!;
+        public FieldDto Field { get; set; } 
     }
 }

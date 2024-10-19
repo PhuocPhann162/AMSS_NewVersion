@@ -34,7 +34,7 @@ namespace AMSS.Repositories
 
         public void SaveAsync()
         {
-            _db.SaveChangesAsync().GetAwaiter().GetResult();
+            _db.SaveChangesAsync();
         }
     }
 }

@@ -45,6 +45,11 @@ namespace AMSS.Controllers
             {
                 HttpStatusCode.OK => Ok(response),
                 HttpStatusCode.Unauthorized => Unauthorized(response),
+                HttpStatusCode.Created => Ok(response),
+                HttpStatusCode.Conflict => Conflict(response),
+                HttpStatusCode.NotFound => NotFound(response),
+                HttpStatusCode.Forbidden => BadRequest(response),
+                HttpStatusCode.BadRequest => BadRequest(response),
                 _ => StatusCode(500, response)
             };
         }

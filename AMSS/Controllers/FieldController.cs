@@ -35,7 +35,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpGet("getFieldById/{id:int}")]
+        [HttpGet("getFieldById/{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<FieldDto>), StatusCodes.Status200OK)]
@@ -55,7 +55,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<FieldDto>), StatusCodes.Status200OK)]
@@ -65,7 +65,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]    
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]

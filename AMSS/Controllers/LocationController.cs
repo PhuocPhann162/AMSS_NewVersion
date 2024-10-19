@@ -28,7 +28,7 @@ namespace AMSS.Controllers
         }
 
 
-        [HttpGet("getLocationById/{id:int}")]
+        [HttpGet("getLocationById/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<LocationDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLocationById(string id)
@@ -49,7 +49,7 @@ namespace AMSS.Controllers
         }
 
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<LocationDto>), StatusCodes.Status200OK)]
@@ -60,7 +60,7 @@ namespace AMSS.Controllers
         }
 
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]

@@ -29,7 +29,7 @@ namespace AMSS.Services
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
-                    lstCropTypeDtos = lstCropTypeDtos.Where(u => u.Name.ToLower().Contains(searchString.ToLower()) || u.Code.ToLower().Contains(searchString.ToLower())).ToList();
+                    lstCropTypeDtos = lstCropTypeDtos.Where(u => u.Name!.ToLower().Contains(searchString.ToLower()) || u.Code!.ToLower().Contains(searchString.ToLower())).ToList();
                 }
                 if (pageNumber.HasValue && pageSize.HasValue)
                 {

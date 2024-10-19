@@ -2,7 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/bin
-/obj
-/appsettings.Development.json
-/vs
+AMSS/bin
+AMSS/obj
+AMSS/appsettings.Development.json
+.vs
+AMSS/.vs

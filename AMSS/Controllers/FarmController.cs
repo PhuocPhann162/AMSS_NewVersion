@@ -35,7 +35,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpGet("getFarmById/{id:int}")]
+        [HttpGet("getFarmById/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<FarmDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFarmById(string id)
@@ -54,7 +54,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<FarmDto>), StatusCodes.Status200OK)]
@@ -64,7 +64,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<FarmDto>), StatusCodes.Status200OK)]

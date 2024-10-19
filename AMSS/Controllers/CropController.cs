@@ -28,7 +28,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpGet("getCropById/{id:int}")]
+        [HttpGet("getCropById/{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<IEnumerable<CropDto>>), StatusCodes.Status200OK)]
@@ -57,7 +57,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Multipart.FormData)]
         [ProducesResponseType(typeof(APIResponse<CropDto>), StatusCodes.Status200OK)]
@@ -67,7 +67,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]

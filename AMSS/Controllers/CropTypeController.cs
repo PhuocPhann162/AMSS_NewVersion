@@ -11,6 +11,7 @@ namespace AMSS.Controllers
 {
     [Route("api/cropType")]
     [ApiController]
+    [Authorize]
     public class CropTypeController : BaseController<CropTypeController>
     {
         private readonly ICropTypeService _cropTypeService;

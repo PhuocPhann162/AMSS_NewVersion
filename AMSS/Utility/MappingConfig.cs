@@ -7,6 +7,7 @@ using AMSS.Models.Dto.FieldCrop;
 using AMSS.Models.Dto.Location;
 using AMSS.Models.Dto.Polygon;
 using AMSS.Models.Dto.Position;
+using AMSS.Models.Dto.SoilQuality;
 using AMSS.Models.Dto.User;
 using AMSS.Models.Polygon;
 using AutoMapper;
@@ -53,6 +54,9 @@ namespace AMSS.Utility
 
                 // Position 
                 config.CreateMap<Position, PositionDto>().ReverseMap();
+
+                // Soil Quality 
+                config.CreateMap<SoilQuality, SoilQualityDto>().ReverseMap();
             });
 
             return mappingConfig;

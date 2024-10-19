@@ -68,7 +68,6 @@ namespace AMSS.Services
             {
                 var newLocation = _mapper.Map<Location>(createLocationDto);
                 newLocation.CreatedAt = DateTime.Now;
-                newLocation.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.LocationRepository.CreateAsync(newLocation);
                 _unitOfWork.SaveAsync();

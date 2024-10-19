@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using AMSS.Models.Dto.Field;
+﻿using System.ComponentModel.DataAnnotations;
 using AMSS.Models.Dto.CropType;
 using AMSS.Models.Dto.FieldCrop;
 
@@ -17,10 +14,7 @@ namespace AMSS.Models.Dto.Crop
         [Required]
         public string? Name { get; set; }
 
-        public string? Description { get; set; }
-
         public string? Cycle { get; set; }
-
         public bool? Edible { get; set; }
 
         public string? Soil { get; set; }
@@ -39,18 +33,18 @@ namespace AMSS.Models.Dto.Crop
 
         public string? GrowthRate { get; set; }
 
+        public string? Description { get; set; }
         public double? CultivatedArea { get; set; }
 
         public DateTime? PlantedDate { get; set; }
 
         public DateTime? ExpectedDate { get; set; }
 
-        public int? Quantity { get; set; }
+        public int? Quantity { get; set; } = 0;
 
-        public IEnumerable<FieldCropDto> FieldCrops { get; set; }
 
-        public int? CropTypeId { get; set; }
-        public CropTypeDto CropType { get; set; }
+        public Guid? CropTypeId { get; set; }
+        public IEnumerable<FieldCropDto>? FieldCrops { get; set; } 
 
         public DateTime? CreatedAt { get; set; }
 

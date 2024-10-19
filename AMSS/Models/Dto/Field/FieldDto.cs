@@ -4,6 +4,7 @@ using AMSS.Models.Dto.Location;
 using AMSS.Models.Dto.Farm;
 using AMSS.Models.Dto.Polygon;
 using AMSS.Models.Dto.FieldCrop;
+using AMSS.Models.Dto.SoilQuality;
 
 namespace AMSS.Models.Dto.Field
 {
@@ -28,6 +29,6 @@ namespace AMSS.Models.Dto.Field
         public FarmDto? Farm { get; set; }
         public IEnumerable<FieldCropDto>? FieldCrops { get; set; }
         public PolygonDto? PolygonApp { get; set; }
-        public SoilQuality? SoilQuality { get; set; }
+        public SoilQualityDto? SoilQuality { get; set; }
     }
 }

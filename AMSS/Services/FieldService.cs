@@ -99,9 +99,7 @@ namespace AMSS.Services
                 var newField = _mapper.Map<Field>(createFieldDto);
 
                 newField.Status = String.IsNullOrEmpty(newField.Status) ? SD.Status_Idle : newField.Status;
-
                 newField.CreatedAt = DateTime.Now;
-                newField.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.FieldRepository.CreateAsync(newField);
                 _unitOfWork.SaveAsync();
@@ -117,7 +115,7 @@ namespace AMSS.Services
         {
             try
             {
-                if (updateFieldDto == null || updateFieldDto.Id.Equals(Guid.Parse(id)))
+                if (updateFieldDto == null || !updateFieldDto.Id.Equals(Guid.Parse(id)))
                 {
                     return BuildErrorResponseMessage<FieldDto>("Id must be valid", HttpStatusCode.BadRequest);
                 }

@@ -1,5 +1,4 @@
-﻿using AMSS.Models.Dto.Farm;
-using AMSS.Models.Polygon;
+﻿using AMSS.Models.Polygon;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;

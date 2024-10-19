@@ -17,11 +17,11 @@ namespace AMSS.Models
 
         [Column("CreatedAt", TypeName = "datetime")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         [Column("UpdatedAt", TypeName = "datetime")]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; } 
 
         [Column("DeletedAt", TypeName = "datetime")]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

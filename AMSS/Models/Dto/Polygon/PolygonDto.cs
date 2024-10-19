@@ -10,7 +10,6 @@ namespace AMSS.Models.Dto.Polygon
 {
     public class PolygonDto
     {
-        [Key]
         public Guid Id { get; set; }
         public string? Color { get; set; }
         public int? Type { get; set; }

@@ -19,8 +19,7 @@ namespace AMSS.Repositories
                 .Include(ct => ct.Crops)
                     .ThenInclude(c => c.FieldCrops)
                         .ThenInclude(fc => fc.Field)
-                            .ThenInclude(f => f.Location)
-                .ToListAsync();
+                            .ThenInclude(f => f.Location).ToListAsync();
         }
 
         public async Task<CropType> Update(CropType cropType)
