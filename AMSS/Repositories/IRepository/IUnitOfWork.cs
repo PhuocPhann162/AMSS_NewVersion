@@ -13,6 +13,9 @@ namespace AMSS.Repositories.IRepository
         IPolygonAppRepository PolygonAppRepository { get; }
         IPositionRepository PositionRepository { get; }
         IUserRepository UserRepository { get; }
+        ISocialMetricRepository SocialMetricRepository { get; }
+        ICountryContinentRepository CountryContinentRepository { get; }
+        IProvinceRepository ProvinceRepository { get; }
 
         void SaveAsync();
     }

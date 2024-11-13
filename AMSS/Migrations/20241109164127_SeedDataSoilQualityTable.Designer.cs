@@ -4,6 +4,7 @@ using AMSS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241109164127_SeedDataSoilQualityTable")]
+    partial class SeedDataSoilQualityTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -599,118 +602,6 @@ namespace AMSS.Migrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("AMSS.Models.SeriesMetric", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime")
-                        .HasColumnName("DeletedAt");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SeriesMetrics");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialMetric", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<Guid?>("CountryContinentId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime")
-                        .HasColumnName("DeletedAt");
-
-                    b.Property<Guid?>("SeriesMetricId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryContinentId");
-
-                    b.HasIndex("SeriesMetricId");
-
-                    b.ToTable("SocialMetrics");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialYear", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime")
-                        .HasColumnName("DeletedAt");
-
-                    b.Property<Guid?>("SocialMetricId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SocialMetricId");
-
-                    b.ToTable("SocialYears");
-                });
-
             modelBuilder.Entity("AMSS.Models.SoilQuality", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1013,36 +904,6 @@ namespace AMSS.Migrations
                     b.Navigation("CountryContinent");
                 });
 
-            modelBuilder.Entity("AMSS.Models.SocialMetric", b =>
-                {
-                    b.HasOne("AMSS.Models.CountryContinent", "CountryContinent")
-                        .WithMany("SocialMetrics")
-                        .HasForeignKey("CountryContinentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AMSS.Models.SeriesMetric", "SeriesMetric")
-                        .WithMany("SocialMetrics")
-                        .HasForeignKey("SeriesMetricId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CountryContinent");
-
-                    b.Navigation("SeriesMetric");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialYear", b =>
-                {
-                    b.HasOne("AMSS.Models.SocialMetric", "SocialMetric")
-                        .WithMany("SocialYears")
-                        .HasForeignKey("SocialMetricId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SocialMetric");
-                });
-
             modelBuilder.Entity("AMSS.Models.SoilQuality", b =>
                 {
                     b.HasOne("AMSS.Models.Field", "Field")
@@ -1106,8 +967,6 @@ namespace AMSS.Migrations
             modelBuilder.Entity("AMSS.Models.CountryContinent", b =>
                 {
                     b.Navigation("Provinces");
-
-                    b.Navigation("SocialMetrics");
                 });
 
             modelBuilder.Entity("AMSS.Models.Crop", b =>
@@ -1142,16 +1001,6 @@ namespace AMSS.Migrations
                         .IsRequired();
 
                     b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SeriesMetric", b =>
-                {
-                    b.Navigation("SocialMetrics");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialMetric", b =>
-                {
-                    b.Navigation("SocialYears");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,6 +23,9 @@ namespace AMSS.Data
         public DbSet<FieldCrop> FieldCrops { get; set; }
         public DbSet<CountryContinent> CountryContinents { get; set; }
         public DbSet<Province> Provinces { get; set; }
+        public DbSet<SeriesMetric> SeriesMetrics { get; set; }
+        public DbSet<SocialMetric> SocialMetrics { get; set; }
+        public DbSet<SocialYear> SocialYears { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

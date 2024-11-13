@@ -1,4 +1,5 @@
 ﻿using AMSS.Models;
+using AMSS.Models.Dto.CountryContinent;
 using AMSS.Models.Dto.Crop;
 using AMSS.Models.Dto.CropType;
 using AMSS.Models.Dto.Farm;
@@ -7,6 +8,7 @@ using AMSS.Models.Dto.FieldCrop;
 using AMSS.Models.Dto.Location;
 using AMSS.Models.Dto.Polygon;
 using AMSS.Models.Dto.Position;
+using AMSS.Models.Dto.SocialMetric;
 using AMSS.Models.Dto.SoilQuality;
 using AMSS.Models.Dto.User;
 using AMSS.Models.Polygon;
@@ -57,6 +59,12 @@ namespace AMSS.Utility
 
                 // Soil Quality 
                 config.CreateMap<SoilQuality, SoilQualityDto>().ReverseMap();
+
+                // Country Continent
+                config.CreateMap<CountryContinent, CountryContinentDto>().ReverseMap();
+
+                // Social Metric
+                config.CreateMap<SocialMetric, SocialMetricDto>().ReverseMap();
             });
 
             return mappingConfig;

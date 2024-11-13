@@ -27,6 +27,7 @@ namespace AMSS.Models
         public string? CountryName { get; set; }
 
 
-        public virtual ICollection<Province> Provinces { get; set; } = new List<Province>(); 
+        public virtual ICollection<Province> Provinces { get; set; } = new List<Province>();
+        public virtual ICollection<SocialMetric> SocialMetrics { get; set; } = null!;
     }
 }

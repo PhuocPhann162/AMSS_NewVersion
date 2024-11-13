@@ -10,5 +10,17 @@
         public const string Status_AwaitingHarvest = "Awaiting Harvest";
         public const string Status_Harvesting = "Harvesting";
         public const string Status_RecoveryNeeded = "Recovery Needed";
+
+
+        public const string CsvExtension = ".csv";
+        public const string ExcelExtension = ".xlsx";
+
+        public static readonly List<string> HeaderRecordsSocialMetricTemplate = new()
+        {
+            "Country Name",
+            "Country Code",
+            "Series Name",
+            "Series Code",
+        };
     }
 }

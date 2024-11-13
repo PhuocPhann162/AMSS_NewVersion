@@ -17,6 +17,9 @@ namespace AMSS.Repositories
         public IPolygonAppRepository PolygonAppRepository { get; private set; }
         public IPositionRepository PositionRepository { get; private set; }
         public IUserRepository UserRepository { get; private set; }
+        public ISocialMetricRepository SocialMetricRepository { get; private set; }
+        public ICountryContinentRepository CountryContinentRepository { get; private set; }
+        public IProvinceRepository ProvinceRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -30,6 +33,9 @@ namespace AMSS.Repositories
             PolygonAppRepository = new PolygonAppRepository(_db);
             PositionRepository = new PositionRepository(_db);
             UserRepository = new UserRepository(_db);
+            SocialMetricRepository = new SocialMetricRepository(_db);
+            CountryContinentRepository = new CountryContinentRepository(_db);
+            ProvinceRepository = new ProvinceRepository(_db);
         }
 
         public void SaveAsync()

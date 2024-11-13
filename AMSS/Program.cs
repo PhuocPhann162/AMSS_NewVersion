@@ -73,6 +73,7 @@ builder.Services.AddScoped<IFarmService, FarmService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IPolygonAppService, PolygonAppService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISocialMetricService, SocialMetricService>();
 
 // CORS config
 builder.Services.AddCors();
