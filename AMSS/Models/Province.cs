@@ -25,8 +25,10 @@ namespace AMSS.Models
         public string? Category { get; set; }
 
 
-        public Guid? CountryContinentId { get; set; }
         [ForeignKey("CountryContinentId")]
-        public virtual CountryContinent? CountryContinent { get; set; } 
+        public Guid? CountryContinentId { get; set; }
+
+        public virtual CountryContinent? CountryContinent { get; set; }
+        public virtual ICollection<SocialMetric> SocialMetrics { get; set; } = null!;
     }
 }

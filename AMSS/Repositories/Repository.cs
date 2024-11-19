@@ -22,6 +22,12 @@ namespace AMSS.Repositories
             await SaveAsync();
         }
 
+        public async Task CreateRangeAsync(IEnumerable<T> entities)
+        {
+            await dbSet.AddRangeAsync(entities);
+            await SaveAsync();
+        }
+
         public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;

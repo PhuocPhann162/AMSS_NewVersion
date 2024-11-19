@@ -5,7 +5,7 @@ namespace AMSS.Services.IService
 {
     public interface ISocialMetricService 
     {
-        Task<APIResponse<IEnumerable<SocialMetricDto>>> GetSocialMetricsByCountryCodeAsync(string countryCode);
+        Task<APIResponse<SocialMetricDto>> GetSocialMetricsByProvinceCode(GetSocialMetricByProvinceCodeRequest request);
         Task<APIResponse<bool>> ImportSocialMetricAsync(CreateSocialMetricDto createSocialMetricDto);
     }
 }

@@ -12,7 +12,6 @@ namespace AMSS.Models.Dto.CountryContinent
         public string? CountryCode { get; set; }
         public string? CountryName { get; set; }
         public  IEnumerable<ProvinceDto>? Provinces { get; set; } 
-        public IEnumerable<SocialMetricDto>? SocialMetrics { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

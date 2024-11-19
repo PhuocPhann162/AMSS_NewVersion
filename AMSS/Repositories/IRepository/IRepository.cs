@@ -8,6 +8,7 @@ namespace AMSS.Repositories.IRepository
             int pageSize = 0, int pageNumber = 1);
         Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true, string? includeProperties = null);
         Task CreateAsync(T entity);
+        Task CreateRangeAsync(IEnumerable<T> entities);
         Task RemoveAsync(T entity);
         Task SaveAsync();
     }

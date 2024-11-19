@@ -1,4 +1,5 @@
 ﻿using AMSS.Models.Dto.CountryContinent;
+using AMSS.Models.Dto.SocialMetric;
 
 namespace AMSS.Models.Dto.Province
 {
@@ -11,6 +12,7 @@ namespace AMSS.Models.Dto.Province
         public string? Category { get; set; }
         public Guid? CountryContinentId { get; set; }
         public CountryContinentDto? CountryContinent { get; set; }
+        public IEnumerable<SocialMetricDto>? SocialMetrics { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

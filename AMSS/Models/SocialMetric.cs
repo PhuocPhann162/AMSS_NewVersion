@@ -12,13 +12,12 @@ namespace AMSS.Models
         public Guid? SeriesMetricId { get; set; }
 
         [Required]
-        [ForeignKey("CountryContinentId")]
+        [ForeignKey("ProvinceId")]
         [ValidateNever]
-        public Guid? CountryContinentId { get; set; }
+        public Guid? ProvinceId { get; set; }
 
-        public virtual CountryContinent CountryContinent { get; set; } = null!;
+        public virtual Province Province { get; set; } = null!;
         public virtual SeriesMetric SeriesMetric { get; set; } = null!;
-
         public virtual ICollection<SocialYear> SocialYears { get; set; } = null!;
     }
 }

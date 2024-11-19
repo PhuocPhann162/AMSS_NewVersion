@@ -19,6 +19,8 @@
         {
             "Country Name",
             "Country Code",
+            "Province Name", 
+            "Province Code",
             "Series Name",
             "Series Code",
         };
