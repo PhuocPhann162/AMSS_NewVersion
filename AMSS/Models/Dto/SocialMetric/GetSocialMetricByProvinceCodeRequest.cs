@@ -10,7 +10,7 @@ namespace AMSS.Models.Dto.SocialMetric
         public string ProvinceCode { get; set; }
 
         [Required(ErrorMessage = "Series Code is Required")]
-        [JsonPropertyName("SeriesCode")]
-        public string SeriesCode { get; set; }
+        [JsonPropertyName("SeriesCodes")]
+        public string SeriesCodes { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Net;
 using AMSS.Utility;
 using AMSS.Models.Dto.SocialYear;
+using System.Linq;
 
 namespace AMSS.Services
 {
@@ -21,25 +22,39 @@ namespace AMSS.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<APIResponse<SocialMetricDto>> GetSocialMetricsByProvinceCode(GetSocialMetricByProvinceCodeRequest request)
+        public async Task<APIResponse<IEnumerable<SocialMetricDto>>> GetSocialMetricsByProvinceCode(GetSocialMetricByProvinceCodeRequest request)
         {
             try
             {
-                var seriesMetricFromDb = await _unitOfWork.SeriesMetricRepository.GetAsync(u => u.Code == request.SeriesCode);
-                var provinceFromDb = await _unitOfWork.ProvinceRepository.GetAsync(u => u.Code == request.ProvinceCode);
-                if (seriesMetricFromDb == null)
+                var seriesCodesArray = request.SeriesCodes?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+
+                var seriesMetricsFromDb = await _unitOfWork.SeriesMetricRepository
+                                                            .GetAllAsync(u => seriesCodesArray.Contains(u.Code));
+                if (seriesMetricsFromDb == null || !seriesMetricsFromDb.Any())
                 {
-                    return BuildErrorResponseMessage<SocialMetricDto>("Not Found Series Metric Code", HttpStatusCode.NotFound);
+                    return BuildErrorResponseMessage<IEnumerable<SocialMetricDto>>("Not Found Series Metric Code", HttpStatusCode.NotFound);
                 }
-                var socialMetric = await _unitOfWork.SocialMetricRepository.GetAsync(u => u.SeriesMetricId == seriesMetricFromDb.Id && u.ProvinceId == provinceFromDb.Id, includeProperties: "SocialYears");
-                socialMetric.SeriesMetric = seriesMetricFromDb;
-                var socialMetricDto = _mapper.Map<SocialMetricDto>(socialMetric);
+                var provinceFromDb = await _unitOfWork.ProvinceRepository.GetAsync(u => u.Code == request.ProvinceCode);
+                if (provinceFromDb == null)
+                {
+                    return BuildErrorResponseMessage<IEnumerable<SocialMetricDto>>(
+                        "Not Found Province Code",
+                        HttpStatusCode.NotFound);
+                }
+
+                var seriesMetricIds = new HashSet<Guid>(seriesMetricsFromDb.Select(s => s.Id));
+
+                var socialMetricsFromDb = await _unitOfWork.SocialMetricRepository
+                                        .GetAllAsync(u => seriesMetricIds.Contains((Guid)u.SeriesMetricId!) 
+                                        && u.ProvinceId == provinceFromDb.Id, includeProperties: "SocialYears,SeriesMetric");
+
+                var socialMetricDto = _mapper.Map<IEnumerable<SocialMetricDto>>(socialMetricsFromDb);
 
                 return BuildSuccessResponseMessage(socialMetricDto, "Import social metric data successfully");
             }
             catch (Exception ex)
             {
-                return BuildErrorResponseMessage<SocialMetricDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                return BuildErrorResponseMessage<IEnumerable<SocialMetricDto>>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -79,7 +94,7 @@ namespace AMSS.Services
                                     {
                                         Code = r.SeriesCode!,
                                         Name = r.SeriesName!,
-                                        CreatedAt = DateTime.Now, 
+                                        CreatedAt = DateTime.Now,
                                         UpdatedAt = DateTime.Now,
                                     })
                                     .Distinct()
@@ -119,7 +134,7 @@ namespace AMSS.Services
                             {
                                 SeriesMetricId = seriesMetric.Id,
                                 ProvinceId = province.Id,
-                                CreatedAt = DateTime.Now, 
+                                CreatedAt = DateTime.Now,
                                 UpdatedAt = DateTime.Now,
                                 SocialYears = new List<SocialYear>()
                             };
