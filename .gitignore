@@ -392,3 +392,4 @@ FodyWeavers.xsd
 .Ds_Store
 appsettings.*.json
 global.json
+/.vs/AMSS
