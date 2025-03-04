@@ -16,12 +16,12 @@ namespace AMSS.Models
         [ForeignKey("FieldId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.ClientSetNull)]
-        public virtual Field Field { get; set; } = null!;
+        public virtual Field Field { get; set; } 
 
         public Guid CropId { get; set; }
         [ForeignKey("CropId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.ClientSetNull)]
-        public virtual Crop Crop { get; set; } = null!;
+        public virtual Crop Crop { get; set; } 
     }
 }

@@ -51,8 +51,8 @@ namespace AMSS.Services
                 {
                     Pagination pagination = new()
                     {
-                        CurrentPage = pageNumber,
-                        PageSize = pageSize,
+                        CurrentPage = (int)pageNumber,
+                        PageSize = (int)pageSize,
                         TotalRecords = lstFieldsDto.Count(),
                     };
 
@@ -162,9 +162,9 @@ namespace AMSS.Services
                     fieldFromDb.Status = updateFieldDto.Status;
                 }
 
-                if (updateFieldDto.Area.HasValue)
+                if (updateFieldDto.Area > 0)
                 {
-                    fieldFromDb.Area = updateFieldDto.Area ?? fieldFromDb.Area;
+                    fieldFromDb.Area = updateFieldDto.Area;
                 }
 
                 fieldFromDb.UpdatedAt = DateTime.Now;

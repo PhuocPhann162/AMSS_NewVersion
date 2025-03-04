@@ -26,8 +26,6 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-
-
         [HttpPost("register")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
@@ -36,8 +34,6 @@ namespace AMSS.Controllers
             var response = await _authService.RegisterAsync(registrationDto);
             return ProcessResponseMessage(response);
         }
-
-
 
         [HttpPost("refreshToken")]
         [Produces(MediaTypeNames.Application.Json)]

@@ -11,11 +11,11 @@ namespace AMSS.Models.Dto.Position
     {
         public Guid Id { get; set; }
 
-        public float? Lat { get; set; }
+        public float Lat { get; set; }
 
-        public float? Lng { get; set; }
+        public float Lng { get; set; }
 
-        public Guid? PolygonAppId { get; set; } 
-        public PolygonDto? PolygonApp { get; set; } 
+        public Guid PolygonAppId { get; set; } 
+        public PolygonDto PolygonApp { get; set; } 
     }
 }

@@ -22,9 +22,5 @@ namespace AMSS.Models
         [Column("UpdatedAt", TypeName = "datetime")]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? UpdatedAt { get; set; } 
-
-        [Column("DeletedAt", TypeName = "datetime")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public DateTime? DeletedAt { get; set; }
     }
 }

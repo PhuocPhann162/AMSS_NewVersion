@@ -42,8 +42,8 @@ namespace AMSS.Services
                 {
                     Pagination pagination = new()
                     {
-                        CurrentPage = pageNumber,
-                        PageSize = pageSize,
+                        CurrentPage = (int)pageNumber,
+                        PageSize = (int)pageSize,
                         TotalRecords = lstFarms.Count(),
                     };
 
