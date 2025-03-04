@@ -95,10 +95,21 @@ namespace AMSS.Services
                 if (createCropDto.File == null || createCropDto.File.Length == 0)
                 {
                     return BuildErrorResponseMessage<CropDto>("File is required", HttpStatusCode.NotFound);
-
                 }
 
+                var newCropType = new CropType()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = createCropDto.Name,
+                    Code = GenerateCode(createCropDto.Name),
+                    Type = createCropDto.CropTypeName,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                };
+                await _unitOfWork.CropTypeRepository.CreateAsync(newCropType);
+
                 var newCrop = _mapper.Map<Crop>(createCropDto);
+                newCrop.CropTypeId = newCropType.Id;
                 newCrop.CreatedAt = DateTime.Now;
                 newCrop.UpdatedAt = DateTime.Now;
 
@@ -116,6 +127,23 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<CropDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
             }
         }
+
+        public static string GenerateCode(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return string.Empty;
+
+            var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 1)
+            {
+                return $"{char.ToUpper(name[0])}{char.ToUpper(name[^1])}";
+            }
+            else
+            {
+                return string.Concat(words.Select(w => char.ToUpper(w[0])));
+            }
+        }
+
         public async Task<APIResponse<CropDto>> UpdateCropAsync(string id, UpdateCropDto updateCropDto)
         {
             try

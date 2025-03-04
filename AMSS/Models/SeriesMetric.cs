@@ -8,13 +8,13 @@ namespace AMSS.Models
         [Required]
         [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [MaxLength(50)]
         [Column(TypeName = "nvarchar(50)")]
-        public string? Code { get; set; }
+        public string Code { get; set; }
 
-        public virtual ICollection<SocialMetric> SocialMetrics { get; set; } = null!;
+        public virtual ICollection<SocialMetric> SocialMetrics { get; set; }
     }
 }

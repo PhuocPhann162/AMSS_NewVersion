@@ -5,8 +5,8 @@ namespace AMSS.Models
 {
     public class PlantSuggest : BaseModel<Guid>
     {
-        public string? CommonName { get; set; }
-        public string? Family { get; set; }
+        public string CommonName { get; set; }
+        public string Family { get; set; }
         public string Type { get; set; }
         public string Dimension { get; set; }
         public string Cycle { get; set; }

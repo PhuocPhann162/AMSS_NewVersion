@@ -12,16 +12,19 @@ namespace AMSS.Models.Polygon
 
         [Required]
         [MaxLength(50)]
-        public string? Color { get; set; }
+        public string Color { get; set; }
 
         [Range(0, 1)]
-        public int? Type { get; set; } = 0;
+        public int Type { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime CreatedAt { get; set; }
 
-        public virtual Farm Farm { get; set; } = null!;
-        public virtual Field Field { get; set; } = null!;
-        public virtual ICollection<Position> Positions { get; set; } = new List<Position>();
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime UpdatedAt { get; set; }
+
+        public virtual Farm Farm { get; set; } 
+        public virtual Field Field { get; set; } 
+        public virtual ICollection<Position> Positions { get; set; }
     }
 }

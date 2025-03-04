@@ -5,7 +5,7 @@ namespace AMSS.Models.Dto.Auth
 {
     public class LoginResponseDto
     {
-        public UserDto User { get; set; } = new();
-        public TokenDto Token { get; set; } = new();
+        public UserDto User { get; set; } 
+        public TokenDto Token { get; set; } 
     }
 }

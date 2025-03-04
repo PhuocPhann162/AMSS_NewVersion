@@ -8,27 +8,27 @@ namespace AMSS.Models
         [Required]
         [MaxLength(5)]
         [Column(TypeName = "nvarchar(5)")]
-        public string? Code { get; set; }
+        public string Code { get; set; }
         
         [Required]
         [MaxLength(5)]
         [Column(TypeName = "nvarchar(5)")]
-        public string? CountryCode { get; set; }
+        public string CountryCode { get; set; }
 
         [Required]
         [MaxLength(50)]
         [Column(TypeName = "nvarchar(50)")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [MaxLength(50)]
         [Column(TypeName = "nvarchar(50)")]
-        public string? Category { get; set; }
+        public string Category { get; set; }
 
 
         [ForeignKey("CountryContinentId")]
-        public Guid? CountryContinentId { get; set; }
+        public Guid CountryContinentId { get; set; }
 
-        public virtual CountryContinent? CountryContinent { get; set; }
-        public virtual ICollection<SocialMetric> SocialMetrics { get; set; } = null!;
+        public virtual CountryContinent CountryContinent { get; set; }
+        public virtual ICollection<SocialMetric> SocialMetrics { get; set; } 
     }
 }

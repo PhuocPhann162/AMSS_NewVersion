@@ -30,7 +30,7 @@ namespace AMSS.Controllers
             APIResponse<IEnumerable<FarmDto>> response = await _farmService.GetAllFarmsAsync(searchString, pageNumber, pageSize);
             if (response.Pagination is not null)
             {
-                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(response.Pagination));
+                Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(response.Pagination));
             }
             return ProcessResponseMessage(response);
         }

@@ -30,7 +30,7 @@ namespace AMSS.Controllers
             APIResponse<IEnumerable<UserDto>> response = await _userService.GetAllUsersAsync(searchString, pageNumber, pageSize);
             if (response.Pagination is not null)
             {
-                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(response.Pagination));
+                Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(response.Pagination));
             }
             return ProcessResponseMessage(response);
         }

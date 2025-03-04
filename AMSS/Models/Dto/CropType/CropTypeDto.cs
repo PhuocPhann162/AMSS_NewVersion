@@ -9,17 +9,15 @@ namespace AMSS.Models.Dto.CropType
         public Guid Id { get; set; }
 
         [Required]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public string? Code { get; set; }
+        public string Code { get; set; }
 
-        public string? Type { get; set; }
+        public string Type { get; set; }
 
-        public IEnumerable<CropDto>? Crops { get; set; }
+        public IEnumerable<CropDto> Crops { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

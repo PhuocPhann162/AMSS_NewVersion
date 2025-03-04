@@ -35,8 +35,8 @@ namespace AMSS.Services
                 {
                     Pagination pagination = new()
                     {
-                        CurrentPage = pageNumber,
-                        PageSize = pageSize,
+                        CurrentPage = (int)pageNumber,
+                        PageSize = (int)pageSize,
                         TotalRecords = lstCropTypeDtos.Count()
                     };
 
@@ -76,9 +76,5 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<CropTypeDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
             }
         }
-
     }
-
-
-
 }

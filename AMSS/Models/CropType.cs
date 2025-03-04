@@ -8,16 +8,16 @@ namespace AMSS.Models
     {
         [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
-        public string? Code { get; set; }
+        public string Code { get; set; }
 
         [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
-        public string? Type { get; set; }
+        public string Type { get; set; }
 
-        public virtual ICollection<Crop> Crops { get; set; } = new List<Crop>();
+        public virtual ICollection<Crop> Crops { get; set; } 
     }
 }

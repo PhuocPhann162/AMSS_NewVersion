@@ -8,23 +8,23 @@ namespace AMSS.Models.Dto.Auth
     {
         [Required]
         [EmailAddress]
-        public string UserName { get; set; } = string.Empty;
+        public string UserName { get; set; }
         [Required]
         [MaxLength(45)]
-        public string FullName { get; set; } = string.Empty;
+        public string FullName { get; set; } 
 
-        public string? PhoneNumber { get; set; }
-        public string? StreetAddress { get; set; }
-        public string? City { get; set; }
-        public string? State { get; set; }
-        public string? Country { get; set; }
+        public string PhoneNumber { get; set; }
+        public string StreetAddress { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
         [StringLength(500)]
-        public string? Avatar { get; set; }
+        public string Avatar { get; set; }
         [Required]
         [MinLength(8)]
         [MaxLength(32)]
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; } 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public Role? Role { get; set; }
+        public Role Role { get; set; }
     }
 }
