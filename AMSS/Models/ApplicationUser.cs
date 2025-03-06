@@ -12,7 +12,6 @@ namespace AMSS.Models
         [Column(TypeName = "nvarchar(255)")]
         public string FullName { get; set; } 
 
-        [Required]
         [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string Password { get; set; } 

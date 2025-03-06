@@ -6,18 +6,16 @@ namespace AMSS.Models
 {
     public class SocialMetric : BaseModel<Guid>
     {
-        [Required]
         [ForeignKey("SeriesMetricId")]
         [ValidateNever]
-        public Guid SeriesMetricId { get; set; }
+        public Guid? SeriesMetricId { get; set; }
 
-        [Required]
         [ForeignKey("ProvinceId")]
         [ValidateNever]
-        public Guid ProvinceId { get; set; }
+        public Guid? ProvinceId { get; set; }
 
-        public virtual Province Province { get; set; } 
-        public virtual SeriesMetric SeriesMetric { get; set; } 
-        public virtual ICollection<SocialYear> SocialYears { get; set; } 
+        public virtual Province? Province { get; set; } 
+        public virtual SeriesMetric? SeriesMetric { get; set; } 
+        public virtual ICollection<SocialYear>? SocialYears { get; set; } 
     }
 }

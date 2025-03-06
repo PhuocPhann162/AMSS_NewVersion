@@ -8,7 +8,6 @@ namespace AMSS.Models
         [Range(0, float.MaxValue)]
         public float Co2Rate { get; set; }
 
-        [Required]
         [MaxLength(20)]
         [Column(TypeName = "nvarchar(20)")]
         public string ContinentCode { get; set; }
@@ -17,7 +16,6 @@ namespace AMSS.Models
         [Column(TypeName = "nvarchar(50)")]
         public string ContinentName { get; set; }
 
-        [Required]
         [MaxLength(5)]
         [Column(TypeName = "nvarchar(5)")]
         public string CountryCode { get; set; }
@@ -26,6 +24,6 @@ namespace AMSS.Models
         [Column(TypeName = "nvarchar(50)")]
         public string CountryName { get; set; }
 
-        public virtual ICollection<Province> Provinces { get; set; } 
+        public virtual ICollection<Province>? Provinces { get; set; } 
     }
 }

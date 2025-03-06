@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models
 {
+    #nullable enable
     public class CropType : BaseModel<Guid>
     {
         [MaxLength(255)]
@@ -16,8 +17,8 @@ namespace AMSS.Models
 
         [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
-        public virtual ICollection<Crop> Crops { get; set; } 
+        public virtual ICollection<Crop>? Crops { get; set; } 
     }
 }

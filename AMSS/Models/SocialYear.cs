@@ -6,14 +6,13 @@ namespace AMSS.Models
 {
     public class SocialYear : BaseModel<Guid>
     {
-        [Required]
         [ForeignKey("SocialMetricId")]
         [ValidateNever]
-        public Guid SocialMetricId { get; set; }
+        public Guid? SocialMetricId { get; set; }
 
         public int Year { get; set; }
         public decimal Value { get; set; }
 
-        public virtual SocialMetric SocialMetric { get; set; } 
+        public virtual SocialMetric? SocialMetric { get; set; } 
     }
 }

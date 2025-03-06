@@ -10,7 +10,6 @@ namespace AMSS.Models.Polygon
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [Required]
         [MaxLength(50)]
         public string Color { get; set; }
 
@@ -23,8 +22,8 @@ namespace AMSS.Models.Polygon
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
 
-        public virtual Farm Farm { get; set; } 
-        public virtual Field Field { get; set; } 
-        public virtual ICollection<Position> Positions { get; set; }
+        public virtual Farm? Farm { get; set; } 
+        public virtual Field? Field { get; set; } 
+        public virtual ICollection<Position>? Positions { get; set; }
     }
 }

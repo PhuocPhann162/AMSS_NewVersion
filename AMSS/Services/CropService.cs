@@ -1,12 +1,11 @@
 ﻿using AMSS.Models;
-using AMSS.Models.Dto.Auth;
 using AMSS.Models.Dto.Crop;
 using AMSS.Models.Dto.FieldCrop;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Utility;
 using AutoMapper;
-using Azure;
+using Microsoft.Data.SqlClient;
 using System.Net;
 
 namespace AMSS.Services
@@ -110,6 +109,7 @@ namespace AMSS.Services
 
                 var newCrop = _mapper.Map<Crop>(createCropDto);
                 newCrop.CropTypeId = newCropType.Id;
+                newCrop.CropType = newCropType;
                 newCrop.CreatedAt = DateTime.Now;
                 newCrop.UpdatedAt = DateTime.Now;
 
@@ -122,7 +122,7 @@ namespace AMSS.Services
                 var newCropDto = _mapper.Map<CropDto>(newCrop);
                 return BuildSuccessResponseMessage(newCropDto, "Crop created successfully", HttpStatusCode.Created);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
                 return BuildErrorResponseMessage<CropDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
             }

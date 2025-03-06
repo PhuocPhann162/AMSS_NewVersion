@@ -27,10 +27,10 @@ namespace AMSS.Models
         public int SoilTemperature40cm { get; set; }
         public int SoilTemperature100cm { get; set; }
 
-        public Guid FieldId { get; set; }
+        public Guid? FieldId { get; set; }
         [ForeignKey("FieldId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.ClientSetNull)]
-        public virtual Field Field { get; set; } 
+        public virtual Field? Field { get; set; } 
     }
 }

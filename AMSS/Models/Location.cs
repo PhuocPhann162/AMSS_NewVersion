@@ -5,15 +5,12 @@ namespace AMSS.Models
 {
     public class Location : BaseModel<Guid>
     {
-        [Required]
         [MaxLength(500)]
         public string Address { get; set; }
 
-        [Required]
         [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90 degrees.")]
         public float Lat { get; set; } 
 
-        [Required]
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180 degrees.")]
         public float Lng { get; set; }
         public string CountryCode { get; set; }

@@ -19,15 +19,15 @@ namespace AMSS.Models
         public string OwnerName { get; set; }
 
 
-        public Guid LocationId { get; set; } 
+        public Guid? LocationId { get; set; } 
         [ForeignKey("LocationId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.ClientSetNull)]
-        public virtual Location Location { get; set; } 
+        public virtual Location? Location { get; set; } 
 
         public Guid? PolygonAppId { get; set; } 
-        public virtual PolygonApp PolygonApp { get; set; } 
+        public virtual PolygonApp? PolygonApp { get; set; } 
 
-        public virtual ICollection<Field> Fields { get; set; } 
+        public virtual ICollection<Field>? Fields { get; set; } 
     }
 }
