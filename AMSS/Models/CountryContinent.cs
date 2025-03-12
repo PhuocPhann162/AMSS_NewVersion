@@ -24,6 +24,6 @@ namespace AMSS.Models
         [Column(TypeName = "nvarchar(50)")]
         public string CountryName { get; set; }
 
-        public virtual ICollection<Province>? Provinces { get; set; } 
+        public virtual ICollection<Province> Provinces { get; set; } = new List<Province>(); 
     }
 }

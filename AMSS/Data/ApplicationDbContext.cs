@@ -1,5 +1,13 @@
 ﻿using AMSS.Models;
+using AMSS.Models.CartItems;
+using AMSS.Models.Commodities;
+using AMSS.Models.Coupons;
+using AMSS.Models.OrderDetails;
+using AMSS.Models.OrderHeaders;
 using AMSS.Models.Polygon;
+using AMSS.Models.ShoppingCarts;
+using AMSS.Models.Stocks;
+using AMSS.Models.Suppliers;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +34,15 @@ namespace AMSS.Data
         public DbSet<SeriesMetric> SeriesMetrics { get; set; }
         public DbSet<SocialMetric> SocialMetrics { get; set; }
         public DbSet<SocialYear> SocialYears { get; set; }
+        
+        public DbSet<Commodity> Commodities { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

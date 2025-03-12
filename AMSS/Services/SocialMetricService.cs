@@ -8,8 +8,6 @@ using CsvHelper;
 using System.Globalization;
 using System.Net;
 using AMSS.Utility;
-using AMSS.Models.Dto.SocialYear;
-using System.Linq;
 
 namespace AMSS.Services
 {

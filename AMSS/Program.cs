@@ -1,12 +1,13 @@
+using AMSS;
+using AMSS.Attributes;
 using AMSS.Data;
 using AMSS.Models;
-using AMSS.Repositories;
-using AMSS.Repositories.IRepository;
 using AMSS.Services;
 using AMSS.Services.IService;
 using AMSS.Utility;
 using AutoMapper;
 using Azure.Storage.Blobs;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,12 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddApiServices(builder.Configuration);
 
 // Connect to database
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    option.UseSqlServer(builder.Configuration.GetConnectionString("AMSSConnection"));
 });
 
 builder.Services.AddResponseCaching();
@@ -44,7 +46,6 @@ builder.Services.AddSingleton(u => new BlobServiceClient(builder.Configuration.G
 // JWT Configs
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 var key = builder.Configuration.GetValue<string>("ApiSettings:JwtOptions:Secret");
-Console.WriteLine(key);
 builder.Services.AddAuthentication(u =>
 {
     u.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -62,24 +63,10 @@ builder.Services.AddAuthentication(u =>
     };
 });
 
-// Config Scope of Dependence Injection
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICropService, CropService>();
-builder.Services.AddScoped<ICropTypeService, CropTypeService>();
-builder.Services.AddScoped<IFieldService, FieldService>();
-builder.Services.AddScoped<IFarmService, FarmService>();
-builder.Services.AddScoped<ILocationService, LocationService>();
-builder.Services.AddScoped<IPolygonAppService, PolygonAppService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ISocialMetricService, SocialMetricService>();
-
 // CORS config
 builder.Services.AddCors();
 
 // Controller config
-builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -131,18 +118,20 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsEnvironment("Localhost") || app.Environment.IsDevelopment())
 {
-    app.UseSwaggerUI();
-    //app.UseDeveloperExceptionPage();
-}
-else
-{
+    app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AMSS.Api v1");
         c.RoutePrefix = string.Empty;
     });
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new[] { new HangFireAuthorizationFilter() }
+    });
+    app.UseSwaggerUI();
+    //app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();

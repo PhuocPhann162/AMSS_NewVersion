@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using AMSS.Models.Commodities;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -68,6 +69,7 @@ namespace AMSS.Models
         [DeleteBehavior(DeleteBehavior.SetNull)]
         public virtual CropType? CropType { get; set; }
 
-        public virtual ICollection<FieldCrop>? FieldCrops { get; set; }
+        public virtual ICollection<FieldCrop>? FieldCrops { get; set; } 
+        public virtual ICollection<Commodity> Commodities { get; set; } = new List<Commodity>();
     }
 }

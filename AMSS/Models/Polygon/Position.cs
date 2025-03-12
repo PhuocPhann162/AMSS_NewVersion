@@ -17,8 +17,6 @@ namespace AMSS.Models.Polygon
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180 degrees.")]
         public float Lng { get; set; }
         public bool IsDeleted { get; set; } 
-
-
         public Guid? PolygonAppId { get; set; } 
         [ForeignKey("PolygonAppId")]
         [ValidateNever]
