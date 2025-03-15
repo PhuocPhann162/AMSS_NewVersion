@@ -1,10 +1,8 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.CropType;
-using AMSS.Models.Dto.Farm;
+﻿using AMSS.Dto.Farm;
+using AMSS.Entities;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;
-using Azure;
 using System.Net;
 
 namespace AMSS.Services

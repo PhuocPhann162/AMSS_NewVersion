@@ -1,6 +1,6 @@
-﻿using AMSS.Enums;
-using AMSS.Models;
-using AMSS.Models.Dto.User;
+﻿using AMSS.Dto.User;
+using AMSS.Entities;
+using AMSS.Enums;
 using AMSS.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

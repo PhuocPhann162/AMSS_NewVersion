@@ -1,4 +1,4 @@
-﻿using AMSS.Models;
+﻿using AMSS.Entities;
 using AMSS.Services.IService;
 using System.Net;
 

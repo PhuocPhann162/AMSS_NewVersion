@@ -1,10 +1,10 @@
-﻿using AMSS.Models;
+﻿using AMSS.Entities;
+using AMSS.Entities.Polygon;
 using AMSS.Models.CartItems;
 using AMSS.Models.Commodities;
 using AMSS.Models.Coupons;
 using AMSS.Models.OrderDetails;
 using AMSS.Models.OrderHeaders;
-using AMSS.Models.Polygon;
 using AMSS.Models.ShoppingCarts;
 using AMSS.Models.Stocks;
 using AMSS.Models.Suppliers;

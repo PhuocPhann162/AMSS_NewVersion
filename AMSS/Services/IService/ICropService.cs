@@ -1,6 +1,6 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Crop;
-using AMSS.Models.Dto.FieldCrop;
+﻿using AMSS.Dto.Crop;
+using AMSS.Dto.FieldCrop;
+using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService

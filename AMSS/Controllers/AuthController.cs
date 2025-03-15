@@ -1,8 +1,8 @@
-﻿using AMSS.Models.Dto.Auth;
-using AMSS.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using AMSS.Services.IService;
 using System.Net.Mime;
+using AMSS.Dto.Auth;
+using AMSS.Entities;
 
 namespace AMSS.Controllers
 {

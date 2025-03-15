@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Farm;
+﻿using AMSS.Dto.Farm;
+using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService

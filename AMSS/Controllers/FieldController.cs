@@ -1,11 +1,11 @@
 ﻿using AMSS.Enums;
-using AMSS.Models.Dto.Field;
-using AMSS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using AMSS.Services.IService;
 using System.Net.Mime;
+using AMSS.Dto.Field;
+using AMSS.Entities;
 
 namespace AMSS.Controllers
 {

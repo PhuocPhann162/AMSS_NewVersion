@@ -1,4 +1,4 @@
-﻿using AMSS.Models;
+﻿using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net;

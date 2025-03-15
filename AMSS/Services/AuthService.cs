@@ -1,7 +1,7 @@
-﻿using AMSS.Enums;
-using AMSS.Models;
-using AMSS.Models.Dto.Auth;
-using AMSS.Models.Dto.User;
+﻿using AMSS.Dto.Auth;
+using AMSS.Dto.User;
+using AMSS.Entities;
+using AMSS.Enums;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;

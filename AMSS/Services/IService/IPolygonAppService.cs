@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Polygon;
+﻿using AMSS.Dto.Polygon;
+using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService

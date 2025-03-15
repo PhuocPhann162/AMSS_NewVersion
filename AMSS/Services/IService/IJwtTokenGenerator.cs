@@ -1,4 +1,4 @@
-﻿using AMSS.Models;
+﻿using AMSS.Entities;
 using System.Security.Claims;
 
 namespace AMSS.Services.IService

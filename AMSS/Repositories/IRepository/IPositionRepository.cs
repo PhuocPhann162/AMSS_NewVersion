@@ -1,4 +1,4 @@
-﻿using AMSS.Models.Polygon;
+﻿using AMSS.Entities.Polygon;
 
 namespace AMSS.Repositories.IRepository
 {

@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Location;
+﻿using AMSS.Dto.Location;
+using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService

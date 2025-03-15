@@ -1,7 +1,7 @@
-﻿using AMSS.Enums;
-using AMSS.Models;
-using AMSS.Models.Dto.Crop;
-using AMSS.Models.Dto.FieldCrop;
+﻿using AMSS.Dto.Crop;
+using AMSS.Dto.FieldCrop;
+using AMSS.Entities;
+using AMSS.Enums;
 using AMSS.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

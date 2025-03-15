@@ -1,6 +1,6 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Polygon;
-using AMSS.Models.Polygon;
+﻿using AMSS.Dto.Polygon;
+using AMSS.Entities;
+using AMSS.Entities.Polygon;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;

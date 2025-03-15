@@ -1,7 +1,7 @@
 using AMSS;
 using AMSS.Attributes;
 using AMSS.Data;
-using AMSS.Models;
+using AMSS.Entities;
 using AMSS.Services;
 using AMSS.Services.IService;
 using AMSS.Utility;

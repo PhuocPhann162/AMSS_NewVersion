@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.User;
+﻿using AMSS.Dto.User;
+using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService

@@ -1,6 +1,4 @@
-﻿using AMSS.Repository.IRepository;
-
-namespace AMSS.Repositories.IRepository
+﻿namespace AMSS.Repositories.IRepository
 {
     public interface IUnitOfWork
     {

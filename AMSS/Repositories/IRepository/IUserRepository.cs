@@ -1,7 +1,6 @@
-﻿using AMSS.Models;
-using AMSS.Repositories.IRepository;
+﻿using AMSS.Entities;
 
-namespace AMSS.Repository.IRepository
+namespace AMSS.Repositories.IRepository
 {
     public interface IUserRepository : IRepository<ApplicationUser>
     {

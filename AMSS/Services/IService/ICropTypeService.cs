@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.CropType;
+﻿using AMSS.Dto.CropType;
+using AMSS.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService

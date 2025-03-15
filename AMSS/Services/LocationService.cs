@@ -1,6 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Field;
-using AMSS.Models.Dto.Location;
+﻿using AMSS.Dto.Location;
+using AMSS.Entities;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;

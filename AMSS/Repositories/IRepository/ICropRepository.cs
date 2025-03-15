@@ -1,4 +1,5 @@
-﻿using AMSS.Models;
+﻿
+using AMSS.Entities;
 
 namespace AMSS.Repositories.IRepository
 {

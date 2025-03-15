@@ -1,12 +1,9 @@
-﻿using AMSS.Models.Dto.Polygon;
-using AMSS.Models;
-using AMSS.Services;
-using AMSS.Services.IService;
+﻿using AMSS.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using AMSS.Models.Dto.SocialMetric;
-using AMSS.Models.Dto.SocialYear;
+using AMSS.Dto.SocialMetric;
+using AMSS.Entities;
 
 namespace AMSS.Controllers
 {

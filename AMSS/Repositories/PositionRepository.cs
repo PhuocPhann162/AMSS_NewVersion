@@ -1,5 +1,5 @@
 ﻿using AMSS.Data;
-using AMSS.Models.Polygon;
+using AMSS.Entities.Polygon;
 using AMSS.Repositories.IRepository;
 
 namespace AMSS.Repositories

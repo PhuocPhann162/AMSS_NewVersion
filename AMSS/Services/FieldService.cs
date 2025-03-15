@@ -1,12 +1,10 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Farm;
-using AMSS.Models.Dto.Field;
-using AMSS.Models.Polygon;
+﻿using AMSS.Dto.Field;
+using AMSS.Entities;
+using AMSS.Entities.Polygon;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Utility;
 using AutoMapper;
-using Azure;
 using System.Net;
 
 namespace AMSS.Services

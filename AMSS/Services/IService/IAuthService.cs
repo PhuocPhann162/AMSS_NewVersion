@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Auth;
+﻿using AMSS.Dto.Auth;
+using AMSS.Entities;
 
 namespace AMSS.Services.IService
 {

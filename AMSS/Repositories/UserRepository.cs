@@ -1,6 +1,6 @@
 ﻿using AMSS.Data;
-using AMSS.Models;
-using AMSS.Repository.IRepository;
+using AMSS.Entities;
+using AMSS.Repositories.IRepository;
 
 namespace AMSS.Repositories
 {

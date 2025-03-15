@@ -1,15 +1,25 @@
-﻿using System.Linq.Expressions;
+﻿using AMSS.Aggregates;
+using System.Linq.Expressions;
 
 namespace AMSS.Repositories.IRepository
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<TEntity> where TEntity : class
     {
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null,
+        Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null, string? includeProperties = null,
             int pageSize = 0, int pageNumber = 1);
-        Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true, string? includeProperties = null);
-        Task CreateAsync(T entity);
-        Task CreateRangeAsync(IEnumerable<T> entities);
-        Task RemoveAsync(T entity);
+        Task<IEnumerable<TEntity>> GetRESAsync(
+           Expression<Func<TEntity, bool>> expression = null,
+           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+           string includeProperties = "");
+        Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter = null, bool tracked = true, string? includeProperties = null);
+        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression);
+        Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression);
+        Task<TEntity> GetByIdAsync(object id);
+        Task CreateAsync(TEntity entity);
+        Task CreateRangeAsync(IEnumerable<TEntity> entities);
+        Task RemoveAsync(TEntity entity);
         Task SaveAsync();
+        void Update(TEntity entity);
+        void UpdateRange(IEnumerable<TEntity> entities);
     }
 }

@@ -1,4 +1,4 @@
-﻿using AMSS.Models;
+﻿using AMSS.Entities;
 using AMSS.Services.IService;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

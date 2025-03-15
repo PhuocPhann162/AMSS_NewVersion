@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.SocialMetric;
+﻿using AMSS.Dto.SocialMetric;
+using AMSS.Entities;
 
 namespace AMSS.Services.IService
 {

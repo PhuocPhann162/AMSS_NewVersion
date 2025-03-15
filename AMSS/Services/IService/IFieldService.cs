@@ -1,5 +1,5 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Field;
+﻿using AMSS.Dto.Field;
+using AMSS.Entities;
 
 namespace AMSS.Services.IService
 {

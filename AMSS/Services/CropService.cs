@@ -1,6 +1,7 @@
-﻿using AMSS.Models;
-using AMSS.Models.Dto.Crop;
-using AMSS.Models.Dto.FieldCrop;
+﻿using AMSS.Dto.Crop;
+using AMSS.Dto.FieldCrop;
+using AMSS.Entities;
+using AMSS.Models;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Utility;
