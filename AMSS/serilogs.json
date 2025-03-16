@@ -1,0 +1,82 @@
+{
+  "Logging": {
+    "PathFormat": "[The path and file format used in file logging, e.g.: c:\\log-{Date}.txt]",
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.Console",
+      "Serilog.Sinks.File",
+      "Serilog.Sinks.ApplicationInsights"
+    ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Information",
+        "System": "Information"
+      }
+    },
+    "LogGroup": "AMSS.Api",
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/.log",
+          "rollingInterval": "Day",
+          "rollOnFileSizeLimit": true,
+          "formatter": "Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact",
+          "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] ({Application}/{MachineName}/{ThreadId}) {Message}{NewLine}{Exception}"
+        }
+      },
+      {
+        "Name": "ApplicationInsights",
+        "Args": {
+          "telemetryConverter": "Serilog.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
+        }
+      },
+      {
+        "Name": "Sentry",
+        "Args": {
+          "MinimumBreadcrumbLevel": "Information",
+          "MinimumEventLevel": "Error"
+        }
+      }
+    ],
+    "Enrich": [
+      "FromLogContext",
+      "WithMachineName",
+      "WithThreadId"
+    ],
+    "Destructure": [
+      {
+        "Name": "ToMaximumDepth",
+        "Args": {
+          "maximumDestructuringDepth": 4
+        }
+      },
+      {
+        "Name": "ToMaximumStringLength",
+        "Args": {
+          "maximumStringLength": 100
+        }
+      },
+      {
+        "Name": "ToMaximumCollectionCount",
+        "Args": {
+          "maximumCollectionCount": 10
+        }
+      }
+    ],
+    "Properties": {
+      "Application": "AMSS.Api",
+      "AppName": "AMSS"
+    }
+  }
+}
