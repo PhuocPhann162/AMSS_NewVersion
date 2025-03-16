@@ -11,6 +11,9 @@ namespace AMSS.Controllers
     [ApiController]
     public abstract class BaseController<T> : ControllerBase
     {
+        private ILogger<T> _logger;
+
+        protected ILogger<T> Logger => _logger ??= HttpContext.RequestServices.GetService<ILogger<T>>();
         protected Guid AuthenticatedUserId
         {
             get
