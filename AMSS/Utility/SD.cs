@@ -24,5 +24,7 @@
             "Series Name",
             "Series Code",
         };
+
+        public const string ClaimType_Id = "id";
     }
 }

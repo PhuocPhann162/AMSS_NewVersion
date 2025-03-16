@@ -25,6 +25,8 @@ namespace AMSS.Controllers
         [ProducesResponseType(typeof(APIResponse<IEnumerable<CropTypeDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllCropTypes(string? searchString, int? pageNumber, int? pageSize)
         {
+            var accessToken = AccessToken;
+            var userId = AuthenticatedUserId;
             APIResponse<IEnumerable<CropTypeDto>> response = await _cropTypeService.GetAllCropTypesAsync(searchString, pageNumber, pageSize);
             if (response.Pagination is not null)
             {

@@ -1,4 +1,5 @@
 ﻿using AMSS.Entities;
+using AMSS.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net;
@@ -17,28 +18,13 @@ namespace AMSS.Controllers
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
 
                 var userId = identity!.Claims
-                    .First(x => x.Type == ClaimTypes.NameIdentifier)
+                    .First(x => x.Type == SD.ClaimType_Id)
                     .Value;
 
                 return new Guid(userId);
             }
         }
 
-        // protected Guid? TenantId
-        // {
-        //     get
-        //     {
-        //         var identity = HttpContext.User.Identity as ClaimsIdentity;
-        //         var tenantId = identity?.Claims.First(x => x.Type == JwtCustomClaimNames.TenantId).Value;
-        //
-        //         if (Guid.TryParse(tenantId, out var tenantIdGuid))
-        //         {
-        //             return tenantIdGuid;
-        //         }
-        //
-        //         return null;
-        //     }
-        // }
         protected IActionResult ProcessResponseMessage<TU>(APIResponse<TU> response)
         {
             return response.StatusCode switch

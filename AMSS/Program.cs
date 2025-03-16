@@ -124,15 +124,14 @@ if (app.Environment.IsEnvironment("Localhost") || app.Environment.IsDevelopment(
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "AMSS.Api v1");
-        c.RoutePrefix = string.Empty;
     });
     app.UseHangfireDashboard("/hangfire", new DashboardOptions
     {
         Authorization = new[] { new HangFireAuthorizationFilter() }
     });
-    app.UseSwaggerUI();
-    //app.UseDeveloperExceptionPage();
 }
+
+app.UseExceptionHandler("/error");
 
 app.UseHttpsRedirection();
 
@@ -144,7 +143,11 @@ app.UseAuthorization();
 
 ApplyMigration();
 
+app.MapGet("/",
+    async context => { await context.Response.WriteAsync("AMSS Server Running."); });
+
 app.MapControllers();
+app.MapHangfireDashboard();
 
 app.Run();
 
