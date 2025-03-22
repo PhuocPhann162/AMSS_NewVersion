@@ -1,10 +1,15 @@
-﻿using AMSS.Dto.Auth;
+﻿using AMSS.Constants;
+using AMSS.Dto.Auth;
+using AMSS.Dto.Requests.Mails;
 using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Enums;
+using AMSS.Infrastructures.Interfaces;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
+using AMSS.Services.IService.BackgroundJob;
 using AutoMapper;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Extensions;
 using System.Net;
@@ -19,15 +24,17 @@ namespace AMSS.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IBackgroundJobClient _backgroundJob;
 
         public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
-            IMapper mapper, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenService)
+            IMapper mapper, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenService, IBackgroundJobClient backgroundJob)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _jwtTokenService = jwtTokenService;
+            _backgroundJob = backgroundJob;
         }
 
         public async Task<APIResponse<LoginResponseDto>> LoginAsync(string username, string password)
@@ -70,6 +77,9 @@ namespace AMSS.Services
                     User = userDto,
                     Token = token,
                 };
+
+                
+
                 return BuildSuccessResponseMessage(loginResponseDto, "Welcome " + userDto.FullName + "! Have a nice day🌟");
             }
             catch (Exception ex)
@@ -134,6 +144,17 @@ namespace AMSS.Services
                 {
                     return BuildErrorResponseMessage<bool>(result.Errors.FirstOrDefault()?.Description!, HttpStatusCode.Forbidden);
                 }
+
+                var mailRequest = new MailRequest
+                {
+                    Tos = [new() { Email = "21520405@gm.uit.edu.vn" }],
+                    Ccs = [new() { Email = "phanngocphuoc8@gmail.com" }],
+                    IsHtml = true,
+                    Subject = "Test MailKit using SMTP",
+                    Content = "Successfully"
+
+                };
+                _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.Invoke(mailRequest));
 
                 return BuildSuccessResponseMessage(true, "Registration new account successfully");
             }
