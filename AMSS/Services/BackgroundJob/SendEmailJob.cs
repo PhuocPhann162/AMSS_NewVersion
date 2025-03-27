@@ -7,11 +7,11 @@ using System.Data;
 namespace AMSS.Services.BackgroundJob
 {
     public class SendEmailJob(
-        ILogger _logger,
+        ILogger<SendEmailJob> _logger,
         ISmtpService _smtpService
         ) : ISendEmailJob
     {
-        public async Task Invoke(MailRequest request)
+        public async Task InvokeAsync(MailRequest request)
         {
             _logger.LogInformation("Starting send email process...");
 

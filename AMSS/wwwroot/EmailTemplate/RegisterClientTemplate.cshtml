@@ -1,0 +1,104 @@
+﻿@using AMSS.Dto.Requests.Mails
+@model MailRequest
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Subject</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fef8e7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            background-color: #fef8e7;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-top: 5px solid #f4c430;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #f4c430;
+            padding: 20px;
+            text-align: center;
+        }
+
+            .header img {
+                max-width: 120px;
+            }
+
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+            .content p {
+                margin: 0 0 15px;
+            }
+
+        .button {
+            display: inline-block;
+            background-color: #f4c430;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .footer {
+            background-color: #f7f1d7;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #777;
+        }
+
+            .footer a {
+                color: #f4c430;
+                text-decoration: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="container">
+            <div class="header">
+                <img src="https://via.placeholder.com/120x60?text=Logo" alt="Novaris Logo">
+            </div>
+            <div class="content">
+                <p>Dear @Model.Tos.First().Name,</p>
+                <p>@Model.Content</p>
+                <p>If you have any questions or need further assistance, please feel free to contact our support team.</p>
+                <p style="text-align: center;">
+                    <a href="https://yourwebsite.com" class="button">Visit Our Website</a>
+                </p>
+                <p>Thank you for choosing Novaris. We look forward to serving you in the future.</p>
+            </div>
+            <div class="footer">
+                <p>Best regards,</p>
+                <p>The Novaris Team</p>
+                <p><a href="mailto:support@novaris.com">support@novaris.com</a> | <a href="https://novaris.com">novaris.com</a></p>
+                <p>© 2025 Novaris. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

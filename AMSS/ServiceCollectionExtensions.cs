@@ -54,6 +54,7 @@ namespace AMSS
                 });
             });
             services.AddSmtpService(configuration);
+            services.AddBackgroundService();
         }
 
         private static void AddHangFireServices(this IServiceCollection services, IConfiguration configuration)

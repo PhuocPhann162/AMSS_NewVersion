@@ -2,8 +2,10 @@
 using AMSS.Infrastructures.Configurations;
 using AMSS.Infrastructures.Interfaces;
 using MailKit.Net.Smtp;
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using RazorLight;
 
 namespace AMSS.Infrastructures.Services
 {
@@ -20,6 +22,9 @@ namespace AMSS.Infrastructures.Services
         public async Task<SmtpResponse> SendEmailAsync(MailRequest mailRequest)
         {
             _logger.LogInformation("Start send email process...");
+
+            var emailContent = await RenderTemplateAsync(mailRequest.TemplateName, mailRequest);
+
             var message = new MimeMessage();
 
             message.From.Add(new MailboxAddress(_mailConfiguration.SenderName, _mailConfiguration.SenderEmail));
@@ -28,7 +33,7 @@ namespace AMSS.Infrastructures.Services
 
             message.Body = new TextPart("html")
             {
-                Text = mailRequest.Content
+                Text = emailContent
             };
 
             using (var client = new SmtpClient())
@@ -41,6 +46,26 @@ namespace AMSS.Infrastructures.Services
             _logger.LogInformation("Email sent successfully!");
 
             return new SmtpResponse(SmtpStatusCode.Ok, "Successfully");
+        }
+
+        private async Task<string> RenderTemplateAsync<T>(string templateName, T model)
+        {
+            var templateDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "EmailTemplate");
+
+            var engine = new RazorLightEngineBuilder()
+               .UseFileSystemProject(templateDir)
+               .UseMemoryCachingProvider()
+               .Build();
+
+            var templatePath = Path.Combine(templateDir, $"{templateName}.cshtml");
+
+            if (!File.Exists(templatePath))
+            {
+                throw new FileNotFoundException($"Template not found: {templatePath}");
+            }
+
+
+            return await engine.CompileRenderAsync($"{templateName}.cshtml", model);
         }
     }
 }

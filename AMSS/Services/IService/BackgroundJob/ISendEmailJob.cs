@@ -7,6 +7,6 @@ namespace AMSS.Services.IService.BackgroundJob
     public interface ISendEmailJob 
     {
         [Queue(QueueName.SendEmailJob)]
-        Task Invoke(MailRequest request);
+        Task InvokeAsync(MailRequest request);
     }
 }

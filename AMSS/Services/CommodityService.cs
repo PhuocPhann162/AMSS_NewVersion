@@ -5,6 +5,7 @@ using AMSS.Entities;
 using AMSS.Models.Commodities;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
+using System.Net;
 
 namespace AMSS.Services
 {
@@ -16,9 +17,15 @@ namespace AMSS.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<APIResponse<Guid>> CreateCommodityAsync(CreateCommodityRequest request)
+        public async Task<APIResponse<Guid>> CreateCommodityAsync(CreateCommodityRequest request)
         {
-            throw new NotImplementedException();
+            if(!Guid.TryParse(request.CropId.ToString(), out Guid cropId)) {
+                var crop = await _unitOfWork.CropRepository.GetAsync(x => x.Name.Equals(request.Name));
+                request.CropId = cropId;
+            }
+            var commodity = new Commodity(request);
+
+            return BuildSuccessResponseMessage(Guid.NewGuid(), "Commodity created successfully", HttpStatusCode.Created);
         }
 
         public Task<APIResponse<PaginationResponse<GetCommoditiesResponse>>> GetCommoditiesAsync(GetCommoditiesRequest request)

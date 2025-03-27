@@ -4,6 +4,7 @@
     {
         ADMIN, 
         FARMER, 
-        OWNER
+        OWNER,
+        CUSTOMER
     }
 }

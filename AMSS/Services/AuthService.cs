@@ -4,7 +4,6 @@ using AMSS.Dto.Requests.Mails;
 using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Enums;
-using AMSS.Infrastructures.Interfaces;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Services.IService.BackgroundJob;
@@ -78,7 +77,15 @@ namespace AMSS.Services
                     Token = token,
                 };
 
-                
+                var mailRequest = new MailRequest
+                {
+                    Tos = [new() { Name = username, Email = "21520405@gm.uit.edu.vn" }],
+                    Ccs = [new() { Email = "phanngocphuoc8@gmail.com" }],
+                    IsHtml = true,
+                    Subject = "Test MailKit using SMTP",
+                    TemplateName = "RegisterClientTemplate"
+                };
+                _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.InvokeAsync(mailRequest));
 
                 return BuildSuccessResponseMessage(loginResponseDto, "Welcome " + userDto.FullName + "! Have a nice day🌟");
             }
@@ -144,17 +151,6 @@ namespace AMSS.Services
                 {
                     return BuildErrorResponseMessage<bool>(result.Errors.FirstOrDefault()?.Description!, HttpStatusCode.Forbidden);
                 }
-
-                var mailRequest = new MailRequest
-                {
-                    Tos = [new() { Email = "21520405@gm.uit.edu.vn" }],
-                    Ccs = [new() { Email = "phanngocphuoc8@gmail.com" }],
-                    IsHtml = true,
-                    Subject = "Test MailKit using SMTP",
-                    Content = "Successfully"
-
-                };
-                _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.Invoke(mailRequest));
 
                 return BuildSuccessResponseMessage(true, "Registration new account successfully");
             }
