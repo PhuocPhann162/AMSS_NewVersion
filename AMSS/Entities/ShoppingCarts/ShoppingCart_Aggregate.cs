@@ -8,5 +8,10 @@ namespace AMSS.Models.ShoppingCarts
         {
             
         }
+
+        public void Update()
+        {
+            
+        }
     }
 }

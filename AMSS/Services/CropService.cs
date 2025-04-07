@@ -118,7 +118,7 @@ namespace AMSS.Services
                 newCrop.Icon = await _blobService.UploadBlob(fileName, SD.SD_Storage_Container, createCropDto.File);
 
                 await _unitOfWork.CropRepository.CreateAsync(newCrop);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 var newCropDto = _mapper.Map<CropDto>(newCrop);
                 return BuildSuccessResponseMessage(newCropDto, "Crop created successfully", HttpStatusCode.Created);
@@ -170,7 +170,7 @@ namespace AMSS.Services
                     cropFromDb.Icon = await _blobService.UploadBlob(fileName, SD.SD_Storage_Container, updateCropDto.File);
                 }
                 await _unitOfWork.CropRepository.Update(cropFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(_mapper.Map<CropDto>(cropFromDb), "Crop updated successfully");
             }
@@ -200,7 +200,7 @@ namespace AMSS.Services
                 Thread.Sleep(milliseconds);
 
                 await _unitOfWork.CropRepository.RemoveAsync(cropFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
                 return BuildSuccessResponseMessage(true, "Crop deleted successfully !");
             }
             catch (Exception ex)

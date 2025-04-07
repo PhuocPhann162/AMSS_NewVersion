@@ -69,7 +69,7 @@ namespace AMSS.Services
                 newLocation.CreatedAt = DateTime.Now;
 
                 await _unitOfWork.LocationRepository.CreateAsync(newLocation);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
                 return BuildSuccessResponseMessage(_mapper.Map<LocationDto>(newLocation), "Location created successfully");
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace AMSS.Services
                 locationFromDb.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.LocationRepository.Update(locationFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(_mapper.Map<LocationDto>(locationFromDb), "Location updated successfully 🌿");
             }
@@ -123,7 +123,7 @@ namespace AMSS.Services
                 }
 
                 await _unitOfWork.LocationRepository.RemoveAsync(locationFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(true, "Location deleted successfully !");
             }

@@ -62,7 +62,7 @@ namespace AMSS.Services
                 newCropType.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.CropTypeRepository.CreateAsync(newCropType);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 var newCropTypeDto = _mapper.Map<CropTypeDto>(newCropType);
 

@@ -100,7 +100,7 @@ namespace AMSS.Services
                 newField.CreatedAt = DateTime.Now;
 
                 await _unitOfWork.FieldRepository.CreateAsync(newField);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
                 return BuildSuccessResponseMessage(_mapper.Map<FieldDto>(newField), "Field created successfully", HttpStatusCode.Created);
             }
             catch (Exception ex)
@@ -168,7 +168,7 @@ namespace AMSS.Services
                 fieldFromDb.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.FieldRepository.Update(fieldFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(_mapper.Map<FieldDto>(fieldFromDb), "Field updated successfully 🌿");
             }
@@ -192,16 +192,16 @@ namespace AMSS.Services
                 List<Position> lstPositionsFromDb = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == fieldFromDb.PolygonAppId);
                 // Delete Location 
                 await _unitOfWork.LocationRepository.RemoveAsync(fieldFromDb.Location);
-                _unitOfWork.SaveAsync();
+                
                 // Delete Positions
                 foreach (Position pos in lstPositionsFromDb)
                 {
                     await _unitOfWork.PositionRepository.RemoveAsync(pos);
                 }
-                _unitOfWork.SaveAsync();
+                
                 // Delete PolygonApp 
                 await _unitOfWork.PolygonAppRepository.RemoveAsync(fieldFromDb.PolygonApp);
-                _unitOfWork.SaveAsync();
+                
 
 
                 if (fieldFromDb == null)
@@ -210,7 +210,7 @@ namespace AMSS.Services
                 }
 
                 await _unitOfWork.FieldRepository.RemoveAsync(fieldFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
                 return BuildSuccessResponseMessage(true, "Field deleted successfully 🌿");
             }
             catch (Exception ex)

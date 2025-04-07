@@ -1,4 +1,5 @@
 ﻿using AMSS.Aggregates;
+using AMSS.Models;
 using System.Linq.Expressions;
 
 namespace AMSS.Repositories.IRepository
@@ -11,6 +12,18 @@ namespace AMSS.Repositories.IRepository
            Expression<Func<TEntity, bool>> expression = null,
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
            string includeProperties = "");
+
+        Task<PaginationResult<TEntity>> GetAsync(
+            Expression<Func<TEntity, bool>> expression = null,
+            int page = 0,
+            int pageSize = 10,
+            params SortExpression<TEntity>[] sortExpressions);
+
+        IQueryable<TEntity> GetQueryAble(
+           int page = 0,
+           int pageSize = 10,
+           params SortExpression<TEntity>[] sortExpressions);
+
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter = null, bool tracked = true, string? includeProperties = null);
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression);
         Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression);

@@ -41,7 +41,7 @@ namespace AMSS.Services
 
                 await _unitOfWork.PolygonAppRepository.CreateAsync(newPolygon);
 
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(_mapper.Map<PolygonDto>(newPolygon), "PolygonApp was created successfully", HttpStatusCode.Created);
             }
@@ -58,7 +58,7 @@ namespace AMSS.Services
             {
                 var newPolygon = _mapper.Map<PolygonApp>(updatePolygonDto);
                 var result = await _unitOfWork.PolygonAppRepository.Update(newPolygon);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(_mapper.Map<PolygonDto>(newPolygon), "PolygonApp was updated successfully");
             }

@@ -1,6 +1,9 @@
-﻿namespace AMSS.Dto.Requests.Coupons
+﻿using System.Text.Json.Serialization;
+
+namespace AMSS.Dto.Requests.Coupons
 {
-    public class GetCouponsRequest
+    public class GetCouponsRequest : PaginationRequest
     {
+        
     }
 }

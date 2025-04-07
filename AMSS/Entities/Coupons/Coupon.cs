@@ -16,6 +16,6 @@ namespace AMSS.Models.Coupons
         public decimal MinAmount { get; set; }
 
         [Column(TypeName = "datetime")]
-        public DateTime? Expiration { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }

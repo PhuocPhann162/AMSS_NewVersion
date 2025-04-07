@@ -1,6 +1,6 @@
 ﻿namespace AMSS.Dto.Requests.Orders
 {
-    public class GetOrdersRequest
+    public class GetOrdersRequest : PaginationRequest
     {
     }
 }

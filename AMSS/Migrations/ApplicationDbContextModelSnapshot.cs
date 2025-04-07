@@ -22,7 +22,7 @@ namespace AMSS.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AMSS.Models.ApplicationUser", b =>
+            modelBuilder.Entity("AMSS.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -133,6 +133,610 @@ namespace AMSS.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("AMSS.Entities.CountryContinent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<float>("Co2Rate")
+                        .HasColumnType("real");
+
+                    b.Property<string>("ContinentCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ContinentName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("CountryName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CountryContinents");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Crop", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("CareLevel")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("CropTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("CultivatedArea")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Cycle")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("Edible")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ExpectedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GrowthRate")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("HardinessZone")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("Indoor")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Maintenance")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("PlantedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Propagation")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Soil")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<string>("Watering")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CropTypeId");
+
+                    b.ToTable("Crops");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.CropType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CropTypes");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Farm", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<double>("Area")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OwnerName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid?>("PolygonAppId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("PolygonAppId")
+                        .IsUnique()
+                        .HasFilter("[PolygonAppId] IS NOT NULL");
+
+                    b.ToTable("Farms");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Field", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<double>("Area")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("FarmId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid?>("PolygonAppId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FarmId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("PolygonAppId")
+                        .IsUnique()
+                        .HasFilter("[PolygonAppId] IS NOT NULL");
+
+                    b.ToTable("Fields");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.FieldCrop", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CropId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CropId");
+
+                    b.HasIndex("FieldId");
+
+                    b.ToTable("FieldCrops");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Location", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Lat")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Lng")
+                        .HasColumnType("real");
+
+                    b.Property<string>("PostCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Road")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Polygon.PolygonApp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PolygonApps");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Polygon.Position", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<float>("Lat")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Lng")
+                        .HasColumnType("real");
+
+                    b.Property<Guid?>("PolygonAppId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PolygonAppId");
+
+                    b.ToTable("Positions");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Province", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<Guid?>("CountryContinentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryContinentId");
+
+                    b.ToTable("Provinces");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SeriesMetric", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeriesMetrics");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SocialMetric", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("ProvinceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SeriesMetricId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("SeriesMetricId");
+
+                    b.ToTable("SocialMetrics");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SocialYear", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("SocialMetricId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SocialMetricId");
+
+                    b.ToTable("SocialYears");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SoilQuality", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<float>("Chlorophyll")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("FieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("InfoTime")
+                        .HasColumnType("datetime")
+                        .HasColumnName("InfoTime");
+
+                    b.Property<float>("Iron")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Nitrate")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Oxygen")
+                        .HasColumnType("real");
+
+                    b.Property<float>("PH")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Phyto")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Phytoplankton")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Salinity")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Silicate")
+                        .HasColumnType("real");
+
+                    b.Property<int>("SoilMoisture")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilMoisture100cm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilMoisture10cm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilMoisture40cm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilTemperature")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilTemperature100cm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilTemperature10cm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SoilTemperature40cm")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FieldId")
+                        .IsUnique()
+                        .HasFilter("[FieldId] IS NOT NULL");
+
+                    b.ToTable("SoilQualitys");
+                });
+
             modelBuilder.Entity("AMSS.Models.CartItems.CartItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -224,47 +828,6 @@ namespace AMSS.Migrations
                     b.ToTable("Commodities");
                 });
 
-            modelBuilder.Entity("AMSS.Models.CountryContinent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<float>("Co2Rate")
-                        .HasColumnType("real");
-
-                    b.Property<string>("ContinentCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ContinentName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CountryCode")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("CountryName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CountryContinents");
-                });
-
             modelBuilder.Entity("AMSS.Models.Coupons.Coupon", b =>
                 {
                     b.Property<Guid>("Id")
@@ -283,8 +846,10 @@ namespace AMSS.Migrations
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("Expiration")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("Expiration")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValue(new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
                     b.Property<decimal>("MinAmount")
                         .HasColumnType("decimal(18,2)");
@@ -297,296 +862,6 @@ namespace AMSS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coupons");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Crop", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("CareLevel")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<Guid?>("CropTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("CultivatedArea")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Cycle")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("Edible")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ExpectedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GrowthRate")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("HardinessZone")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Icon")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("Indoor")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Maintenance")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("PlantedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Propagation")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Soil")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.Property<string>("Watering")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CropTypeId");
-
-                    b.ToTable("Crops");
-                });
-
-            modelBuilder.Entity("AMSS.Models.CropType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CropTypes");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Farm", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<double>("Area")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("OwnerName")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<Guid?>("PolygonAppId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("PolygonAppId")
-                        .IsUnique()
-                        .HasFilter("[PolygonAppId] IS NOT NULL");
-
-                    b.ToTable("Farms");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Field", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<double>("Area")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<Guid?>("FarmId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<Guid?>("PolygonAppId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Status")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FarmId");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("PolygonAppId")
-                        .IsUnique()
-                        .HasFilter("[PolygonAppId] IS NOT NULL");
-
-                    b.ToTable("Fields");
-                });
-
-            modelBuilder.Entity("AMSS.Models.FieldCrop", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CropId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("FieldId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CropId");
-
-                    b.HasIndex("FieldId");
-
-                    b.ToTable("FieldCrops");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CountryCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<string>("District")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Lat")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Lng")
-                        .HasColumnType("real");
-
-                    b.Property<string>("PostCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Road")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("AMSS.Models.OrderDetails.OrderDetail", b =>
@@ -637,6 +912,12 @@ namespace AMSS.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Id");
 
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CouponCode")
                         .HasColumnType("nvarchar(50)");
 
@@ -647,6 +928,9 @@ namespace AMSS.Migrations
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,6)");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime");
@@ -677,141 +961,13 @@ namespace AMSS.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("UpdatedAt");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("ApplicationUserId1");
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("OrderHeaders");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Polygon.PolygonApp", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Color")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PolygonApps");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Polygon.Position", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<float>("Lat")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Lng")
-                        .HasColumnType("real");
-
-                    b.Property<Guid?>("PolygonAppId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PolygonAppId");
-
-                    b.ToTable("Positions");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Province", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Category")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("CountryCode")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<Guid?>("CountryContinentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryContinentId");
-
-                    b.ToTable("Provinces");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SeriesMetric", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SeriesMetrics");
                 });
 
             modelBuilder.Entity("AMSS.Models.ShoppingCarts.ShoppingCart", b =>
@@ -840,155 +996,6 @@ namespace AMSS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ShoppingCarts");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialMetric", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<Guid?>("ProvinceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SeriesMetricId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.HasIndex("SeriesMetricId");
-
-                    b.ToTable("SocialMetrics");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialYear", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<Guid?>("SocialMetricId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SocialMetricId");
-
-                    b.ToTable("SocialYears");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SoilQuality", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<float>("Chlorophyll")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<Guid?>("FieldId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("InfoTime")
-                        .HasColumnType("datetime")
-                        .HasColumnName("InfoTime");
-
-                    b.Property<float>("Iron")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Nitrate")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Oxygen")
-                        .HasColumnType("real");
-
-                    b.Property<float>("PH")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Phyto")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Phytoplankton")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Salinity")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Silicate")
-                        .HasColumnType("real");
-
-                    b.Property<int>("SoilMoisture")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilMoisture100cm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilMoisture10cm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilMoisture40cm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilTemperature")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilTemperature100cm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilTemperature10cm")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoilTemperature40cm")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FieldId")
-                        .IsUnique()
-                        .HasFilter("[FieldId] IS NOT NULL");
-
-                    b.ToTable("SoilQualitys");
                 });
 
             modelBuilder.Entity("AMSS.Models.Stocks.Stock", b =>
@@ -1200,6 +1207,122 @@ namespace AMSS.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AMSS.Entities.Crop", b =>
+                {
+                    b.HasOne("AMSS.Entities.CropType", "CropType")
+                        .WithMany("Crops")
+                        .HasForeignKey("CropTypeId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CropType");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Farm", b =>
+                {
+                    b.HasOne("AMSS.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("AMSS.Entities.Polygon.PolygonApp", "PolygonApp")
+                        .WithOne("Farm")
+                        .HasForeignKey("AMSS.Entities.Farm", "PolygonAppId");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("PolygonApp");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Field", b =>
+                {
+                    b.HasOne("AMSS.Entities.Farm", "Farm")
+                        .WithMany("Fields")
+                        .HasForeignKey("FarmId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("AMSS.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("AMSS.Entities.Polygon.PolygonApp", "PolygonApp")
+                        .WithOne("Field")
+                        .HasForeignKey("AMSS.Entities.Field", "PolygonAppId");
+
+                    b.Navigation("Farm");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("PolygonApp");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.FieldCrop", b =>
+                {
+                    b.HasOne("AMSS.Entities.Crop", "Crop")
+                        .WithMany("FieldCrops")
+                        .HasForeignKey("CropId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("AMSS.Entities.Field", "Field")
+                        .WithMany("FieldCrops")
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Crop");
+
+                    b.Navigation("Field");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Polygon.Position", b =>
+                {
+                    b.HasOne("AMSS.Entities.Polygon.PolygonApp", "PolygonApp")
+                        .WithMany("Positions")
+                        .HasForeignKey("PolygonAppId");
+
+                    b.Navigation("PolygonApp");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.Province", b =>
+                {
+                    b.HasOne("AMSS.Entities.CountryContinent", "CountryContinent")
+                        .WithMany("Provinces")
+                        .HasForeignKey("CountryContinentId");
+
+                    b.Navigation("CountryContinent");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SocialMetric", b =>
+                {
+                    b.HasOne("AMSS.Entities.Province", "Province")
+                        .WithMany("SocialMetrics")
+                        .HasForeignKey("ProvinceId");
+
+                    b.HasOne("AMSS.Entities.SeriesMetric", "SeriesMetric")
+                        .WithMany("SocialMetrics")
+                        .HasForeignKey("SeriesMetricId");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("SeriesMetric");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SocialYear", b =>
+                {
+                    b.HasOne("AMSS.Entities.SocialMetric", "SocialMetric")
+                        .WithMany("SocialYears")
+                        .HasForeignKey("SocialMetricId");
+
+                    b.Navigation("SocialMetric");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SoilQuality", b =>
+                {
+                    b.HasOne("AMSS.Entities.Field", "Field")
+                        .WithOne("SoilQuality")
+                        .HasForeignKey("AMSS.Entities.SoilQuality", "FieldId");
+
+                    b.Navigation("Field");
+                });
+
             modelBuilder.Entity("AMSS.Models.CartItems.CartItem", b =>
                 {
                     b.HasOne("AMSS.Models.Commodities.Commodity", "Commodity")
@@ -1219,7 +1342,7 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("AMSS.Models.Commodities.Commodity", b =>
                 {
-                    b.HasOne("AMSS.Models.Crop", "Crop")
+                    b.HasOne("AMSS.Entities.Crop", "Crop")
                         .WithMany("Commodities")
                         .HasForeignKey("CropId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1234,71 +1357,6 @@ namespace AMSS.Migrations
                     b.Navigation("Crop");
 
                     b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Crop", b =>
-                {
-                    b.HasOne("AMSS.Models.CropType", "CropType")
-                        .WithMany("Crops")
-                        .HasForeignKey("CropTypeId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("CropType");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Farm", b =>
-                {
-                    b.HasOne("AMSS.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
-
-                    b.HasOne("AMSS.Models.Polygon.PolygonApp", "PolygonApp")
-                        .WithOne("Farm")
-                        .HasForeignKey("AMSS.Models.Farm", "PolygonAppId");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("PolygonApp");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Field", b =>
-                {
-                    b.HasOne("AMSS.Models.Farm", "Farm")
-                        .WithMany("Fields")
-                        .HasForeignKey("FarmId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("AMSS.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("AMSS.Models.Polygon.PolygonApp", "PolygonApp")
-                        .WithOne("Field")
-                        .HasForeignKey("AMSS.Models.Field", "PolygonAppId");
-
-                    b.Navigation("Farm");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("PolygonApp");
-                });
-
-            modelBuilder.Entity("AMSS.Models.FieldCrop", b =>
-                {
-                    b.HasOne("AMSS.Models.Crop", "Crop")
-                        .WithMany("FieldCrops")
-                        .HasForeignKey("CropId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("AMSS.Models.Field", "Field")
-                        .WithMany("FieldCrops")
-                        .HasForeignKey("FieldId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Crop");
-
-                    b.Navigation("Field");
                 });
 
             modelBuilder.Entity("AMSS.Models.OrderDetails.OrderDetail", b =>
@@ -1320,62 +1378,19 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("AMSS.Models.OrderHeaders.OrderHeader", b =>
                 {
-                    b.HasOne("AMSS.Models.ApplicationUser", "User")
+                    b.HasOne("AMSS.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("ApplicationUserId1");
 
-                    b.Navigation("User");
-                });
+                    b.HasOne("AMSS.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("AMSS.Models.Polygon.Position", b =>
-                {
-                    b.HasOne("AMSS.Models.Polygon.PolygonApp", "PolygonApp")
-                        .WithMany("Positions")
-                        .HasForeignKey("PolygonAppId");
+                    b.Navigation("ApplicationUser");
 
-                    b.Navigation("PolygonApp");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Province", b =>
-                {
-                    b.HasOne("AMSS.Models.CountryContinent", "CountryContinent")
-                        .WithMany("Provinces")
-                        .HasForeignKey("CountryContinentId");
-
-                    b.Navigation("CountryContinent");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialMetric", b =>
-                {
-                    b.HasOne("AMSS.Models.Province", "Province")
-                        .WithMany("SocialMetrics")
-                        .HasForeignKey("ProvinceId");
-
-                    b.HasOne("AMSS.Models.SeriesMetric", "SeriesMetric")
-                        .WithMany("SocialMetrics")
-                        .HasForeignKey("SeriesMetricId");
-
-                    b.Navigation("Province");
-
-                    b.Navigation("SeriesMetric");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialYear", b =>
-                {
-                    b.HasOne("AMSS.Models.SocialMetric", "SocialMetric")
-                        .WithMany("SocialYears")
-                        .HasForeignKey("SocialMetricId");
-
-                    b.Navigation("SocialMetric");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SoilQuality", b =>
-                {
-                    b.HasOne("AMSS.Models.Field", "Field")
-                        .WithOne("SoilQuality")
-                        .HasForeignKey("AMSS.Models.SoilQuality", "FieldId");
-
-                    b.Navigation("Field");
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("AMSS.Models.Stocks.Stock", b =>
@@ -1400,7 +1415,7 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("AMSS.Models.ApplicationUser", null)
+                    b.HasOne("AMSS.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1409,7 +1424,7 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("AMSS.Models.ApplicationUser", null)
+                    b.HasOne("AMSS.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1424,7 +1439,7 @@ namespace AMSS.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AMSS.Models.ApplicationUser", null)
+                    b.HasOne("AMSS.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1433,48 +1448,43 @@ namespace AMSS.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("AMSS.Models.ApplicationUser", null)
+                    b.HasOne("AMSS.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AMSS.Models.CountryContinent", b =>
+            modelBuilder.Entity("AMSS.Entities.CountryContinent", b =>
                 {
                     b.Navigation("Provinces");
                 });
 
-            modelBuilder.Entity("AMSS.Models.Crop", b =>
+            modelBuilder.Entity("AMSS.Entities.Crop", b =>
                 {
                     b.Navigation("Commodities");
 
                     b.Navigation("FieldCrops");
                 });
 
-            modelBuilder.Entity("AMSS.Models.CropType", b =>
+            modelBuilder.Entity("AMSS.Entities.CropType", b =>
                 {
                     b.Navigation("Crops");
                 });
 
-            modelBuilder.Entity("AMSS.Models.Farm", b =>
+            modelBuilder.Entity("AMSS.Entities.Farm", b =>
                 {
                     b.Navigation("Fields");
                 });
 
-            modelBuilder.Entity("AMSS.Models.Field", b =>
+            modelBuilder.Entity("AMSS.Entities.Field", b =>
                 {
                     b.Navigation("FieldCrops");
 
                     b.Navigation("SoilQuality");
                 });
 
-            modelBuilder.Entity("AMSS.Models.OrderHeaders.OrderHeader", b =>
-                {
-                    b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("AMSS.Models.Polygon.PolygonApp", b =>
+            modelBuilder.Entity("AMSS.Entities.Polygon.PolygonApp", b =>
                 {
                     b.Navigation("Farm");
 
@@ -1483,24 +1493,29 @@ namespace AMSS.Migrations
                     b.Navigation("Positions");
                 });
 
-            modelBuilder.Entity("AMSS.Models.Province", b =>
+            modelBuilder.Entity("AMSS.Entities.Province", b =>
                 {
                     b.Navigation("SocialMetrics");
                 });
 
-            modelBuilder.Entity("AMSS.Models.SeriesMetric", b =>
+            modelBuilder.Entity("AMSS.Entities.SeriesMetric", b =>
                 {
                     b.Navigation("SocialMetrics");
+                });
+
+            modelBuilder.Entity("AMSS.Entities.SocialMetric", b =>
+                {
+                    b.Navigation("SocialYears");
+                });
+
+            modelBuilder.Entity("AMSS.Models.OrderHeaders.OrderHeader", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("AMSS.Models.ShoppingCarts.ShoppingCart", b =>
                 {
                     b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("AMSS.Models.SocialMetric", b =>
-                {
-                    b.Navigation("SocialYears");
                 });
 
             modelBuilder.Entity("AMSS.Models.Suppliers.Supplier", b =>

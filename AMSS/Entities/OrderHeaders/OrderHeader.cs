@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using AMSS.Models.OrderDetails;
 using AMSS.Enums;
 using AMSS.Entities;
@@ -9,7 +8,7 @@ namespace AMSS.Models.OrderHeaders
     public partial class OrderHeader : BaseModel<Guid>
     {
         [Column(TypeName = "uniqueidentifier")]
-        public Guid UserId { get; set; }
+        public Guid ApplicationUserId { get; set; }
 
         [Column(TypeName = "nvarchar(255)")]
         public string PickupName { get; set; }
@@ -39,8 +38,11 @@ namespace AMSS.Models.OrderHeaders
 
         public int TotalItems { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid LocationId { get; set; }
 
+        public virtual Location Location { get; set; }  
+        public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

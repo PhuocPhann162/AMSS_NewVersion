@@ -1,6 +1,6 @@
 ﻿namespace AMSS.Dto.Requests.Commodities
 {
-    public class GetCommoditiesRequest
+    public class GetCommoditiesRequest : PaginationRequest
     {
     }
 }

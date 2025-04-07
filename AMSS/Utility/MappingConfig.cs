@@ -8,6 +8,7 @@ using AMSS.Dto.Location;
 using AMSS.Dto.Polygon;
 using AMSS.Dto.Position;
 using AMSS.Dto.Province;
+using AMSS.Dto.Responses.Commodities;
 using AMSS.Dto.SeriesMetric;
 using AMSS.Dto.SocialMetric;
 using AMSS.Dto.SocialYear;
@@ -15,6 +16,7 @@ using AMSS.Dto.SoilQuality;
 using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Entities.Polygon;
+using AMSS.Models.Commodities;
 using AutoMapper;
 
 namespace AMSS.Utility
@@ -77,6 +79,9 @@ namespace AMSS.Utility
 
                 // Social Year 
                 config.CreateMap<SocialYear, SocialYearDto>().ReverseMap();
+
+                // Commodity 
+                config.CreateMap<Commodity, GetCommodityResponse>().ReverseMap();
             });
 
             return mappingConfig;

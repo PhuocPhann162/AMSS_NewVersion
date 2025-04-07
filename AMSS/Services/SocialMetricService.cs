@@ -195,7 +195,7 @@ namespace AMSS.Services
                         await _unitOfWork.SocialYearRepository.CreateRangeAsync(newSocialYears);
                     }
 
-                    _unitOfWork.SaveAsync();
+                    await _unitOfWork.SaveChangeAsync();
                 }
 
 

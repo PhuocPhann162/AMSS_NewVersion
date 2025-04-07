@@ -3,8 +3,8 @@
     public enum Role
     {
         ADMIN, 
-        FARMER, 
         OWNER,
-        CUSTOMER
+        CUSTOMER,
+        SUPPLIER
     }
 }

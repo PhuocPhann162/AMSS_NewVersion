@@ -72,7 +72,7 @@ namespace AMSS.Services
                     userFromDb.IsActive = true;
                     userFromDb.UpdatedAt = DateTime.Now;
                     await _unitOfWork.UserRepository.Update(userFromDb);
-                    _unitOfWork.SaveAsync();
+                    await _unitOfWork.SaveChangeAsync();
                     return BuildSuccessResponseMessage(true, "Unlock this user successfully");
                 }
                 else
@@ -80,7 +80,7 @@ namespace AMSS.Services
                     userFromDb.IsActive = false;
                     userFromDb.UpdatedAt = DateTime.Now;
                     await _unitOfWork.UserRepository.Update(userFromDb);
-                    _unitOfWork.SaveAsync();
+                    await _unitOfWork.SaveChangeAsync();
                     return BuildSuccessResponseMessage(true, "Lock this user successfully");
                 }
             }
@@ -151,7 +151,7 @@ namespace AMSS.Services
 
                 userFromDb.UpdatedAt = DateTime.Now;
                 await _unitOfWork.UserRepository.Update(userFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(true, "Update this user information successfully");
             }

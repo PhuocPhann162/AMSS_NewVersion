@@ -1,4 +1,13 @@
-﻿namespace AMSS.Repositories.IRepository
+﻿using AMSS.Entities.CartItems;
+using AMSS.Entities.Commodities;
+using AMSS.Entities.Coupons;
+using AMSS.Entities.ShoppingCarts;
+using AMSS.Entities.Stocks;
+using AMSS.Entities.Suppliers;
+using AMSS.Models.OrderDetails;
+using AMSS.Models.OrderHeaders;
+
+namespace AMSS.Repositories.IRepository
 {
     public interface IUnitOfWork
     {
@@ -17,6 +26,15 @@
         ISocialMetricRepository SocialMetricRepository { get; }
         ISocialYearRepository SocialYearRepository { get; }
 
-        void SaveAsync();
+        ICommodityRepository CommodityRepository { get; }
+        ICouponRepository CouponRepository { get; }
+        IOrderHeaderRepository OrderHeaderRepository { get; }
+        IOrderDetailRepository OrderDetailRepository { get; }
+        IShoppingCartRepository ShoppingCartRepository { get; }
+        ICartItemRepository CartItemRepository { get; }
+        IStockRepository StockRepository { get; }
+        ISupplierRepository SupplierRepository { get; }
+
+        Task<int> SaveChangeAsync();
     }
 }

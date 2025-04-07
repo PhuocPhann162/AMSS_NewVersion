@@ -29,18 +29,18 @@ namespace AMSS.Controllers
         [HttpPost("add-update-item")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddOrUpdateItemInCartAsync([FromBody] AddOrUpdateItemInCartRequest request)
+        public async Task<IActionResult> AddOrUpdateItemInCartAsync([FromBody] AddOrUpdateItemInCartRequest request, Guid userId)
         {
-            var response = await _shoppingCartService.AddOrUpdateItemInCartAsync(request);
+            var response = await _shoppingCartService.AddOrUpdateItemInCartAsync(request, userId);
             return ProcessResponseMessage(response);
         }
 
         [HttpPost("apply-coupon")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ApplyCouponAsync([FromBody] ApplyCouponRequest request)
+        public async Task<IActionResult> ApplyCouponAsync([FromQuery] ApplyCouponRequest request)
         {
-            var response = await _shoppingCartService.ApplyCouponAsync(request);
+            var response = await _shoppingCartService.ApplyCouponAsync(request, AuthenticatedUserId);
             return ProcessResponseMessage(response);
         }
     }

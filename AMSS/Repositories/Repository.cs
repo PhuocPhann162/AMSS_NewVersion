@@ -5,6 +5,9 @@ using System.Linq;
 using AMSS.Repositories.IRepository;
 using AMSS.Aggregates;
 using System.Collections.Generic;
+using AMSS.Models;
+using System.ComponentModel;
+using AMSS.Extensions;
 
 namespace AMSS.Repositories
 {
@@ -134,6 +137,57 @@ namespace AMSS.Repositories
             }
 
             return await(orderBy != null ? orderBy(query).ToListAsync() : query.ToListAsync());
+        }
+
+        public IQueryable<TEntity> GetQueryAble(int page = 0, int pageSize = 10, params SortExpression<TEntity>[] sortExpressions)
+        {
+            IQueryable<TEntity> query = dbSet;
+
+            query = GetOrderedQueryable(query, sortExpressions);
+
+            return query;
+        }
+
+        public IQueryable<TEntity> GetOrderedQueryable(IQueryable<TEntity> query,
+            params SortExpression<TEntity>[] sortExpressions)
+        {
+            IOrderedQueryable<TEntity> orderedQuery = null;
+            for (var i = 0; i < sortExpressions.Length; i++)
+            {
+                if (i == 0 || orderedQuery == null)
+                {
+                    orderedQuery = sortExpressions[i].SortDirection == ListSortDirection.Ascending
+                        ? query.OrderBy(sortExpressions[i].SortBy)
+                        : query.OrderByDescending(sortExpressions[i].SortBy);
+                    continue;
+                }
+
+                orderedQuery = sortExpressions[i].SortDirection == ListSortDirection.Ascending
+                    ? orderedQuery.ThenBy(sortExpressions[i].SortBy)
+                    : orderedQuery.ThenByDescending(sortExpressions[i].SortBy);
+            }
+
+            query = orderedQuery ?? query;
+
+            return query;
+        }
+
+        public async Task<PaginationResult<TEntity>> GetAsync(
+            Expression<Func<TEntity, bool>> expression = null,
+            int page = 1,
+            int pageSize = 10,
+            params SortExpression<TEntity>[] sortExpressions)
+        {
+            IQueryable<TEntity> query = dbSet;
+
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            query = GetOrderedQueryable(query, sortExpressions);
+
+            return await query.ToPaginationAsync(page, pageSize);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace AMSS.Controllers
         [ProducesResponseType(typeof(APIResponse<PaginationResponse<GetOrdersResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrdersAsync([FromQuery] GetOrdersRequest request)
         {
-            var response = await _orderService.GetOrdersAsync(request);
+            var response = await _orderService.GetOrdersAsync(request, AuthenticatedUserId);
             return ProcessResponseMessage(response);
         }
 
@@ -42,7 +42,7 @@ namespace AMSS.Controllers
         [ProducesResponseType(typeof(APIResponse<Guid>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateOrderAsync([FromBody] CreateOrderRequest request)
         {
-            var response = await _orderService.CreateOrderAsync(request);
+            var response = await _orderService.CreateOrderAsync(request, AuthenticatedUserId);
             return ProcessResponseMessage(response);
         }
 
@@ -51,7 +51,7 @@ namespace AMSS.Controllers
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateOrderAsync(Guid id, [FromBody] UpdateOrderRequest request)
         {
-            var response = await _orderService.UpdateOrderAsync(id, request);
+            var response = await _orderService.UpdateOrderAsync(id, request, AuthenticatedUserId);
             return ProcessResponseMessage(response);
         }
 

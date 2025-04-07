@@ -20,7 +20,7 @@ namespace AMSS.Models.Commodities
         public string Category { get; set; }
 
         [Column(TypeName = "decimal(18,6)")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [Column(TypeName = "nvarchar(255)")]
         public string Image { get; set; }

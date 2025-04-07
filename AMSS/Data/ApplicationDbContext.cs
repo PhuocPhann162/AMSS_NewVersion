@@ -51,6 +51,11 @@ namespace AMSS.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Coupon>()
+               .Property(c => c.Expiration)
+               .HasColumnType("datetime")
+               .HasDefaultValue(new DateTime(1900, 1, 1));
         }
     }
 }

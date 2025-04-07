@@ -1,4 +1,12 @@
 ﻿using AMSS.Data;
+using AMSS.Entities.CartItems;
+using AMSS.Entities.Commodities;
+using AMSS.Entities.Coupons;
+using AMSS.Entities.ShoppingCarts;
+using AMSS.Entities.Stocks;
+using AMSS.Entities.Suppliers;
+using AMSS.Models.OrderDetails;
+using AMSS.Models.OrderHeaders;
 using AMSS.Repositories.IRepository;
 
 namespace AMSS.Repositories
@@ -21,6 +29,14 @@ namespace AMSS.Repositories
         public ISeriesMetricRepository SeriesMetricRepository { get; private set; }
         public ISocialMetricRepository SocialMetricRepository { get; private set; }
         public ISocialYearRepository SocialYearRepository { get; private set; }
+        public ICommodityRepository CommodityRepository { get; private set; }
+        public ICouponRepository CouponRepository { get; private set; }
+        public IOrderHeaderRepository OrderHeaderRepository { get; private set; }
+        public IOrderDetailRepository OrderDetailRepository { get; private set; }
+        public IShoppingCartRepository ShoppingCartRepository { get; private set; }
+        public ICartItemRepository CartItemRepository { get; private set; }
+        public IStockRepository StockRepository { get; private set; }
+        public ISupplierRepository SupplierRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -39,11 +55,19 @@ namespace AMSS.Repositories
             SeriesMetricRepository = new SeriesMetricRepository(_db);
             SocialMetricRepository = new SocialMetricRepository(_db);
             SocialYearRepository = new SocialYearRepository(_db);
+            CommodityRepository = new CommodityRepository(_db);
+            CouponRepository = new CouponRepository(_db);
+            OrderHeaderRepository = new OrderHeaderRepository(_db);
+            OrderDetailRepository = new OrderDetailRepository(_db);
+            ShoppingCartRepository = new ShoppingCartRepository(_db);
+            CartItemRepository = new CartItemRepository(_db);
+            StockRepository = new StockRepository(_db);
+            SupplierRepository = new SupplierRepository(_db);
         }
 
-        public void SaveAsync()
+        public async Task<int> SaveChangeAsync()
         {
-            _db.SaveChangesAsync();
+            return await _db.SaveChangesAsync();
         }
     }
 }

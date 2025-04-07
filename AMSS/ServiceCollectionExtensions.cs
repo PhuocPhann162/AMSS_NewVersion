@@ -98,12 +98,18 @@ namespace AMSS
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ISmtpService, SmtpService>();
+            services.AddScoped<ISupplierService, SupplierService>();
         }
 
         private static void AddSmtpService(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<SmtpConfiguration>(configuration.GetSection("SmtpSettings"));
             services.AddTransient<ISmtpService, SmtpService>();
+        }
+
+        private static void AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration) 
+        {
+            services.Configure<StripePaymentConfiguration>(configuration.GetSection("StripeSettings"));
         }
 
         private static void AddBackgroundService(this IServiceCollection services)

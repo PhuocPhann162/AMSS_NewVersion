@@ -15,9 +15,11 @@ namespace AMSS.Models.ShoppingCarts
         public virtual ICollection<CartItem> CartItems { get; set; }
 
         [NotMapped]
-        public double Discount { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal Discount { get; set; }
         [NotMapped]
-        public double CartTotal { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal CartTotal { get; set; }
         [NotMapped]
         public string StripePaymentIntentId { get; set; }
         [NotMapped]

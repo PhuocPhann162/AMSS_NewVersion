@@ -7,9 +7,9 @@ namespace AMSS.Services.IService
 {
     public interface IOrderService
     {
-        Task<APIResponse<PaginationResponse<GetOrdersResponse>>>GetOrdersAsync(GetOrdersRequest request);
+        Task<APIResponse<PaginationResponse<GetOrdersResponse>>>GetOrdersAsync(GetOrdersRequest request, Guid userId);
         Task<APIResponse<GetOrderResponse>>GetOrderByIdAsync(Guid id);
-        Task<APIResponse<Guid>>CreateOrderAsync(CreateOrderRequest request);
-        Task<APIResponse<bool>>UpdateOrderAsync(Guid id, UpdateOrderRequest request);
+        Task<APIResponse<Guid>>CreateOrderAsync(CreateOrderRequest request, Guid userId);
+        Task<APIResponse<bool>>UpdateOrderAsync(Guid id, UpdateOrderRequest request, Guid userId);
     }
 }

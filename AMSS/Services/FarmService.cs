@@ -87,7 +87,7 @@ namespace AMSS.Services
                 newFarm.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.FarmRepository.CreateAsync(newFarm);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
                 return BuildSuccessResponseMessage(_mapper.Map<FarmDto>(newFarm), "Farm created successfully", HttpStatusCode.Created);
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace AMSS.Services
                 farmFromDb.UpdatedAt = DateTime.Now;
 
                 await _unitOfWork.FarmRepository.Update(farmFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
 
                 return BuildSuccessResponseMessage(_mapper.Map<FarmDto>(farmFromDb), "Farm updated successfully 🌿");
             }
@@ -141,7 +141,7 @@ namespace AMSS.Services
                 }
 
                 await _unitOfWork.FarmRepository.RemoveAsync(farmFromDb);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveChangeAsync();
                 return BuildSuccessResponseMessage(true, "Farm deleted successfully 🌿");
             }
             catch (Exception ex)

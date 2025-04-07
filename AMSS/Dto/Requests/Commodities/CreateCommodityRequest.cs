@@ -20,7 +20,7 @@ namespace AMSS.Dto.Requests.Commodities
         public string Category { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [Required(ErrorMessage = "Please select file to upload")]
         [JsonPropertyName("File")]
@@ -38,6 +38,5 @@ namespace AMSS.Dto.Requests.Commodities
         public string CropName { get; set; }
 
         public CommodityStatus Status { get; set; }
-
     }
 }
