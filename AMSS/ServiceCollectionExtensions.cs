@@ -99,6 +99,7 @@ namespace AMSS
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ISmtpService, SmtpService>();
             services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped<ISerializeService, SerializeService>();
         }
 
         private static void AddSmtpService(this IServiceCollection services, IConfiguration configuration)
@@ -115,6 +116,15 @@ namespace AMSS
         private static void AddBackgroundService(this IServiceCollection services)
         {
             services.AddScoped<ISendEmailJob, SendEmailJob>();
+        }
+
+        private static void AddRedisCacheService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(option =>
+            {
+                option.Configuration = configuration.GetConnectionString("Redis");
+                option.InstanceName = "Noavaris_";
+            });
         }
     }
 }
