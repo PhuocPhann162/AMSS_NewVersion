@@ -1,4 +1,5 @@
 ﻿using AMSS.Aggregates;
+using AMSS.Dto.Auth;
 using AMSS.Dto.Requests.Suppliers;
 
 namespace AMSS.Models.Suppliers
@@ -8,6 +9,18 @@ namespace AMSS.Models.Suppliers
         public Supplier()
         {
             
+        }
+
+        public Supplier(RegistrationRequestDto request) 
+        {
+            Id = Guid.NewGuid();
+            Name = request.FullName;
+            PhoneNumber = request.PhoneNumber;
+            Address = request.StreetAddress;
+            Email = request.UserName;
+            SupplierRole = request.Role;
+            CreatedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
         }
 
         public Supplier(CreateSupplierRequest request)

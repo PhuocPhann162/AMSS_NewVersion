@@ -24,6 +24,9 @@ namespace AMSS.Entities
         [Column(TypeName = "nvarchar(50)")]
         public string CountryName { get; set; }
 
+        [Column(TypeName = "nvarchar(20)")]
+        public string PhoneCode { get; set; }
+
         public virtual ICollection<Province> Provinces { get; set; } = new List<Province>();
     }
 }

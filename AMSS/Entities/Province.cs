@@ -6,11 +6,11 @@ namespace AMSS.Entities
     public class Province : BaseModel<Guid>
     {
         [MaxLength(5)]
-        [Column(TypeName = "nvarchar(5)")]
+        [Column(TypeName = "nvarchar(20)")]
         public string Code { get; set; }
 
         [MaxLength(5)]
-        [Column(TypeName = "nvarchar(5)")]
+        [Column(TypeName = "nvarchar(20)")]
         public string CountryCode { get; set; }
 
         [MaxLength(50)]

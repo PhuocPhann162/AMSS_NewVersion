@@ -21,8 +21,9 @@ namespace AMSS
         public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers();
-            services.AddHangFireServices(configuration);
             services.AddWebServices();
+            services.AddRedisCacheService(configuration);
+            services.AddHangFireServices(configuration);
             services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
@@ -100,6 +101,8 @@ namespace AMSS
             services.AddScoped<ISmtpService, SmtpService>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<ISerializeService, SerializeService>();
+            services.AddScoped<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<IMetatDataService, MetaDataService>();
         }
 
         private static void AddSmtpService(this IServiceCollection services, IConfiguration configuration)

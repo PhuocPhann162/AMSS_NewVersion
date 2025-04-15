@@ -5,22 +5,28 @@ namespace AMSS.Dto.Responses.Suppliers
 {
     public class GetSuppliersResponse
     {
-        [JsonPropertyName("Name")]
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
-        [JsonPropertyName("Name")]
         public string ContactName { get; set; }
 
-        [JsonPropertyName("Name")]
+        public string CountryName { get; set; }
+
+        public string CountryCode { get; set; }
+
+        public string ProvinceName { get; set; }
+
+        public string ProvinceCode { get; set; }
+
         public string PhoneCode { get; set; }
 
-        [JsonPropertyName("Name")]
         public string PhoneNumber { get; set; }
 
-        [JsonPropertyName("Name")]
         public string Email { get; set; }
 
-        [JsonPropertyName("Name")]
         public string Address { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

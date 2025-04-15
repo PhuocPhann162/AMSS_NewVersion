@@ -9,7 +9,7 @@ using System.Net.Mime;
 
 namespace AMSS.Controllers
 {
-    [Route("api/supplier")]
+    [Route("api/suppliers")]
     [ApiController]
     public class SupplierController : BaseController<SupplierController>
     {
@@ -19,7 +19,7 @@ namespace AMSS.Controllers
             _supplierService = supplierService; 
         }
 
-        [HttpGet]
+        [HttpGet("seed-crop")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<PaginationResponse<GetSuppliersResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSuppliersAsync([FromQuery] GetSuppliersRequest request)

@@ -3,8 +3,9 @@
     public enum Role
     {
         ADMIN, 
-        OWNER,
         CUSTOMER,
-        SUPPLIER
+        SUPPLIER_CROP, 
+        OWNER_FARM,
+        SUPPLIER_COMMODITY
     }
 }

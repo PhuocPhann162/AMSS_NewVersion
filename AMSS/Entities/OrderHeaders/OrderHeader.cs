@@ -40,7 +40,6 @@ namespace AMSS.Models.OrderHeaders
 
         [Column(TypeName = "uniqueidentifier")]
         public Guid LocationId { get; set; }
-
         public virtual Location Location { get; set; }  
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

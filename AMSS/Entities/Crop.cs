@@ -1,4 +1,5 @@
 ﻿using AMSS.Models.Commodities;
+using AMSS.Models.Suppliers;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -63,12 +64,14 @@ namespace AMSS.Entities
         [Range(0, int.MaxValue)]
         public int Quantity { get; set; } = 0;
 
+        public Guid? SupplierId { get; set; }
+
         public Guid? CropTypeId { get; set; }
         [ForeignKey("CropTypeId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.SetNull)]
         public virtual CropType CropType { get; set; }
-
+        public virtual Supplier Supplier { get; set; }
         public virtual ICollection<FieldCrop> FieldCrops { get; set; }
         public virtual ICollection<Commodity> Commodities { get; set; } = new List<Commodity>();
     }

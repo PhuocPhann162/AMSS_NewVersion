@@ -4,6 +4,7 @@ using AMSS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250412072005_UpdateSupplierTable")]
+    partial class UpdateSupplierTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,9 +166,6 @@ namespace AMSS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasColumnName("CreatedAt");
-
-                    b.Property<string>("PhoneCode")
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -536,11 +536,11 @@ namespace AMSS.Migrations
 
                     b.Property<string>("Code")
                         .HasMaxLength(5)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("CountryCode")
                         .HasMaxLength(5)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<Guid?>("CountryContinentId")
                         .HasColumnType("uniqueidentifier");

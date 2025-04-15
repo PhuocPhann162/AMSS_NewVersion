@@ -1,5 +1,5 @@
 ﻿using AMSS.Entities;
-using AMSS.Models.Commodities;
+using AMSS.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models.Suppliers
@@ -23,6 +23,19 @@ namespace AMSS.Models.Suppliers
 
         [Column(TypeName = "nvarchar(500)")]
         public string Address { get; set; }
-        public virtual ICollection<Commodity> Commodities { get; set; }
+
+        [Column(TypeName = "nvarchar(10)")]
+        public string CountryCode { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
+        public string CountryName { get; set; }
+
+        [Column(TypeName = "nvarchar(10)")]
+        public string ProvinceCode { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
+        public string ProvinceName { get; set; }
+
+        public Role SupplierRole { get; set; }
     }
 }

@@ -5,19 +5,14 @@ namespace AMSS.Dto.Requests
 {
     public class PaginationRequest
     {
-        [JsonPropertyName("OrderBy")]
         public string OrderBy { get; set; }
 
-        [JsonPropertyName("OrderByDirection")]
         public ListSortDirection OrderByDirection { get; set; }
 
-        [JsonPropertyName("CurrentPage")]
         public int CurrentPage { get; set; }
 
-        [JsonPropertyName("Limit")]
         public int Limit { get; set; }
 
-        [JsonPropertyName("Search")]
         public string Search { get; set; }
 
         public void InitializeParams()

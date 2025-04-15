@@ -4,12 +4,14 @@ using AMSS.Dto.Requests.Mails;
 using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Enums;
+using AMSS.Models.Suppliers;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Services.IService.BackgroundJob;
 using AutoMapper;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Identity.Client;
 using Microsoft.OpenApi.Extensions;
 using System.Net;
 using System.Security.Claims;
@@ -77,15 +79,7 @@ namespace AMSS.Services
                     Token = token,
                 };
 
-                var mailRequest = new MailRequest
-                {
-                    Tos = [new() { Name = username, Email = "21520405@gm.uit.edu.vn" }],
-                    Ccs = [new() { Email = "phanngocphuoc8@gmail.com" }],
-                    IsHtml = true,
-                    Subject = "Test MailKit using SMTP",
-                    TemplateName = "RegisterClientTemplate"
-                };
-                _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.InvokeAsync(mailRequest));
+                
 
                 return BuildSuccessResponseMessage(loginResponseDto, "Welcome " + userDto.FullName + "! Have a nice day🌟");
             }
@@ -103,6 +97,8 @@ namespace AMSS.Services
             {
                 return BuildErrorResponseMessage<bool>("Username already exists", HttpStatusCode.Conflict);
             }
+
+            // Create new user
             ApplicationUser newUser = new()
             {
                 UserName = registrationDto.UserName,
@@ -123,34 +119,39 @@ namespace AMSS.Services
             try
             {
                 var result = await _userManager.CreateAsync(newUser);
-                string userRole = registrationDto.Role.GetDisplayName();
+                
                 if (result.Succeeded)
                 {
+                    string userRole = registrationDto.Role.GetDisplayName();
                     if (!_roleManager.RoleExistsAsync(userRole).GetAwaiter().GetResult())
                     {
                         await _roleManager.CreateAsync(new IdentityRole(userRole));
                     }
-                    //if(!String.IsNullOrEmpty(userRole))
-                    //{
-                    //    if (userRole.ToLower() == Role.ADMIN.ToString())
-                    //    {
-                    //        await _userManager.AddToRoleAsync(newUser, Role.ADMIN.ToString());
-                    //    }
-                    //    else if (userRole.ToLower() == Role.OWNER.ToString())
-                    //    {
-                    //        await _userManager.AddToRoleAsync(newUser, Role.OWNER.ToString());
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    await _userManager.AddToRoleAsync(newUser, Role.FARMER.ToString());
-                    //}
                     await _userManager.AddToRoleAsync(newUser, userRole);
+
+                    // if user is supplier, create new supplier
+                    if (registrationDto.Role is not Role.ADMIN && registrationDto.Role is not Role.CUSTOMER)
+                    {
+                        Supplier newSupplier = new(registrationDto);
+                        await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
+                        await _unitOfWork.SaveChangeAsync();
+                    }
                 }
                 else
                 {
                     return BuildErrorResponseMessage<bool>(result.Errors.FirstOrDefault()?.Description!, HttpStatusCode.Forbidden);
                 }
+
+                // Send mail registration successfully
+                var mailRequest = new MailRequest
+                {
+                    Tos = [new() { Name = registrationDto.FullName, Email = registrationDto.UserName }],
+                    Ccs = [new() { Email = "admin@fuco.com" }],
+                    IsHtml = true,
+                    Subject = "You're Invited to Join Novaris – Let's Get Started!",
+                    TemplateName = "RegisterClientTemplate"
+                };
+                _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.InvokeAsync(mailRequest));
 
                 return BuildSuccessResponseMessage(true, "Registration new account successfully");
             }

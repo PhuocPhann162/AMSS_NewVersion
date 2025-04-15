@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace AMSS.Infrastructures.Services
 {
     public class RedisCacheService
-        (ILogger _logger, IDistributedCache _redisCacheService, 
+        (ILogger<RedisCacheService> _logger, IDistributedCache _redisCacheService, 
         ISerializeService _serializeService) : IRedisCacheService
     {
         public async Task<T> GetData<T>(string key)

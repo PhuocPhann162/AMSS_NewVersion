@@ -32,18 +32,24 @@ namespace AMSS.Services
                 sortExpressions.Add(sortExpression);
             }
 
-            var suppliersPaginationResult = await _unitOfWork.SupplierRepository.GetAsync(null, request.CurrentPage, request.Limit, sortExpressions.ToArray());
+            var suppliersPaginationResult = await _unitOfWork.SupplierRepository.GetAsync(x => x.SupplierRole == request.SupplierRole, request.CurrentPage, request.Limit, sortExpressions.ToArray());
             var response = new PaginationResponse<GetSuppliersResponse>(suppliersPaginationResult.CurrentPage, suppliersPaginationResult.Limit,
                             suppliersPaginationResult.TotalRow, suppliersPaginationResult.TotalPage)
             {
                 Collection = suppliersPaginationResult.Data.Select(x => new GetSuppliersResponse
                 {
+                    Id = x.Id,
                     Name = x.Name, 
                     ContactName = x.ContactName,
+                    CountryCode = x.CountryCode, 
+                    CountryName = x.CountryName, 
+                    ProvinceCode = x.ProvinceCode,
+                    ProvinceName = x.ProvinceName,
                     Address = x.Address,
                     Email = x.Email, 
                     PhoneCode = x.PhoneCode,
-                    PhoneNumber = x.PhoneNumber
+                    PhoneNumber = x.PhoneNumber,
+                    CreatedAt = x.CreatedAt
                 })
             };
             return BuildSuccessResponseMessage(response);
