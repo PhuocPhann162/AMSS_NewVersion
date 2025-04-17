@@ -7,6 +7,7 @@ using AMSS.Models.Suppliers;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;
+using System.Linq.Expressions;
 using System.Net;
 
 namespace AMSS.Services
@@ -15,8 +16,8 @@ namespace AMSS.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public SupplierService(IUnitOfWork unitOfWork, IMapper mapper) 
-        { 
+        public SupplierService(IUnitOfWork unitOfWork, IMapper mapper)
+        {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -25,28 +26,45 @@ namespace AMSS.Services
         {
             var sortExpressions = new List<SortExpression<Supplier>>();
 
-            if (!string.IsNullOrEmpty(request.OrderBy) &&
-                string.Equals(request.OrderBy, "CreatedAt", StringComparison.OrdinalIgnoreCase))
+            var sortFieldMap = new Dictionary<string, Expression<Func<Supplier, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                var sortExpression = new SortExpression<Supplier>(p => p.CreatedAt, request.OrderByDirection);
-                sortExpressions.Add(sortExpression);
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["Name"] = x => x.Name,
+                ["ContactName"] = x => x.ContactName,
+                ["ProvinceName"] = x => x.ProvinceName,
+            };
+
+            // Sort
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<Supplier>(sortField, request.OrderByDirection));
             }
 
-            var suppliersPaginationResult = await _unitOfWork.SupplierRepository.GetAsync(x => x.SupplierRole == request.SupplierRole, request.CurrentPage, request.Limit, sortExpressions.ToArray());
+            // Filter and Search
+            Expression<Func<Supplier, bool>> filter = x =>
+                    x.SupplierRole == request.SupplierRole &&
+                    (request.CountryCodes == null || request.CountryCodes.Count() == 0 || request.CountryCodes.Contains(x.CountryCode)) &&
+                    (string.IsNullOrEmpty(request.Search) || x.Name.Contains(request.Search) || x.ContactName.Contains(request.Search));
+
+            var suppliersPaginationResult = await _unitOfWork.SupplierRepository.GetAsync(
+                filter, 
+                request.CurrentPage, 
+                request.Limit, 
+                sortExpressions.ToArray());
             var response = new PaginationResponse<GetSuppliersResponse>(suppliersPaginationResult.CurrentPage, suppliersPaginationResult.Limit,
                             suppliersPaginationResult.TotalRow, suppliersPaginationResult.TotalPage)
             {
                 Collection = suppliersPaginationResult.Data.Select(x => new GetSuppliersResponse
                 {
                     Id = x.Id,
-                    Name = x.Name, 
+                    Name = x.Name,
                     ContactName = x.ContactName,
-                    CountryCode = x.CountryCode, 
-                    CountryName = x.CountryName, 
+                    CountryCode = x.CountryCode,
+                    CountryName = x.CountryName,
                     ProvinceCode = x.ProvinceCode,
                     ProvinceName = x.ProvinceName,
                     Address = x.Address,
-                    Email = x.Email, 
+                    Email = x.Email,
                     PhoneCode = x.PhoneCode,
                     PhoneNumber = x.PhoneNumber,
                     CreatedAt = x.CreatedAt

@@ -1,9 +1,14 @@
 ﻿using AMSS.Entities;
 using AMSS.Enums;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Models.Suppliers
 {
+    [Index(nameof(SupplierRole))]
+    [Index(nameof(Name))]
+    [Index(nameof(ContactName))]
+    [Index(nameof(CountryCode))]
     public partial class Supplier : BaseModel<Guid>
     {
         [Column(TypeName = "nvarchar(255)")]
