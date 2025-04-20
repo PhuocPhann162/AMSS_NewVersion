@@ -1,5 +1,6 @@
 ﻿using AMSS.Dto.Location;
 using AMSS.Entities;
+using AMSS.Entities.Locations;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;

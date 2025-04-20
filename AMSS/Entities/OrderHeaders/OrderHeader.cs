@@ -2,6 +2,7 @@
 using AMSS.Models.OrderDetails;
 using AMSS.Enums;
 using AMSS.Entities;
+using AMSS.Entities.Locations;
 
 namespace AMSS.Models.OrderHeaders
 {

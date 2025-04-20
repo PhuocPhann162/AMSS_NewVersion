@@ -14,10 +14,14 @@ namespace AMSS.Models.Suppliers
         public Supplier(RegistrationRequestDto request) 
         {
             Id = Guid.NewGuid();
-            Name = request.FullName;
+            Name = request.CompanyName.Trim();
+            ContactName = request.ContactName.Trim();
+            CountryCode = request.Country;
+            ProvinceCode = request.ProvinceCode;
+            PhoneCode = request.PhoneCode;
             PhoneNumber = request.PhoneNumber;
-            Address = request.StreetAddress;
-            Email = request.UserName;
+            Address = request.StreetAddress.Trim();
+            Email = request.UserName.Trim();
             SupplierRole = request.Role;
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;

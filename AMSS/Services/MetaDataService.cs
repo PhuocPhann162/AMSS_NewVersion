@@ -44,5 +44,23 @@ namespace AMSS.Services
 
             return BuildSuccessResponseMessage(response.AsEnumerable());
         }
+
+        public async Task<APIResponse<IEnumerable<SelectionResponse<string>>>> GetProvincesByCountryCodeAsync(string countryCode)
+        {
+            var provinces = await _unitOfWork.ProvinceRepository.GetRESAsync(u => u.CountryCode == countryCode);
+
+            if (provinces is null || !provinces.Any())
+            {
+                return BuildSuccessResponseMessage(Enumerable.Empty<SelectionResponse<string>>());
+            }
+
+            var response = provinces.Select(province => new SelectionResponse<string>
+            {
+                Value = province.Code,
+                Name = province.Name
+            });
+
+            return BuildSuccessResponseMessage(response);
+        }
     }
 }

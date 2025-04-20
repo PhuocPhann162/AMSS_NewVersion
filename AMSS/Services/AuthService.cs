@@ -3,7 +3,9 @@ using AMSS.Dto.Auth;
 using AMSS.Dto.Requests.Mails;
 using AMSS.Dto.User;
 using AMSS.Entities;
+using AMSS.Entities.Locations;
 using AMSS.Enums;
+using AMSS.Infrastructures.Configurations;
 using AMSS.Models.Suppliers;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
@@ -11,7 +13,7 @@ using AMSS.Services.IService.BackgroundJob;
 using AutoMapper;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
 using System.Net;
 using System.Security.Claims;
@@ -26,9 +28,10 @@ namespace AMSS.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
         private readonly IBackgroundJobClient _backgroundJob;
+        private readonly SupplierConfiguration _supplierConfiguration;
 
         public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
-            IMapper mapper, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenService, IBackgroundJobClient backgroundJob)
+            IMapper mapper, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenService, IBackgroundJobClient backgroundJob, IOptionsMonitor<SupplierConfiguration> supplierConfiguration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -36,6 +39,7 @@ namespace AMSS.Services
             _unitOfWork = unitOfWork;
             _jwtTokenService = jwtTokenService;
             _backgroundJob = backgroundJob;
+            _supplierConfiguration = supplierConfiguration.CurrentValue;
         }
 
         public async Task<APIResponse<LoginResponseDto>> LoginAsync(string username, string password)
@@ -79,8 +83,6 @@ namespace AMSS.Services
                     Token = token,
                 };
 
-                
-
                 return BuildSuccessResponseMessage(loginResponseDto, "Welcome " + userDto.FullName + "! Have a nice day🌟");
             }
             catch (Exception ex)
@@ -91,7 +93,7 @@ namespace AMSS.Services
 
         public async Task<APIResponse<bool>> RegisterAsync(RegistrationRequestDto registrationDto)
         {
-            ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.UserName!.ToLower() == registrationDto.UserName.ToLower() && !u.IsDeleted);
+            ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.UserName.ToLower() == registrationDto.UserName.ToLower() && !u.IsDeleted);
 
             if (userFromDb != null)
             {
@@ -101,51 +103,61 @@ namespace AMSS.Services
             // Create new user
             ApplicationUser newUser = new()
             {
-                UserName = registrationDto.UserName,
-                Email = registrationDto.UserName,
-                NormalizedEmail = registrationDto.UserName.ToUpper(),
-                Password = BCrypt.Net.BCrypt.HashPassword(registrationDto.Password),
-                FullName = registrationDto.FullName,
+                UserName = registrationDto.UserName.Trim(),
+                Email = registrationDto.UserName.Trim(),
+                NormalizedEmail = registrationDto.UserName.ToUpper().Trim(),
+                Password = !string.IsNullOrEmpty(registrationDto.Password) ? BCrypt.Net.BCrypt.HashPassword(registrationDto.Password) 
+                                                            : BCrypt.Net.BCrypt.HashPassword(_supplierConfiguration.DefaultPassword),
+                FullName = registrationDto.ContactName.Trim(),
                 Avatar = registrationDto.Avatar,
                 PhoneNumber = registrationDto.PhoneNumber,
-                StreetAddress = registrationDto.StreetAddress,
-                City = registrationDto.City,
-                State = registrationDto.State,
+                StreetAddress = registrationDto.StreetAddress.Trim(),
+                City = string.IsNullOrEmpty(registrationDto.City) ? registrationDto.StreetAddress.Trim() : registrationDto.City.Trim(),
+                State = string.IsNullOrEmpty(registrationDto.State) ? registrationDto.StreetAddress.Trim() : registrationDto.State.Trim(),
                 Country = registrationDto.Country,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
             };
 
+            Location userLocation = new(registrationDto, Guid.Parse(newUser.Id));
+
             try
             {
                 var result = await _userManager.CreateAsync(newUser);
                 
-                if (result.Succeeded)
-                {
-                    string userRole = registrationDto.Role.GetDisplayName();
-                    if (!_roleManager.RoleExistsAsync(userRole).GetAwaiter().GetResult())
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(userRole));
-                    }
-                    await _userManager.AddToRoleAsync(newUser, userRole);
-
-                    // if user is supplier, create new supplier
-                    if (registrationDto.Role is not Role.ADMIN && registrationDto.Role is not Role.CUSTOMER)
-                    {
-                        Supplier newSupplier = new(registrationDto);
-                        await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
-                        await _unitOfWork.SaveChangeAsync();
-                    }
-                }
-                else
+                if (!result.Succeeded)
                 {
                     return BuildErrorResponseMessage<bool>(result.Errors.FirstOrDefault()?.Description!, HttpStatusCode.Forbidden);
+                }
+
+                string userRole = registrationDto.Role.GetDisplayName();
+                if (!_roleManager.RoleExistsAsync(userRole).GetAwaiter().GetResult())
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(userRole)); 
+                }
+                await _userManager.AddToRoleAsync(newUser, userRole);
+
+                // if user is supplier, create new supplier
+                if (registrationDto.Role is not Role.ADMIN && registrationDto.Role is not Role.CUSTOMER)
+                {
+                    var countrySupplier = await _unitOfWork.CountryContinentRepository.FirstOrDefaultAsync(u => u.CountryCode.Equals(registrationDto.Country));
+                    string provinceName = null;
+                    if(!string.IsNullOrEmpty(registrationDto.ProvinceCode))
+                    {
+                        var provinceSupplier = await _unitOfWork.ProvinceRepository.FirstOrDefaultAsync(u => u.Code.Equals(registrationDto.ProvinceCode));
+                        provinceName = provinceSupplier.Name;
+                    }
+                    Supplier newSupplier = new(registrationDto);
+                    newSupplier.CountryName = countrySupplier.CountryName;
+                    newSupplier.ProvinceName = provinceName;
+                    await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
+                    await _unitOfWork.SaveChangeAsync();
                 }
 
                 // Send mail registration successfully
                 var mailRequest = new MailRequest
                 {
-                    Tos = [new() { Name = registrationDto.FullName, Email = registrationDto.UserName }],
+                    Tos = [new() { Name = registrationDto.ContactName, Email = registrationDto.UserName }],
                     Ccs = [new() { Email = "admin@fuco.com" }],
                     IsHtml = true,
                     Subject = "You're Invited to Join Novaris – Let's Get Started!",

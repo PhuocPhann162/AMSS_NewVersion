@@ -15,6 +15,7 @@ using AMSS.Dto.SocialYear;
 using AMSS.Dto.SoilQuality;
 using AMSS.Dto.User;
 using AMSS.Entities;
+using AMSS.Entities.Locations;
 using AMSS.Entities.Polygon;
 using AMSS.Models.Commodities;
 using AutoMapper;

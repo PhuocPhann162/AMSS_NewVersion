@@ -1,5 +1,5 @@
 ﻿using AMSS.Data;
-using AMSS.Entities;
+using AMSS.Entities.Locations;
 using AMSS.Repositories.IRepository;
 
 namespace AMSS.Repositories

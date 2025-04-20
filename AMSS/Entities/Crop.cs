@@ -9,29 +9,23 @@ namespace AMSS.Entities
 {
     public class Crop : BaseModel<Guid>
     {
-        [MaxLength(1000)]
-        [Column(TypeName = "nvarchar(1000)")]
+        [Column(TypeName = "nvarchar(MAX)")]
         public string Icon { get; set; }
 
-        [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string Name { get; set; }
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string Cycle { get; set; }
 
         public bool Edible { get; set; } = false;
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string Soil { get; set; }
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string Watering { get; set; }
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string Maintenance { get; set; }
 
@@ -39,19 +33,15 @@ namespace AMSS.Entities
 
         public bool Indoor { get; set; } = false;
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string Propagation { get; set; }
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string CareLevel { get; set; }
 
-        [MaxLength(100)]
         [Column(TypeName = "nvarchar(100)")]
         public string GrowthRate { get; set; }
 
-        [MaxLength(500)]
         [Column(TypeName = "nvarchar(500)")]
         public string Description { get; set; }
 

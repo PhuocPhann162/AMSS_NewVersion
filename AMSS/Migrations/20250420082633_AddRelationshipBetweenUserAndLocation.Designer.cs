@@ -4,6 +4,7 @@ using AMSS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250420082633_AddRelationshipBetweenUserAndLocation")]
+    partial class AddRelationshipBetweenUserAndLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,9 +34,11 @@ namespace AMSS.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Avatar")
+                        .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("City")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -41,6 +46,7 @@ namespace AMSS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -55,6 +61,7 @@ namespace AMSS.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("IsActive")
@@ -78,6 +85,7 @@ namespace AMSS.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Password")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PasswordHash")
@@ -90,15 +98,18 @@ namespace AMSS.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RefreshToken")
+                        .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("StreetAddress")
+                        .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -136,15 +147,19 @@ namespace AMSS.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("ContinentCode")
+                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ContinentName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CountryCode")
+                        .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("CountryName")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -173,6 +188,7 @@ namespace AMSS.Migrations
                         .HasColumnName("Id");
 
                     b.Property<string>("CareLevel")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -187,9 +203,11 @@ namespace AMSS.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Cycle")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("Edible")
@@ -199,33 +217,39 @@ namespace AMSS.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GrowthRate")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("HardinessZone")
                         .HasColumnType("int");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(MAX)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("Indoor")
                         .HasColumnType("bit");
 
                     b.Property<string>("Maintenance")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("PlantedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Propagation")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("Soil")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid?>("SupplierId")
@@ -237,6 +261,7 @@ namespace AMSS.Migrations
                         .HasColumnName("UpdatedAt");
 
                     b.Property<string>("Watering")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
@@ -257,6 +282,7 @@ namespace AMSS.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -266,9 +292,11 @@ namespace AMSS.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Type")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -300,9 +328,11 @@ namespace AMSS.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("OwnerName")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<Guid?>("PolygonAppId")
@@ -346,12 +376,14 @@ namespace AMSS.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<Guid?>("PolygonAppId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -401,16 +433,17 @@ namespace AMSS.Migrations
                         .HasColumnName("Id");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(MAX)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid?>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CountryCode")
-                        .HasColumnType("nvarchar(5)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -418,22 +451,22 @@ namespace AMSS.Migrations
                         .HasColumnName("CreatedAt");
 
                     b.Property<string>("District")
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Lat")
-                        .HasColumnType("float");
+                    b.Property<float>("Lat")
+                        .HasColumnType("real");
 
-                    b.Property<double>("Lng")
-                        .HasColumnType("float");
+                    b.Property<float>("Lng")
+                        .HasColumnType("real");
 
                     b.Property<string>("PostCode")
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Road")
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()

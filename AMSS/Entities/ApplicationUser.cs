@@ -3,40 +3,33 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using AMSS.Enums;
 using System.Text.Json.Serialization;
+using AMSS.Entities.Locations;
 
 namespace AMSS.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string FullName { get; set; }
 
-        [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string Password { get; set; }
 
-        [MaxLength(400)]
         [Column(TypeName = "nvarchar(400)")]
         public string StreetAddress { get; set; }
 
-        [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string City { get; set; }
 
-        [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string State { get; set; }
 
-        [MaxLength(255)]
         [Column(TypeName = "nvarchar(255)")]
         public string Country { get; set; }
 
-        [MaxLength(1000)]
         [Column(TypeName = "nvarchar(1000)")]
         public string Avatar { get; set; }
 
-        [MaxLength(1000)]
         [Column(TypeName = "nvarchar(1000)")]
         public string RefreshToken { get; set; }
 
@@ -48,10 +41,12 @@ namespace AMSS.Entities
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Role Role { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
+
+        public virtual ICollection<Location> Locations { get; set; } = new List<Location>();
     }
 }

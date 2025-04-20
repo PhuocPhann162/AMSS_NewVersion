@@ -1,4 +1,4 @@
-﻿using AMSS.Entities;
+﻿using AMSS.Entities.Locations;
 
 namespace AMSS.Repositories.IRepository
 {

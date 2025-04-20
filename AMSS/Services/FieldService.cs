@@ -1,5 +1,6 @@
 ﻿using AMSS.Dto.Field;
 using AMSS.Entities;
+using AMSS.Entities.Locations;
 using AMSS.Entities.Polygon;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;

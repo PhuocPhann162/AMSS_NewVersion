@@ -10,14 +10,17 @@ namespace AMSS.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(TypeName = "uniqueidentifier")]
         public Guid Id { get; set; }
 
+        [Column(TypeName = "uniqueidentifier")]
         public Guid? FieldId { get; set; }
         [ForeignKey("FieldId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.SetNull)]
         public virtual Field? Field { get; set; }
 
+        [Column(TypeName = "uniqueidentifier")]
         public Guid? CropId { get; set; }
         [ForeignKey("CropId")]
         [ValidateNever]

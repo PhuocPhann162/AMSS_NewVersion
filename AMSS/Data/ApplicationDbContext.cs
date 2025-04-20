@@ -1,4 +1,5 @@
 ﻿using AMSS.Entities;
+using AMSS.Entities.Locations;
 using AMSS.Entities.Polygon;
 using AMSS.Models.CartItems;
 using AMSS.Models.Commodities;

@@ -13,6 +13,8 @@ using AMSS.Infrastructures.Services;
 using AMSS.Services.IService.BackgroundJob;
 using AMSS.Services.BackgroundJob;
 using AMSS.Constants;
+using Microsoft.AspNetCore.Mvc;
+using AMSS.Models;
 
 namespace AMSS
 {
@@ -21,9 +23,8 @@ namespace AMSS
         public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers();
+            services.AddExternalReferences(configuration);
             services.AddWebServices();
-            services.AddRedisCacheService(configuration);
-            services.AddHangFireServices(configuration);
             services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
@@ -54,8 +55,6 @@ namespace AMSS
                     }
                 });
             });
-            services.AddSmtpService(configuration);
-            services.AddBackgroundService();
         }
 
         private static void AddHangFireServices(this IServiceCollection services, IConfiguration configuration)
@@ -105,6 +104,16 @@ namespace AMSS
             services.AddScoped<IMetatDataService, MetaDataService>();
         }
 
+        private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangFireServices(configuration);
+            services.AddSmtpService(configuration);
+            services.AddRedisCacheService(configuration);
+            services.AddBackgroundService();
+            services.AddConfigurationSettings(configuration);
+            services.AddErrorValidateCustomService(configuration);
+        }
+
         private static void AddSmtpService(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<SmtpConfiguration>(configuration.GetSection("SmtpSettings"));
@@ -114,6 +123,7 @@ namespace AMSS
         private static void AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration) 
         {
             services.Configure<StripePaymentConfiguration>(configuration.GetSection("StripeSettings"));
+            services.Configure<SupplierConfiguration>(configuration.GetSection("SupplierSettings"));
         }
 
         private static void AddBackgroundService(this IServiceCollection services)
@@ -127,6 +137,21 @@ namespace AMSS
             {
                 option.Configuration = configuration.GetConnectionString("Redis");
                 option.InstanceName = "Noavaris_";
+            });
+        }
+
+        private static void AddErrorValidateCustomService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpContextAccessor();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressMapClientErrors = true;
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var result = new NovarisValidationFailedResult(context.ModelState);
+
+                    return result;
+                };
             });
         }
     }

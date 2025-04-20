@@ -40,5 +40,15 @@ namespace AMSS.Controllers
             var response = await _metatDataService.GetCountriesAsync();
             return ProcessResponseMessage(response);
         }
+
+        [HttpGet("{countryCode}/provinces")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<IEnumerable<SelectionResponse<string>>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetProvincesByCountryCodeAsync(string countryCode)
+        {
+            var response = await _metatDataService.GetProvincesByCountryCodeAsync(countryCode);
+            return ProcessResponseMessage(response);
+        }
     }
 }

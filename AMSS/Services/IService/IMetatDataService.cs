@@ -7,5 +7,6 @@ namespace AMSS.Services.IService
     {
         Task<APIResponse<IEnumerable<CountrySelectionResponse<string>>>> GetCountriesSelectionAsync();
         Task<APIResponse<Dictionary<string, string>>> GetCountriesAsync();
+        Task<APIResponse<IEnumerable<SelectionResponse<string>>>> GetProvincesByCountryCodeAsync(string countryCode);
     }
 }
