@@ -100,77 +100,79 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<bool>("Username already exists", HttpStatusCode.Conflict);
             }
 
+            // Find Country and Province name
+            var countryWithRequest = await _unitOfWork.CountryContinentRepository.FirstOrDefaultAsync(u => u.CountryCode.Equals(registrationDto.Country));
+            string provinceName = null;
+            if (!string.IsNullOrEmpty(registrationDto.ProvinceCode))
+            {
+                var provinceSupplier = await _unitOfWork.ProvinceRepository.FirstOrDefaultAsync(u => u.Code.Equals(registrationDto.ProvinceCode));
+                provinceName = provinceSupplier.Name;
+            }
+
             // Create new user
             ApplicationUser newUser = new()
             {
                 UserName = registrationDto.UserName.Trim(),
                 Email = registrationDto.UserName.Trim(),
                 NormalizedEmail = registrationDto.UserName.ToUpper().Trim(),
-                Password = !string.IsNullOrEmpty(registrationDto.Password) ? BCrypt.Net.BCrypt.HashPassword(registrationDto.Password) 
+                Password = !string.IsNullOrEmpty(registrationDto.Password) ? BCrypt.Net.BCrypt.HashPassword(registrationDto.Password)
                                                             : BCrypt.Net.BCrypt.HashPassword(_supplierConfiguration.DefaultPassword),
                 FullName = registrationDto.ContactName.Trim(),
                 Avatar = registrationDto.Avatar,
                 PhoneNumber = registrationDto.PhoneNumber,
                 StreetAddress = registrationDto.StreetAddress.Trim(),
-                City = string.IsNullOrEmpty(registrationDto.City) ? registrationDto.StreetAddress.Trim() : registrationDto.City.Trim(),
-                State = string.IsNullOrEmpty(registrationDto.State) ? registrationDto.StreetAddress.Trim() : registrationDto.State.Trim(),
-                Country = registrationDto.Country,
+                CountryCode = registrationDto.Country, 
+                CountryName = countryWithRequest.CountryName,
+                PhoneCode = registrationDto.PhoneCode,
+                ProvinceName = provinceName,
+                ProvinceCode = registrationDto.ProvinceCode,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
             };
 
+            // Create new location 
             Location userLocation = new(registrationDto, Guid.Parse(newUser.Id));
+            await _unitOfWork.LocationRepository.CreateAsync(userLocation);
 
-            try
+            var result = await _userManager.CreateAsync(newUser);
+
+            if (!result.Succeeded)
             {
-                var result = await _userManager.CreateAsync(newUser);
+                return BuildErrorResponseMessage<bool>(result.Errors.FirstOrDefault()?.Description!, HttpStatusCode.Forbidden);
+            }
+
+            // Create new role if not exist, 
+            string userRole = registrationDto.Role.GetDisplayName();
+            if (!_roleManager.RoleExistsAsync(userRole).GetAwaiter().GetResult())
+            {
+                await _roleManager.CreateAsync(new IdentityRole(userRole));
+            }
+            await _userManager.AddToRoleAsync(newUser, userRole);
+
+            // if user is supplier, create new supplier
+            if (registrationDto.Role is not Role.ADMIN && registrationDto.Role is not Role.CUSTOMER)
+            {
                 
-                if (!result.Succeeded)
-                {
-                    return BuildErrorResponseMessage<bool>(result.Errors.FirstOrDefault()?.Description!, HttpStatusCode.Forbidden);
-                }
-
-                string userRole = registrationDto.Role.GetDisplayName();
-                if (!_roleManager.RoleExistsAsync(userRole).GetAwaiter().GetResult())
-                {
-                    await _roleManager.CreateAsync(new IdentityRole(userRole)); 
-                }
-                await _userManager.AddToRoleAsync(newUser, userRole);
-
-                // if user is supplier, create new supplier
-                if (registrationDto.Role is not Role.ADMIN && registrationDto.Role is not Role.CUSTOMER)
-                {
-                    var countrySupplier = await _unitOfWork.CountryContinentRepository.FirstOrDefaultAsync(u => u.CountryCode.Equals(registrationDto.Country));
-                    string provinceName = null;
-                    if(!string.IsNullOrEmpty(registrationDto.ProvinceCode))
-                    {
-                        var provinceSupplier = await _unitOfWork.ProvinceRepository.FirstOrDefaultAsync(u => u.Code.Equals(registrationDto.ProvinceCode));
-                        provinceName = provinceSupplier.Name;
-                    }
-                    Supplier newSupplier = new(registrationDto);
-                    newSupplier.CountryName = countrySupplier.CountryName;
-                    newSupplier.ProvinceName = provinceName;
-                    await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
-                    await _unitOfWork.SaveChangeAsync();
-                }
-
-                // Send mail registration successfully
-                var mailRequest = new MailRequest
-                {
-                    Tos = [new() { Name = registrationDto.ContactName, Email = registrationDto.UserName }],
-                    Ccs = [new() { Email = "admin@fuco.com" }],
-                    IsHtml = true,
-                    Subject = "You're Invited to Join Novaris – Let's Get Started!",
-                    TemplateName = "RegisterClientTemplate"
-                };
-                _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.InvokeAsync(mailRequest));
-
-                return BuildSuccessResponseMessage(true, "Registration new account successfully");
+                Supplier newSupplier = new(registrationDto);
+                newSupplier.CountryName = countryWithRequest.CountryName;
+                newSupplier.ProvinceName = provinceName;
+                await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
             }
-            catch (Exception ex)
+
+            await _unitOfWork.SaveChangeAsync();
+
+            // Send mail registration successfully
+            var mailRequest = new MailRequest
             {
-                return BuildErrorResponseMessage<bool>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
-            }
+                Tos = [new() { Name = registrationDto.ContactName, Email = registrationDto.UserName }],
+                Ccs = [new() { Email = "admin@fuco.com" }],
+                IsHtml = true,
+                Subject = "You're Invited to Join Novaris – Let's Get Started!",
+                TemplateName = "RegisterClientTemplate"
+            };
+            _backgroundJob.Enqueue<ISendEmailJob>(QueueName.SendEmailJob, job => job.InvokeAsync(mailRequest));
+
+            return BuildSuccessResponseMessage(true, "Registration new account successfully");
         }
 
         public async Task<APIResponse<string>> RefreshTokenAsync(string refreshToken, string accessToken)

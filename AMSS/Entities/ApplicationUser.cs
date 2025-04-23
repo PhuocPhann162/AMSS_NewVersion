@@ -18,17 +18,23 @@ namespace AMSS.Entities
         [Column(TypeName = "nvarchar(400)")]
         public string StreetAddress { get; set; }
 
-        [Column(TypeName = "nvarchar(255)")]
-        public string City { get; set; }
+        [Column(TypeName = "nvarchar(10)")]
+        public string CountryCode { get; set; }
 
         [Column(TypeName = "nvarchar(255)")]
-        public string State { get; set; }
+        public string CountryName { get; set; }
 
-        [Column(TypeName = "nvarchar(255)")]
-        public string Country { get; set; }
-
-        [Column(TypeName = "nvarchar(1000)")]
+        [Column(TypeName = "nvarchar(MAX)")]
         public string Avatar { get; set; }
+
+        [Column(TypeName = "nvarchar(10)")]
+        public string ProvinceCode { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
+        public string ProvinceName { get; set; }
+
+        [Column(TypeName = "nvarchar(10)")]
+        public string PhoneCode { get; set; }
 
         [Column(TypeName = "nvarchar(1000)")]
         public string RefreshToken { get; set; }

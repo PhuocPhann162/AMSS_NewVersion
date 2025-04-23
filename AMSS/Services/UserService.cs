@@ -1,60 +1,77 @@
-﻿using AMSS.Dto.User;
+﻿using AMSS.Dto.Requests.Users;
+using AMSS.Dto.Responses;
+using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Enums;
+using AMSS.Models;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.Linq.Expressions;
 using System.Net;
+using AMSS.Dto.Responses.Users;
+using Microsoft.OpenApi.Extensions;
 
 namespace AMSS.Services
 {
     public class UserService : BaseService, IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
-        public async Task<APIResponse<IEnumerable<UserDto>>> GetAllUsersAsync(string? searchString, int pageNumber = 1, int pageSize = 5)
+        public async Task<APIResponse<PaginationResponse<GetCustomersResponse>>> GetCustomersAsync(GetCustomersRequest request)
         {
-            try
+            var sortExpressions = new List<SortExpression<ApplicationUser>>();
+
+            var sortFieldMap = new Dictionary<string, Expression<Func<ApplicationUser, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                IEnumerable<ApplicationUser> lstUsers = await _unitOfWork.UserRepository.GetAllAsync(u => !u.IsDeleted);
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["FullName"] = x => x.FullName,
+            };
 
-                foreach (var user in lstUsers)
-                {
-                    user.Role = Enum.Parse<Role>(_userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault()!);
-                }
-
-                var lstUserDtos = _mapper.Map<IEnumerable<UserDto>>(lstUsers);
-
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    lstUserDtos = lstUserDtos.Where(u => u.FullName.ToLower().Contains(searchString.ToLower()) || u.PhoneNumber.Contains(searchString) || u.Role.ToString().ToLower().Contains(searchString.ToLower())).ToList();
-                }
-
-                Pagination pagination = new()
-                {
-                    CurrentPage = pageNumber,
-                    PageSize = pageSize,
-                    TotalRecords = lstUsers.Count(),
-                };
-                var paginatedUsers = lstUserDtos.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-                return BuildSuccessResponseMessage(paginatedUsers, "Get all Users successfully", pagination: pagination);
-            }
-            catch (Exception ex)
+            // Sort
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
             {
-                return BuildErrorResponseMessage<IEnumerable<UserDto>>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                sortExpressions.Add(new SortExpression<ApplicationUser>(sortField, request.OrderByDirection));
             }
+
+            // Filter and Search
+            Expression<Func<ApplicationUser, bool>> filter = x =>
+                    (request.CountryCodes == null || request.CountryCodes.Count() == 0 || request.CountryCodes.Contains(x.CountryCode)) &&
+                    (string.IsNullOrEmpty(request.Search) || x.FullName.Contains(request.Search) || x.Email.Contains(request.Search));
+
+            var suppliersPaginationResult = await _unitOfWork.UserRepository.GetUsersByRoleAsync(
+                Role.CUSTOMER.GetDisplayName(),
+                filter,
+                request.CurrentPage,
+                request.Limit,
+                sortExpressions.ToArray());
+            var response = new PaginationResponse<GetCustomersResponse>(suppliersPaginationResult.CurrentPage, suppliersPaginationResult.Limit,
+                            suppliersPaginationResult.TotalRow, suppliersPaginationResult.TotalPage)
+            {
+                Collection = suppliersPaginationResult.Data.Select(x => new GetCustomersResponse
+                {
+                    Id = Guid.Parse(x.Id),
+                    FullName = x.FullName, 
+                    Email = x.Email,
+                    Address = x.StreetAddress, 
+                    CountryCode = x.CountryCode, 
+                    CountryName = x.CountryName,
+                    ProvinceCode = x.ProvinceCode,
+                    ProvinceName = x.ProvinceName,
+                    PhoneCode = x.PhoneCode, 
+                    PhoneNumber = x.PhoneNumber,
+                    CreatedAt = x.CreatedAt
+                })
+            };
+            return BuildSuccessResponseMessage(response);
         }
 
         public async Task<APIResponse<bool>> LockUnlockAsync(string? id)
@@ -119,7 +136,6 @@ namespace AMSS.Services
         {
             try
             {
-
                 if (string.IsNullOrEmpty(userId) || updateUserDto == null)
                 {
                     return BuildErrorResponseMessage<bool>("Invalid User ID", HttpStatusCode.BadRequest);

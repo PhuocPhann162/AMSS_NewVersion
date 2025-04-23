@@ -2,8 +2,9 @@
 using AMSS.Dto.Responses;
 using AMSS.Dto.Responses.Suppliers;
 using AMSS.Entities;
+using AMSS.Enums;
 using AMSS.Services.IService;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -20,6 +21,7 @@ namespace AMSS.Controllers
         }
 
         [HttpGet("seed-crop")]
+        [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<PaginationResponse<GetSuppliersResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSuppliersAsync([FromQuery] GetSuppliersRequest request)

@@ -1,4 +1,7 @@
-﻿using AMSS.Dto.User;
+﻿using AMSS.Dto.Requests.Users;
+using AMSS.Dto.Responses;
+using AMSS.Dto.Responses.Users;
+using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Enums;
 using AMSS.Services.IService;
@@ -21,17 +24,13 @@ namespace AMSS.Controllers
         }
 
         [Authorize]
-        [HttpGet("getAll")]
+        [HttpGet("customers")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<IEnumerable<UserDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllUsers(string? searchString, int pageNumber = 1, int pageSize = 5)
+        [ProducesResponseType(typeof(APIResponse<PaginationResponse<GetCustomersResponse>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCustomersAsync([FromQuery] GetCustomersRequest request)
         {
-            APIResponse<IEnumerable<UserDto>> response = await _userService.GetAllUsersAsync(searchString, pageNumber, pageSize);
-            if (response.Pagination is not null)
-            {
-                Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(response.Pagination));
-            }
+            var response = await _userService.GetCustomersAsync(request);
             return ProcessResponseMessage(response);
         }
 
@@ -40,7 +39,7 @@ namespace AMSS.Controllers
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> LockUnlock(string? id)
+        public async Task<IActionResult> LockUnlockAsync(string? id)
         {
             var response = await _userService.LockUnlockAsync(id);
             return ProcessResponseMessage(response);
@@ -50,7 +49,7 @@ namespace AMSS.Controllers
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RoleManagement(string userId, [FromForm] string role)
+        public async Task<IActionResult> RoleManagementAsync(string userId, [FromForm] string role)
         {
             var response = await _userService.RoleManagementAsync(userId, role);
             return ProcessResponseMessage(response);
