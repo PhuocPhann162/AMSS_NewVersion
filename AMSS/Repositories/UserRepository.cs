@@ -42,7 +42,7 @@ namespace AMSS.Repositories
         {
             var role = await _db.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
             if (role == null)
-                return new PaginationResult<ApplicationUser>(); // Or throw
+                return new PaginationResult<ApplicationUser>(); 
 
             var query = from user in _db.Users
                         join userRole in _db.UserRoles on user.Id equals userRole.UserId

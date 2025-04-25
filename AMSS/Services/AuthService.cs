@@ -120,7 +120,7 @@ namespace AMSS.Services
                 FullName = registrationDto.ContactName.Trim(),
                 Avatar = registrationDto.Avatar,
                 PhoneNumber = registrationDto.PhoneNumber,
-                StreetAddress = registrationDto.StreetAddress.Trim(),
+                StreetAddress = registrationDto.StreetAddress?.Trim() ?? null,
                 CountryCode = registrationDto.Country, 
                 CountryName = countryWithRequest.CountryName,
                 PhoneCode = registrationDto.PhoneCode,
@@ -129,10 +129,6 @@ namespace AMSS.Services
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
             };
-
-            // Create new location 
-            Location userLocation = new(registrationDto, Guid.Parse(newUser.Id));
-            await _unitOfWork.LocationRepository.CreateAsync(userLocation);
 
             var result = await _userManager.CreateAsync(newUser);
 
@@ -152,7 +148,10 @@ namespace AMSS.Services
             // if user is supplier, create new supplier
             if (registrationDto.Role is not Role.ADMIN && registrationDto.Role is not Role.CUSTOMER)
             {
-                
+                // Create new location 
+                Location userLocation = new(registrationDto, Guid.Parse(newUser.Id));
+                await _unitOfWork.LocationRepository.CreateAsync(userLocation);
+
                 Supplier newSupplier = new(registrationDto);
                 newSupplier.CountryName = countryWithRequest.CountryName;
                 newSupplier.ProvinceName = provinceName;

@@ -31,7 +31,6 @@ namespace AMSS.Dto.Auth
         [RegularExpression(@"^\d+$", ErrorMessage = "PhoneNumber allowing numbers only.")]
         public string PhoneNumber { get; set; }
 
-        [Required]
         [StringLength(255, ErrorMessage = "Address cannot be longer than 255 characters.")]
         public string StreetAddress { get; set; }
 
