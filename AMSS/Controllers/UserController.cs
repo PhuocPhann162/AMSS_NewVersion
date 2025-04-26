@@ -34,7 +34,6 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-
         [HttpPost("lockUnlock/{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]

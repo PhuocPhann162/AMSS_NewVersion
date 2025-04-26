@@ -1,36 +1,41 @@
 ﻿using AMSS.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace AMSS.Dto.User
 {
     public class UserDto
     {
         public Guid Id { get; set; }
+
         public string UserName { get; set; }
+
         public string Email { get; set; }
+
         public string FullName { get; set; }
+
+        public string CountryName { get; set; }
+
+        public string CountryCode { get; set; }
+
+        public string? ProvinceName { get; set; }
+
+        public string? ProvinceCode { get; set; }
+
+        public string PhoneCode { get; set; }
 
         public string PhoneNumber { get; set; }
 
         public string StreetAddress { get; set; }
 
-        public string City { get; set; }
-
-        public string State { get; set; }
-
-        public string Country { get; set; }
-
         public bool IsActive { get; set; }
 
         public string RefreshToken { get; set; }
 
-        [StringLength(500)]
         public string Avatar { get; set; }
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Role Role { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public Guid? SupplierId { get; set; }
     }
 }

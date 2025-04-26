@@ -25,5 +25,7 @@ namespace AMSS.Dto.Responses.Users
         [JsonPropertyName(nameof(Address))] public string Address { get; set; }
 
         [JsonPropertyName(nameof(CreatedAt))] public DateTime CreatedAt { get; set; }
+
+        [JsonPropertyName(nameof(IsActive))] public bool IsActive { get; set; }
     }
 }

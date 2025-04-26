@@ -33,7 +33,7 @@ namespace AMSS.Services
             var sortFieldMap = new Dictionary<string, Expression<Func<ApplicationUser, object>>>(StringComparer.OrdinalIgnoreCase)
             {
                 ["CreatedAt"] = x => x.CreatedAt,
-                ["FullName"] = x => x.FullName,
+                ["FullName"] = x => x.FullName
             };
 
             // Sort
@@ -44,10 +44,10 @@ namespace AMSS.Services
 
             // Filter and Search
             Expression<Func<ApplicationUser, bool>> filter = x =>
-                    (request.CountryCodes == null || request.CountryCodes.Count() == 0 || request.CountryCodes.Contains(x.CountryCode)) &&
+                    (request.CountryCodes == null || !request.CountryCodes.Any() || request.CountryCodes.Contains(x.CountryCode)) &&
                     (string.IsNullOrEmpty(request.Search) || x.FullName.Contains(request.Search) || x.Email.Contains(request.Search));
 
-            var suppliersPaginationResult = await _unitOfWork.UserRepository.GetUsersByRoleAsync(
+            var suppliersPaginationResult = await _unitOfWork.UserRepository.GetUsersByRoleAsync(   
                 Role.CUSTOMER.GetDisplayName(),
                 filter,
                 request.CurrentPage,
@@ -68,7 +68,8 @@ namespace AMSS.Services
                     ProvinceName = x.ProvinceName,
                     PhoneCode = x.PhoneCode, 
                     PhoneNumber = x.PhoneNumber,
-                    CreatedAt = x.CreatedAt
+                    CreatedAt = x.CreatedAt,
+                    IsActive = x.IsActive
                 })
             };
             return BuildSuccessResponseMessage(response);

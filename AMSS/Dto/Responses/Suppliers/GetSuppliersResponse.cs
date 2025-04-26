@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using AMSS.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace AMSS.Dto.Responses.Suppliers
 {
     public class GetSuppliersResponse
     {
-        
         [JsonPropertyName(nameof(Id))] public Guid Id { get; set; }
 
         [JsonPropertyName(nameof(Name))] public string Name { get; set; }
@@ -29,5 +29,6 @@ namespace AMSS.Dto.Responses.Suppliers
         [JsonPropertyName(nameof(Address))] public string Address { get; set; }
 
         [JsonPropertyName(nameof(CreatedAt))] public DateTime CreatedAt { get; set; }
+        [JsonPropertyName(nameof(Role))] public Role? Role { get; set; }
     }
 }

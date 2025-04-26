@@ -1,6 +1,7 @@
 ﻿using AMSS.Constants;
 using AMSS.Dto.Auth;
 using AMSS.Dto.Requests.Mails;
+using AMSS.Dto.Responses.Suppliers;
 using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Entities.Locations;
@@ -44,51 +45,44 @@ namespace AMSS.Services
 
         public async Task<APIResponse<LoginResponseDto>> LoginAsync(string username, string password)
         {
-            try
+            ApplicationUser user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName!.ToLower() == username.ToLower() && !u.IsDeleted);
+            if (user == null)
             {
-                ApplicationUser user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName!.ToLower() == username.ToLower() && !u.IsDeleted);
-                if (user == null)
-                {
-                    return BuildErrorResponseMessage<LoginResponseDto>("Username does not exist", HttpStatusCode.Unauthorized);
-                }
-                if (!user.IsActive)
-                {
-                    return BuildErrorResponseMessage<LoginResponseDto>("This account has been locked", HttpStatusCode.Unauthorized);
-                }
-                var isValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
-                if (!isValid)
-                {
-                    return BuildErrorResponseMessage<LoginResponseDto>("Password was incorrect", HttpStatusCode.Unauthorized);
-                }
-
-                // if user was found, generate JWT Token
-                var roles = await _userManager.GetRolesAsync(user);
-                var accessToken = _jwtTokenService.GenerateToken(user, roles);
-                var refreshToken = _jwtTokenService.GenerateRefreshToken();
-
-                var token = new TokenDto()
-                {
-                    AccessToken = accessToken,
-                    RefreshToken = refreshToken
-                };
-
-                await _unitOfWork.UserRepository.UpdateRefreshToken(user.Id, refreshToken);
-
-                var userDto = _mapper.Map<UserDto>(user);
-                userDto.Role = Enum.Parse<Role>(roles.FirstOrDefault()!);
-
-                LoginResponseDto loginResponseDto = new()
-                {
-                    User = userDto,
-                    Token = token,
-                };
-
-                return BuildSuccessResponseMessage(loginResponseDto, "Welcome " + userDto.FullName + "! Have a nice day🌟");
+                return BuildErrorResponseMessage<LoginResponseDto>("Username does not exist", HttpStatusCode.Unauthorized);
             }
-            catch (Exception ex)
+            if (!user.IsActive)
             {
-                return BuildErrorResponseMessage<LoginResponseDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                return BuildErrorResponseMessage<LoginResponseDto>("This account has been locked", HttpStatusCode.Forbidden);
             }
+            var isValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+            if (!isValid)
+            {
+                return BuildErrorResponseMessage<LoginResponseDto>("Password was incorrect", HttpStatusCode.Unauthorized);
+            }
+
+            // if user was found, generate JWT Token
+            var roles = await _userManager.GetRolesAsync(user);
+            var accessToken = _jwtTokenService.GenerateToken(user, roles);
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
+
+            var token = new TokenDto()
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+
+            await _unitOfWork.UserRepository.UpdateRefreshToken(user.Id, refreshToken);
+
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Role = Enum.Parse<Role>(roles.FirstOrDefault()!);
+
+            LoginResponseDto loginResponseDto = new()
+            {
+                User = userDto,
+                Token = token,
+            };
+
+            return BuildSuccessResponseMessage(loginResponseDto, "Welcome " + userDto.FullName + "! Have a nice day🌟");
         }
 
         public async Task<APIResponse<bool>> RegisterAsync(RegistrationRequestDto registrationDto)
@@ -119,13 +113,13 @@ namespace AMSS.Services
                                                             : BCrypt.Net.BCrypt.HashPassword(_supplierConfiguration.DefaultPassword),
                 FullName = registrationDto.ContactName.Trim(),
                 Avatar = registrationDto.Avatar,
-                PhoneNumber = registrationDto.PhoneNumber,
                 StreetAddress = registrationDto.StreetAddress?.Trim() ?? null,
-                CountryCode = registrationDto.Country, 
+                CountryCode = registrationDto.Country,
                 CountryName = countryWithRequest.CountryName,
                 PhoneCode = registrationDto.PhoneCode,
-                ProvinceName = provinceName,
-                ProvinceCode = registrationDto.ProvinceCode,
+                PhoneNumber = registrationDto.PhoneNumber,
+                ProvinceName = !string.IsNullOrEmpty(provinceName) ? provinceName : null,
+                ProvinceCode = registrationDto.ProvinceCode ?? null,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
             };
