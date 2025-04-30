@@ -106,7 +106,7 @@ namespace AMSS.Services
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
-                await _unitOfWork.CropTypeRepository.CreateAsync(newCropType);
+                await _unitOfWork.CropTypeRepository.AddAsync(newCropType);
 
                 var newCrop = _mapper.Map<Crop>(createCropDto);
                 newCrop.CropTypeId = newCropType.Id;
@@ -117,7 +117,7 @@ namespace AMSS.Services
                 string fileName = $"{Guid.NewGuid()}{Path.GetExtension(createCropDto.File.FileName)}";
                 newCrop.Icon = await _blobService.UploadBlob(fileName, SD.SD_Storage_Container, createCropDto.File);
 
-                await _unitOfWork.CropRepository.CreateAsync(newCrop);
+                await _unitOfWork.CropRepository.AddAsync(newCrop);
                 await _unitOfWork.SaveChangeAsync();
 
                 var newCropDto = _mapper.Map<CropDto>(newCrop);

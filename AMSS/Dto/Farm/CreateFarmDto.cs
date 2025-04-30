@@ -1,20 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AMSS.Dto.Location;
+using AMSS.Dto.Polygon;
+using System.ComponentModel.DataAnnotations;
 
 namespace AMSS.Dto.Farm
 {
     public class CreateFarmDto
     {
-        [Required]
+        [Required(ErrorMessage = "Farm name is required.")]
+        [MaxLength(255, ErrorMessage = "Farm name cannot exceed 255 characters.")]
         public string Name { get; set; }
-        public double Area { get; set; }
-        [Required]
-        public Guid LocationId { get; set; }
 
+        [Required(ErrorMessage = "Area is required.")]
+        [Range(1, double.MaxValue, ErrorMessage = "Area must be a positive double.")]
+        public double Area { get; set; }
+
+        [Required(ErrorMessage = "Owner name is required.")]
+        [MaxLength(255, ErrorMessage = "Owner name cannot exceed 255 characters.")]
         public string OwnerName { get; set; }
 
-        [Required]
-        public Guid PolygonAppId { get; set; }
+        [Required(ErrorMessage = "Owner id is required.")]
+        public Guid OwnerId { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public CreateLocationDto Location { get; set; }
+        public CreatePolygonDto Polygon { get; set; }
     }
 }

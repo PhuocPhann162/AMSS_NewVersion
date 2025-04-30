@@ -79,7 +79,7 @@ namespace AMSS.Services
         public async Task<APIResponse<Guid>> CreateOrderAsync(CreateOrderRequest request, Guid userId)
         {
             var newOrder = new OrderHeader(request, userId);
-            await _unitOfWork.OrderHeaderRepository.CreateAsync(newOrder);
+            await _unitOfWork.OrderHeaderRepository.AddAsync(newOrder);
             await _unitOfWork.SaveChangeAsync();
 
             return BuildSuccessResponseMessage(newOrder.Id, "Order created successfully", HttpStatusCode.Created);

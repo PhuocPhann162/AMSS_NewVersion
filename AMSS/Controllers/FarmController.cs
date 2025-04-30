@@ -47,8 +47,8 @@ namespace AMSS.Controllers
         [HttpPost]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<FarmDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateFarm([FromForm] CreateFarmDto createFarmDto)
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateFarm([FromBody] CreateFarmDto createFarmDto)
         {
             var response = await _farmService.CreateFarmAsync(createFarmDto);
             return ProcessResponseMessage(response);

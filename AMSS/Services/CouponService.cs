@@ -75,7 +75,7 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<Guid>("Coupon code was already existed", HttpStatusCode.Conflict);
             }
             var newCoupon = new Coupon(request);
-            await _unitOfWork.CouponRepository.CreateAsync(newCoupon);
+            await _unitOfWork.CouponRepository.AddAsync(newCoupon);
             await _unitOfWork.SaveChangeAsync();
 
             return BuildSuccessResponseMessage(newCoupon.Id, "Coupon created successfully", HttpStatusCode.Created);

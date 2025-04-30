@@ -30,6 +30,8 @@ namespace AMSS.Repositories.IRepository
         Task<TEntity> GetByIdAsync(object id);
         Task CreateAsync(TEntity entity);
         Task CreateRangeAsync(IEnumerable<TEntity> entities);
+        Task AddAsync(TEntity entity);
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
         Task RemoveAsync(TEntity entity);
         Task SaveAsync();
         void Update(TEntity entity);

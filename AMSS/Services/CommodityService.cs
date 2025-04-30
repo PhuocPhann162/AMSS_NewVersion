@@ -80,7 +80,7 @@ namespace AMSS.Services
                 request.CropId = cropId;
             }
             var commodity = new Commodity(request);
-            await _unitOfWork.CommodityRepository.CreateAsync(commodity);
+            await _unitOfWork.CommodityRepository.AddAsync(commodity);
             await _unitOfWork.SaveChangeAsync();
 
             return BuildSuccessResponseMessage(commodity.Id, "Commodity created successfully", HttpStatusCode.Created);

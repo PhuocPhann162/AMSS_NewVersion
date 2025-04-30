@@ -49,7 +49,7 @@ namespace AMSS.Controllers
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<FieldDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateField([FromForm] CreateFieldDto createFieldDto)
+        public async Task<IActionResult> CreateField([FromBody] CreateFieldDto createFieldDto)
         {
             var response = await _fieldService.CreateFieldAsync(createFieldDto);
             return ProcessResponseMessage(response);

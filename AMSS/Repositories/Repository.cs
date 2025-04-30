@@ -33,6 +33,16 @@ namespace AMSS.Repositories
             await SaveAsync();
         }
 
+        public async Task AddAsync(TEntity entity)
+        {
+            await _db.AddAsync(entity);
+        }
+
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _db.AddRangeAsync(entities);
+        }
+
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter = null, bool tracked = true, string? includeProperties = null)
         {
             IQueryable<TEntity> query = dbSet;

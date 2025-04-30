@@ -16,6 +16,5 @@ namespace AMSS.Dto.Location
         public string Road { get; set; }
         public string PostCode { get; set; }
 
-        public DateTime CreatedAt { get; set; }
     }
 }

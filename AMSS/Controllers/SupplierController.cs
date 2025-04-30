@@ -30,9 +30,18 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
+        [HttpGet("by-role")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<IEnumerable<GetSuppliersByRoleResponse>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSuppliersByRoleAsync(Role role)
+        {
+            var response = await _supplierService.GetSuppliersByRoleAsync(role);
+            return ProcessResponseMessage(response);
+        }
+
         [HttpGet("{id:guid}")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<GetSupplierResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse<GetSuppliersByRoleResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSupplierAsync(Guid id)
         {
             var response = await _supplierService.GetSupplierByIdAsync(id);

@@ -36,6 +36,6 @@ namespace AMSS.Entities.Locations
 
         [Column(TypeName = "uniqueidentifier")]
         public Guid? ApplicationUserId { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AMSS.Dto.Farm;
 using AMSS.Entities;
+using AMSS.Entities.Locations;
+using AMSS.Entities.Polygon;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AutoMapper;
@@ -78,22 +80,61 @@ namespace AMSS.Services
             }
         }
 
-        public async Task<APIResponse<FarmDto>> CreateFarmAsync(CreateFarmDto createFarmDto)
+        public async Task<APIResponse<bool>> CreateFarmAsync(CreateFarmDto createFarmDto)
         {
-            try
+            // Validate input
+            if (createFarmDto == null || createFarmDto.Polygon?.Positions == null || !createFarmDto.Polygon.Positions.Any())
             {
-                var newFarm = _mapper.Map<Farm>(createFarmDto);
-                newFarm.CreatedAt = DateTime.Now;
-                newFarm.UpdatedAt = DateTime.Now;
+                return BuildErrorResponseMessage<bool>("Invalid input: No positions provided for the polygon.", HttpStatusCode.BadRequest);
+            }
 
-                await _unitOfWork.FarmRepository.CreateAsync(newFarm);
-                await _unitOfWork.SaveChangeAsync();
-                return BuildSuccessResponseMessage(_mapper.Map<FarmDto>(newFarm), "Farm created successfully", HttpStatusCode.Created);
-            }
-            catch (Exception ex)
+            // Create new location
+            var newLocation = new Location(createFarmDto.Location);
+            await _unitOfWork.LocationRepository.AddAsync(newLocation);
+
+            // Create new polygon
+            var newPolygon = new PolygonApp()
             {
-                return BuildErrorResponseMessage<FarmDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                Id = Guid.NewGuid(),
+                Color = createFarmDto.Polygon.Color,
+                Type = createFarmDto.Polygon.Type,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            await _unitOfWork.PolygonAppRepository.AddAsync(newPolygon);
+
+            // Add polygon positions (Assuming each position needs to be associated with the polygon)
+            var newPositions = new List<Position>();
+            foreach (var pos in createFarmDto.Polygon.Positions)
+            {
+                var newPosition = new Position()
+                {
+                    Id = Guid.NewGuid(),
+                    PolygonAppId = newPolygon.Id,
+                    Lat = pos.Lat,
+                    Lng = pos.Lng
+                };
+                newPositions.Add(newPosition);
             }
+            await _unitOfWork.PositionRepository.AddRangeAsync(newPositions);
+
+            // Create the farm
+            var newFarm = new Farm()
+            {
+                Id = Guid.NewGuid(),
+                Name = createFarmDto.Name.Trim(),
+                Area = createFarmDto.Area,
+                OwnerName = createFarmDto.OwnerName.Trim(),
+                LocationId = newLocation.Id,
+                PolygonAppId = newPolygon.Id,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await _unitOfWork.FarmRepository.AddAsync(newFarm);
+            await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(true, "Farm created successfully", HttpStatusCode.Created);
         }
 
         public async Task<APIResponse<FarmDto>> UpdateFarmAsync(string id, FarmDto updateFarmDto)

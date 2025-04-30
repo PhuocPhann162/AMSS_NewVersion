@@ -4,6 +4,7 @@ using AMSS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430060121_RemoveRelationShipInPolygonAppTable")]
+    partial class RemoveRelationShipInPolygonAppTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("Novaris")
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -129,7 +131,7 @@ namespace AMSS.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", "Novaris");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("AMSS.Entities.CountryContinent", b =>
@@ -169,7 +171,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CountryContinents", "Novaris");
+                    b.ToTable("CountryContinents");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Crop", b =>
@@ -252,7 +254,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Crops", "Novaris");
+                    b.ToTable("Crops");
                 });
 
             modelBuilder.Entity("AMSS.Entities.CropType", b =>
@@ -285,7 +287,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CropTypes", "Novaris");
+                    b.ToTable("CropTypes");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Farm", b =>
@@ -326,7 +328,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("PolygonAppId");
 
-                    b.ToTable("Farms", "Novaris");
+                    b.ToTable("Farms");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Field", b =>
@@ -372,7 +374,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("PolygonAppId");
 
-                    b.ToTable("Fields", "Novaris");
+                    b.ToTable("Fields");
                 });
 
             modelBuilder.Entity("AMSS.Entities.FieldCrop", b =>
@@ -393,7 +395,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("FieldId");
 
-                    b.ToTable("FieldCrops", "Novaris");
+                    b.ToTable("FieldCrops");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Locations.Location", b =>
@@ -450,36 +452,33 @@ namespace AMSS.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Locations", "Novaris");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Polygon.PolygonApp", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Color")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("CreatedAt");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime")
-                        .HasColumnName("UpdatedAt");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PolygonApps", "Novaris");
+                    b.ToTable("PolygonApps");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Polygon.Position", b =>
@@ -504,7 +503,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("PolygonAppId");
 
-                    b.ToTable("Positions", "Novaris");
+                    b.ToTable("Positions");
                 });
 
             modelBuilder.Entity("AMSS.Entities.Province", b =>
@@ -547,7 +546,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("CountryContinentId");
 
-                    b.ToTable("Provinces", "Novaris");
+                    b.ToTable("Provinces");
                 });
 
             modelBuilder.Entity("AMSS.Entities.SeriesMetric", b =>
@@ -577,7 +576,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SeriesMetrics", "Novaris");
+                    b.ToTable("SeriesMetrics");
                 });
 
             modelBuilder.Entity("AMSS.Entities.SocialMetric", b =>
@@ -609,7 +608,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("SeriesMetricId");
 
-                    b.ToTable("SocialMetrics", "Novaris");
+                    b.ToTable("SocialMetrics");
                 });
 
             modelBuilder.Entity("AMSS.Entities.SocialYear", b =>
@@ -642,7 +641,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("SocialMetricId");
 
-                    b.ToTable("SocialYears", "Novaris");
+                    b.ToTable("SocialYears");
                 });
 
             modelBuilder.Entity("AMSS.Entities.SoilQuality", b =>
@@ -726,7 +725,7 @@ namespace AMSS.Migrations
                         .IsUnique()
                         .HasFilter("[FieldId] IS NOT NULL");
 
-                    b.ToTable("SoilQualitys", "Novaris");
+                    b.ToTable("SoilQualitys");
                 });
 
             modelBuilder.Entity("AMSS.Models.CartItems.CartItem", b =>
@@ -761,7 +760,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.ToTable("CartItems", "Novaris");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("AMSS.Models.Commodities.Commodity", b =>
@@ -817,7 +816,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Commodities", "Novaris");
+                    b.ToTable("Commodities");
                 });
 
             modelBuilder.Entity("AMSS.Models.Coupons.Coupon", b =>
@@ -853,7 +852,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons", "Novaris");
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("AMSS.Models.OrderDetails.OrderDetail", b =>
@@ -894,7 +893,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("OrderHeaderId");
 
-                    b.ToTable("OrderDetails", "Novaris");
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("AMSS.Models.OrderHeaders.OrderHeader", b =>
@@ -959,7 +958,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("OrderHeaders", "Novaris");
+                    b.ToTable("OrderHeaders");
                 });
 
             modelBuilder.Entity("AMSS.Models.ShoppingCarts.ShoppingCart", b =>
@@ -987,7 +986,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCarts", "Novaris");
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("AMSS.Models.Stocks.Stock", b =>
@@ -1023,7 +1022,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("CommodityId");
 
-                    b.ToTable("Stocks", "Novaris");
+                    b.ToTable("Stocks");
                 });
 
             modelBuilder.Entity("AMSS.Models.Suppliers.Supplier", b =>
@@ -1086,7 +1085,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("SupplierRole");
 
-                    b.ToTable("Suppliers", "Novaris");
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1113,7 +1112,7 @@ namespace AMSS.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", "Novaris");
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1138,7 +1137,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", "Novaris");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1163,7 +1162,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", "Novaris");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -1185,7 +1184,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", "Novaris");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -1200,7 +1199,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", "Novaris");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1219,7 +1218,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", "Novaris");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("AMSS.Entities.Crop", b =>

@@ -144,12 +144,12 @@ namespace AMSS.Services
             {
                 // Create new location 
                 Location userLocation = new(registrationDto, Guid.Parse(newUser.Id));
-                await _unitOfWork.LocationRepository.CreateAsync(userLocation);
+                await _unitOfWork.LocationRepository.AddAsync(userLocation);
 
                 Supplier newSupplier = new(registrationDto);
                 newSupplier.CountryName = countryWithRequest.CountryName;
                 newSupplier.ProvinceName = provinceName;
-                await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
+                await _unitOfWork.SupplierRepository.AddAsync(newSupplier);
             }
 
             await _unitOfWork.SaveChangeAsync();

@@ -51,6 +51,7 @@ namespace AMSS.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("Novaris");
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Coupon>()

@@ -39,7 +39,7 @@ namespace AMSS.Services
                 var newPolygon = _mapper.Map<PolygonApp>(createPolygonDto);
 
 
-                await _unitOfWork.PolygonAppRepository.CreateAsync(newPolygon);
+                await _unitOfWork.PolygonAppRepository.AddAsync(newPolygon);
 
                 await _unitOfWork.SaveChangeAsync();
 

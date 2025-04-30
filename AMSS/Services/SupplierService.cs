@@ -2,6 +2,7 @@
 using AMSS.Dto.Responses;
 using AMSS.Dto.Responses.Suppliers;
 using AMSS.Entities;
+using AMSS.Enums;
 using AMSS.Models;
 using AMSS.Models.Suppliers;
 using AMSS.Repositories.IRepository;
@@ -73,20 +74,20 @@ namespace AMSS.Services
             return BuildSuccessResponseMessage(response);
         }
 
-        public async Task<APIResponse<GetSupplierResponse>> GetSupplierByIdAsync(Guid id)
+        public async Task<APIResponse<GetSuppliersByRoleResponse>> GetSupplierByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return BuildErrorResponseMessage<GetSupplierResponse>("Not valid ID supplier", HttpStatusCode.BadRequest);
+                return BuildErrorResponseMessage<GetSuppliersByRoleResponse>("Not valid ID supplier", HttpStatusCode.BadRequest);
             }
 
             var supplier = await _unitOfWork.SupplierRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (supplier == null)
             {
-                return BuildErrorResponseMessage<GetSupplierResponse>("Not found this supplier", HttpStatusCode.NotFound);
+                return BuildErrorResponseMessage<GetSuppliersByRoleResponse>("Not found this supplier", HttpStatusCode.NotFound);
             }
 
-            var response = _mapper.Map<GetSupplierResponse>(supplier);
+            var response = _mapper.Map<GetSuppliersByRoleResponse>(supplier);
 
             return BuildSuccessResponseMessage(response, "Get supplier by ID successfully", HttpStatusCode.Created);
         }
@@ -99,7 +100,7 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<Guid>("Supplier was already existed", HttpStatusCode.Conflict);
             }
             var newSupplier = new Supplier(request);
-            await _unitOfWork.SupplierRepository.CreateAsync(newSupplier);
+            await _unitOfWork.SupplierRepository.AddAsync(newSupplier);
             await _unitOfWork.SaveChangeAsync();
 
             return BuildSuccessResponseMessage(newSupplier.Id, "Supplier created successfully", HttpStatusCode.Created);
@@ -119,6 +120,23 @@ namespace AMSS.Services
             supplier.Update(request);
             await _unitOfWork.SaveChangeAsync();
             return BuildSuccessResponseMessage(true, "Supplier updated successfully", HttpStatusCode.OK);
+        }
+
+        public async Task<APIResponse<IEnumerable<GetSuppliersByRoleResponse>>> GetSuppliersByRoleAsync(Role role)
+        {
+            if(role is not Role.SUPPLIER_CROP && role is not Role.OWNER_FARM && role is not Role.SUPPLIER_COMMODITY)
+            {
+                return BuildErrorResponseMessage<IEnumerable<GetSuppliersByRoleResponse>>("Not valid role supplier", HttpStatusCode.BadRequest);
+            }
+
+            var supplierByRoles = await _unitOfWork.SupplierRepository.GetRESAsync(x => x.SupplierRole == role);
+            var response = supplierByRoles.Select(s => new GetSuppliersByRoleResponse
+            {
+                SupplierId = s.Id,
+                ContactName = s.ContactName,
+            });
+
+            return BuildSuccessResponseMessage(response);
         }
     }
 }

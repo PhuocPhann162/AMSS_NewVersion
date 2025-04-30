@@ -83,7 +83,7 @@ namespace AMSS.Services
             {
                 // create a shopping cart && add cartItem
                 ShoppingCart newCart = new() { UserId = userId };
-                await _unitOfWork.ShoppingCartRepository.CreateAsync(newCart);
+                await _unitOfWork.ShoppingCartRepository.AddAsync(newCart);
 
                 CartItem newCartItem = new()
                 {
@@ -92,7 +92,7 @@ namespace AMSS.Services
                     ShoppingCartId = newCart.Id,
                     Commodity = null
                 };
-                await _unitOfWork.CartItemRepository.CreateAsync(newCartItem);
+                await _unitOfWork.CartItemRepository.AddAsync(newCartItem);
             }
             else
             {
@@ -108,7 +108,7 @@ namespace AMSS.Services
                         ShoppingCartId = shoppingCart.Id,
                         Commodity = null
                     };
-                    await _unitOfWork.CartItemRepository.CreateAsync(newCartItem);
+                    await _unitOfWork.CartItemRepository.AddAsync(newCartItem);
                 }
                 else
                 {

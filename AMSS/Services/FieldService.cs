@@ -91,23 +91,62 @@ namespace AMSS.Services
             }
         }
 
-        public async Task<APIResponse<FieldDto>> CreateFieldAsync(CreateFieldDto createFieldDto)
+        public async Task<APIResponse<bool>> CreateFieldAsync(CreateFieldDto createFieldDto)
         {
-            try
+            // Validate input
+            if (createFieldDto == null || createFieldDto.Polygon?.Positions == null || !createFieldDto.Polygon.Positions.Any())
             {
-                var newField = _mapper.Map<Field>(createFieldDto);
-
-                newField.Status = String.IsNullOrEmpty(newField.Status) ? SD.Status_Idle : newField.Status;
-                newField.CreatedAt = DateTime.Now;
-
-                await _unitOfWork.FieldRepository.CreateAsync(newField);
-                await _unitOfWork.SaveChangeAsync();
-                return BuildSuccessResponseMessage(_mapper.Map<FieldDto>(newField), "Field created successfully", HttpStatusCode.Created);
+                return BuildErrorResponseMessage<bool>("Invalid input: No positions provided for the polygon.", HttpStatusCode.BadRequest);
             }
-            catch (Exception ex)
+
+            // Create new location
+            var newLocation = new Location(createFieldDto.Location);
+            await _unitOfWork.LocationRepository.AddAsync(newLocation);
+
+            // Create new polygon
+            var newPolygon = new PolygonApp()
             {
-                return BuildErrorResponseMessage<FieldDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                Id = Guid.NewGuid(),
+                Color = createFieldDto.Polygon.Color,
+                Type = createFieldDto.Polygon.Type,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            await _unitOfWork.PolygonAppRepository.AddAsync(newPolygon);
+
+            // Add polygon positions (Assuming each position needs to be associated with the polygon)
+            var newPositions = new List<Position>();
+            foreach (var pos in createFieldDto.Polygon.Positions)
+            {
+                var newPosition = new Position()
+                {
+                    Id = Guid.NewGuid(),
+                    PolygonAppId = newPolygon.Id,
+                    Lat = pos.Lat,
+                    Lng = pos.Lng
+                };
+                newPositions.Add(newPosition);
             }
+            await _unitOfWork.PositionRepository.AddRangeAsync(newPositions);
+
+            // Create the field
+            var newField = new Field()
+            {
+                Id = Guid.NewGuid(),
+                Name = createFieldDto.Name.Trim(),
+                Area = createFieldDto.Area,
+                Status = SD.Status_Idle,
+                FarmId = createFieldDto.FarmId,
+                LocationId = newLocation.Id,
+                PolygonAppId = newPolygon.Id,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await _unitOfWork.FieldRepository.AddAsync(newField);
+            await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(true, "Field created successfully", HttpStatusCode.Created);
         }
 
         public async Task<APIResponse<FieldDto>> UpdateFieldAsync(string id, UpdateFieldDto updateFieldDto)
