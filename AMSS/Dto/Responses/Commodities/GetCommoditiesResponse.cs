@@ -13,7 +13,7 @@ namespace AMSS.Dto.Responses.Commodities
 
         public string SpecialTag { get; set; }
 
-        public string Category { get; set; }
+        public CommodityCategory Category { get; set; }
 
         public decimal Price { get; set; }
 

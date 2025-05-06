@@ -6,6 +6,7 @@ using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Utility;
 using AutoMapper;
+using CloudinaryDotNet.Actions;
 using Microsoft.Data.SqlClient;
 using System.Net;
 
@@ -14,14 +15,14 @@ namespace AMSS.Services
     public class CropService : BaseService, ICropService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IBlobService _blobService;
         private readonly IMapper _mapper;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public CropService(IUnitOfWork unitOfWork, IBlobService blobService, IMapper mapper)
+        public CropService(IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
-            _blobService = blobService;
             _mapper = mapper;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<APIResponse<IEnumerable<CropDto>>> GetCropsAsync()
@@ -45,25 +46,18 @@ namespace AMSS.Services
         }
         public async Task<APIResponse<CropDto>> GetCropByIdAsync(string id)
         {
-            try
+            if (string.IsNullOrEmpty(id))
             {
-                if (string.IsNullOrEmpty(id))
-                {
-                    return BuildErrorResponseMessage<CropDto>("Oops ! Not Found Crop ID", HttpStatusCode.NotFound);
-                }
-                Crop crop = await _unitOfWork.CropRepository
-                    .GetAsync(u => u.Id.Equals(Guid.Parse(id)), includeProperties: "CropType");
-                CropDto cropDto = _mapper.Map<CropDto>(crop);
-                if (crop == null)
-                {
-                    return BuildErrorResponseMessage<CropDto>("Oops ! Something wrong when get crop by id", HttpStatusCode.NotFound);
-                }
-                return BuildSuccessResponseMessage(cropDto, "Get Crop by Id successfully");
+                return BuildErrorResponseMessage<CropDto>("Oops ! Not Found Crop ID", HttpStatusCode.NotFound);
             }
-            catch (Exception ex)
+            var crop = await _unitOfWork.CropRepository
+                .GetAsync(u => u.Id.Equals(Guid.Parse(id)), includeProperties: "CropType,Supplier");
+            var cropDto = _mapper.Map<CropDto>(crop);
+            if (crop == null)
             {
-                return BuildErrorResponseMessage<CropDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                return BuildErrorResponseMessage<CropDto>("Oops ! Something wrong when get crop by id", HttpStatusCode.NotFound);
             }
+            return BuildSuccessResponseMessage(cropDto, "Get Crop by Id successfully");
         }
 
         public async Task<APIResponse<IEnumerable<FieldCropDto>>> GetCropsByFieldIdAsync(string fieldId)
@@ -88,45 +82,41 @@ namespace AMSS.Services
             }
         }
 
-        public async Task<APIResponse<CropDto>> CreateCropAsync(CreateCropDto createCropDto)
+        public async Task<APIResponse<bool>> CreateCropAsync(CreateCropDto createCropDto)
         {
-            try
+            if (createCropDto.File == null || createCropDto.File.Length == 0)
             {
-                if (createCropDto.File == null || createCropDto.File.Length == 0)
-                {
-                    return BuildErrorResponseMessage<CropDto>("File is required", HttpStatusCode.NotFound);
-                }
-
-                var newCropType = new CropType()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = createCropDto.Name,
-                    Code = GenerateCode(createCropDto.Name),
-                    Type = createCropDto.CropTypeName,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                };
-                await _unitOfWork.CropTypeRepository.AddAsync(newCropType);
-
-                var newCrop = _mapper.Map<Crop>(createCropDto);
-                newCrop.CropTypeId = newCropType.Id;
-                newCrop.CropType = newCropType;
-                newCrop.CreatedAt = DateTime.Now;
-                newCrop.UpdatedAt = DateTime.Now;
-
-                string fileName = $"{Guid.NewGuid()}{Path.GetExtension(createCropDto.File.FileName)}";
-                newCrop.Icon = await _blobService.UploadBlob(fileName, SD.SD_Storage_Container, createCropDto.File);
-
-                await _unitOfWork.CropRepository.AddAsync(newCrop);
-                await _unitOfWork.SaveChangeAsync();
-
-                var newCropDto = _mapper.Map<CropDto>(newCrop);
-                return BuildSuccessResponseMessage(newCropDto, "Crop created successfully", HttpStatusCode.Created);
+                return BuildErrorResponseMessage<bool>("File is required", HttpStatusCode.NotFound);
             }
-            catch (SqlException ex)
+
+            var newCropType = new CropType()
             {
-                return BuildErrorResponseMessage<CropDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                Id = Guid.NewGuid(),
+                Name = createCropDto.Name,
+                Code = GenerateCode(createCropDto.Name),
+                Type = createCropDto.CropTypeName,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+            };
+            await _unitOfWork.CropTypeRepository.AddAsync(newCropType);
+
+            var newCrop = _mapper.Map<Crop>(createCropDto);
+            newCrop.CropTypeId = newCropType.Id;
+            newCrop.CropType = newCropType;
+            newCrop.CreatedAt = DateTime.Now;
+            newCrop.UpdatedAt = DateTime.Now;
+
+            if (createCropDto.File != null && createCropDto.File.Length > 0)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(createCropDto.File);
+                newCrop.Icon = uploadResult.Url;
+                newCrop.PublicImageId = uploadResult.PublicId;
             }
+
+            await _unitOfWork.CropRepository.AddAsync(newCrop);
+            await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(true, "Crop created successfully", HttpStatusCode.Created);
         }
 
         public static string GenerateCode(string name)
@@ -145,39 +135,31 @@ namespace AMSS.Services
             }
         }
 
-        public async Task<APIResponse<CropDto>> UpdateCropAsync(string id, UpdateCropDto updateCropDto)
+        public async Task<APIResponse<bool>> UpdateCropAsync(string id, UpdateCropDto updateCropDto)
         {
-            try
+
+            if (updateCropDto == null || !updateCropDto.Id.Equals(Guid.Parse(id)))
             {
-                if (updateCropDto == null || !updateCropDto.Id.Equals(Guid.Parse(id)))
-                {
-                    return BuildErrorResponseMessage<CropDto>("Update crop request does not exist!", HttpStatusCode.NotFound);
-                }
-
-                Crop cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)), false);
-
-                if (cropFromDb == null)
-                {
-                    return BuildErrorResponseMessage<CropDto>("This crop does not exist!", HttpStatusCode.NotFound);
-                }
-                cropFromDb = _mapper.Map<Crop>(updateCropDto);
-                cropFromDb.UpdatedAt = DateTime.Now;
-
-                if (updateCropDto.File != null && updateCropDto.File.Length > 0)
-                {
-                    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(updateCropDto.File.FileName)}";
-                    await _blobService.DeleteBlob(cropFromDb.Icon.Split('/').Last(), SD.SD_Storage_Container);
-                    cropFromDb.Icon = await _blobService.UploadBlob(fileName, SD.SD_Storage_Container, updateCropDto.File);
-                }
-                await _unitOfWork.CropRepository.Update(cropFromDb);
-                await _unitOfWork.SaveChangeAsync();
-
-                return BuildSuccessResponseMessage(_mapper.Map<CropDto>(cropFromDb), "Crop updated successfully");
+                return BuildErrorResponseMessage<bool>("Update crop request does not exist!", HttpStatusCode.NotFound);
             }
-            catch (Exception ex)
+
+            var cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)), false);
+
+            if (cropFromDb == null)
             {
-                return BuildErrorResponseMessage<CropDto>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                return BuildErrorResponseMessage<bool>("This crop does not exist!", HttpStatusCode.NotFound);
             }
+            cropFromDb = _mapper.Map<Crop>(updateCropDto);
+            cropFromDb.UpdatedAt = DateTime.Now;
+
+            if (updateCropDto.File != null && updateCropDto.File.Length > 0)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(updateCropDto.File);
+                cropFromDb.Icon = uploadResult.Url;
+            }
+            await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(true, "Crop updated successfully");
         }
 
         public async Task<APIResponse<bool>> DeleteCropAsync(string id)
@@ -189,13 +171,13 @@ namespace AMSS.Services
                     return BuildErrorResponseMessage<bool>("ID not found!", HttpStatusCode.NotFound);
                 }
 
-                Crop cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
+                var cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
                 if (cropFromDb == null)
                 {
                     return BuildErrorResponseMessage<bool>("This crop does not exist!", HttpStatusCode.NotFound);
                 }
 
-                await _blobService.DeleteBlob(cropFromDb.Icon.Split('/').Last(), SD.SD_Storage_Container);
+                await _cloudinaryService.DeleteImageAsync(cropFromDb.PublicImageId);
                 int milliseconds = 2000;
                 Thread.Sleep(milliseconds);
 

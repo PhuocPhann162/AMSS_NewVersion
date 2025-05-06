@@ -1,7 +1,5 @@
 ﻿using AMSS.Enums;
-using AMSS.Models.Suppliers;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace AMSS.Dto.Requests.Commodities
@@ -11,31 +9,26 @@ namespace AMSS.Dto.Requests.Commodities
         [Required(ErrorMessage = "Commodity name is required.")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Special Tag is required.")]
-        public string SpecialTag { get; set; }
-
         [Required(ErrorMessage = "Category is required.")]
-        public string Category { get; set; }
+        public CommodityCategory Category { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "Please select file to upload")]
-        [JsonPropertyName("File")]
+        [Required(ErrorMessage = "Please select file to upload.")]
         public IFormFile File { get; set; }
 
-        [Required(ErrorMessage = "Please select expiration date")]
+        [Required(ErrorMessage = "Please select expiration date.")]
         public DateTime ExpirationDate { get; set; }
 
+        [Required(ErrorMessage = "Supplier Id is required.")]
         public Guid SupplierId { get; set; }
 
+        [Required(ErrorMessage = "Crop Id is required.")]
         public Guid CropId { get; set; }
-
-        public string SupplierName { get; set; }
-
-        public string CropName { get; set; }
 
         public CommodityStatus Status { get; set; }
     }

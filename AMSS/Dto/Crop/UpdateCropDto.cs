@@ -22,15 +22,11 @@ namespace AMSS.Dto.Crop
 
         public DateTime ExpectedDate { get; set; }
 
-
         public int Quantity { get; set; }
 
         public Guid FieldId { get; set; }
-        public FieldDto Field { get; set; }
-
 
         public Guid CropTypeId { get; set; }
-        public CropTypeDto CropType { get; set; }
 
         public IFormFile File { get; set; }
     }

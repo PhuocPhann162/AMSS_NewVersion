@@ -13,28 +13,30 @@ namespace AMSS.Models.Commodities
 
         public Commodity(CreateCommodityRequest request)
         {
+            Id = Guid.NewGuid();
             Name = request.Name.Trim();
             Description = request.Description.Trim();
-            SpecialTag = request.SpecialTag.Trim();
-            Category = request.Category.Trim();
+            Category = request.Category;
             Price = request.Price;
             ExpirationDate = request.ExpirationDate;
-            Status = request.Status != default ? request.Status : CommodityStatus.Active;
+            Status = request.Status;
             CropId = request.CropId;
             SupplierId = request.SupplierId;
+            CreatedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
         }
 
         public void Update(UpdateCommodityRequest request)
         {
             Name = request.Name.Trim();
             Description = request.Description.Trim();
-            SpecialTag = request.SpecialTag.Trim();
-            Category = request.Category.Trim();
+            Category = request.Category;
             Price = request.Price;
             ExpirationDate = request.ExpirationDate;
             Status = request.Status;
             CropId = request.CropId;
             SupplierId = request.SupplierId;
+            UpdatedAt = DateTime.Now;
         }
     }
 }

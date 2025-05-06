@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AMSS.Dto.FieldCrop;
+using AMSS.Dto.Suppliers;
+using AMSS.Models.Suppliers;
 
 namespace AMSS.Dto.Crop
 {
@@ -26,7 +28,7 @@ namespace AMSS.Dto.Crop
 
         public bool Indoor { get; set; }
 
-        public string Propogation { get; set; }
+        public string Propagation { get; set; }
 
         public string CareLevel { get; set; }
 
@@ -44,6 +46,8 @@ namespace AMSS.Dto.Crop
 
         public Guid CropTypeId { get; set; }
         public IEnumerable<FieldCropDto> FieldCrops { get; set; }
+
+        public SupplierDto Supplier { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }

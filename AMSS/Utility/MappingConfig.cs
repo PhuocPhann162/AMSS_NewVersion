@@ -13,11 +13,13 @@ using AMSS.Dto.SeriesMetric;
 using AMSS.Dto.SocialMetric;
 using AMSS.Dto.SocialYear;
 using AMSS.Dto.SoilQuality;
+using AMSS.Dto.Suppliers;
 using AMSS.Dto.User;
 using AMSS.Entities;
 using AMSS.Entities.Locations;
 using AMSS.Entities.Polygon;
 using AMSS.Models.Commodities;
+using AMSS.Models.Suppliers;
 using AutoMapper;
 
 namespace AMSS.Utility
@@ -83,6 +85,9 @@ namespace AMSS.Utility
 
                 // Commodity 
                 config.CreateMap<Commodity, GetCommodityResponse>().ReverseMap();
+
+                // Supplier 
+                config.CreateMap<Supplier, SupplierDto>().ReverseMap();
             });
 
             return mappingConfig;

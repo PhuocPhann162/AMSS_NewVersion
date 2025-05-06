@@ -23,7 +23,7 @@ namespace AMSS.Dto.Crop
 
         public bool Indoor { get; set; }
 
-        public string Propogation { get; set; }
+        public string Propagation { get; set; }
 
         public string CareLevel { get; set; }
 
@@ -40,6 +40,8 @@ namespace AMSS.Dto.Crop
         public int Quantity { get; set; }
 
         public string CropTypeName { get; set; }
+
+        public Guid SupplierId { get; set; }
 
         [Required(ErrorMessage = "Please select file to upload")]
         [JsonPropertyName("File")]

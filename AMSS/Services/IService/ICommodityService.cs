@@ -9,7 +9,7 @@ namespace AMSS.Services.IService
     {
         Task<APIResponse<PaginationResponse<GetCommoditiesResponse>>> GetCommoditiesAsync(GetCommoditiesRequest request);
         Task<APIResponse<GetCommodityResponse>> GetCommodityByIdAsync(Guid id);
-        Task<APIResponse<Guid>> CreateCommodityAsync(CreateCommodityRequest request);
+        Task<APIResponse<bool>> CreateCommodityAsync(CreateCommodityRequest request);
         Task<APIResponse<bool>> UpdateCommodityAsync(Guid id, UpdateCommodityRequest request);
     }
 }

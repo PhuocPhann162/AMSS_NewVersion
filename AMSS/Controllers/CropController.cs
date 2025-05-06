@@ -50,7 +50,7 @@ namespace AMSS.Controllers
         [HttpPost]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Consumes(MediaTypeNames.Multipart.FormData)]
-        [ProducesResponseType(typeof(APIResponse<CropDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateCrop([FromForm] CreateCropDto createCropDto)
         {
             var response = await _cropService.CreateCropAsync(createCropDto);
@@ -60,7 +60,7 @@ namespace AMSS.Controllers
         [HttpPut("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Consumes(MediaTypeNames.Multipart.FormData)]
-        [ProducesResponseType(typeof(APIResponse<CropDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateCrop(string id, [FromForm] UpdateCropDto updateCropDto)
         {
             var response = await _cropService.UpdateCropAsync(id, updateCropDto);

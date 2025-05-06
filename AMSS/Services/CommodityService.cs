@@ -15,10 +15,12 @@ namespace AMSS.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public CommodityService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ICloudinaryService _cloudinaryService;
+        public CommodityService(IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<APIResponse<PaginationResponse<GetCommoditiesResponse>>> GetCommoditiesAsync(GetCommoditiesRequest request)
@@ -38,10 +40,9 @@ namespace AMSS.Services
             {
                 Collection = commoditiesPaginationResult.Data.Select(x => new GetCommoditiesResponse
                 {
-                    CommdityId = x.Id,
+                    CommdityId = x.Id,  
                     Name = x.Name,
                     Description = x.Description,
-                    SpecialTag = x.SpecialTag, 
                     Category = x.Category, 
                     Price = x.Price,
                     Image = x.Image, 
@@ -72,18 +73,23 @@ namespace AMSS.Services
             return BuildSuccessResponseMessage(response, "Get commodity by ID successfully", HttpStatusCode.Created);
         }
 
-        public async Task<APIResponse<Guid>> CreateCommodityAsync(CreateCommodityRequest request)
+        public async Task<APIResponse<bool>> CreateCommodityAsync(CreateCommodityRequest request)
         {
-            if (!Guid.TryParse(request.CropId.ToString(), out Guid cropId))
+            if (request.CropId == Guid.Empty || request.SupplierId == Guid.Empty)
             {
-                var crop = await _unitOfWork.CropRepository.GetAsync(x => x.Name.Equals(request.Name));
-                request.CropId = cropId;
+                return BuildErrorResponseMessage<bool>("Not valid ID crop", HttpStatusCode.BadRequest);
             }
+
+            // Upload image to cloudinary
+            var uploadResult = await _cloudinaryService.UploadImageAsync(request.File);
+
             var commodity = new Commodity(request);
+            commodity.Image = uploadResult.Url;
+            commodity.PublicImageId = uploadResult.PublicId;
             await _unitOfWork.CommodityRepository.AddAsync(commodity);
             await _unitOfWork.SaveChangeAsync();
 
-            return BuildSuccessResponseMessage(commodity.Id, "Commodity created successfully", HttpStatusCode.Created);
+            return BuildSuccessResponseMessage(true, "Commodity created successfully", HttpStatusCode.Created);
         }
 
         public async Task<APIResponse<bool>> UpdateCommodityAsync(Guid id, UpdateCommodityRequest request)

@@ -54,6 +54,8 @@ namespace AMSS.Entities
         [Range(0, int.MaxValue)]
         public int Quantity { get; set; } = 0;
 
+        public string PublicImageId { get; set; }
+
         public Guid? SupplierId { get; set; }
 
         public Guid? CropTypeId { get; set; }

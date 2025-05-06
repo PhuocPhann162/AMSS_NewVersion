@@ -15,7 +15,7 @@ namespace AMSS.Dto.Requests.Commodities
         public string SpecialTag { get; set; }
 
         [Required(ErrorMessage = "Category is required.")]
-        public string Category { get; set; }
+        public CommodityCategory Category { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
         public decimal Price { get; set; }

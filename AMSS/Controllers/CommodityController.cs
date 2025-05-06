@@ -36,10 +36,10 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<Guid>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateCommodityAsync([FromBody] CreateCommodityRequest request)
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateCommodityAsync([FromForm] CreateCommodityRequest request)
         {
             var response = await _commodityService.CreateCommodityAsync(request);
             return ProcessResponseMessage(response);

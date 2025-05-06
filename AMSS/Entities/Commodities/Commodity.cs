@@ -13,17 +13,11 @@ namespace AMSS.Models.Commodities
         [Column(TypeName = "nvarchar(500)")]
         public string Description { get; set; }
 
-        [Column(TypeName = "nvarchar(50)")]
-        public string SpecialTag { get; set; }
-
         [Column(TypeName = "nvarchar(100)")]
-        public string Category { get; set; }
-
+        public CommodityCategory Category { get; set; }
+        
         [Column(TypeName = "decimal(18,6)")]
         public decimal Price { get; set; }
-
-        [Column(TypeName = "nvarchar(255)")]
-        public string Image { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime? ExpirationDate { get; set; }
@@ -36,8 +30,13 @@ namespace AMSS.Models.Commodities
         [Column(TypeName = "uniqueidentifier")]
         public Guid CropId { get; set; }
 
+        [Column(TypeName = "nvarchar(255)")]
+        public string Image { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
+        public string PublicImageId { get; set; }
+
         public virtual Supplier Supplier { get; set; }
         public virtual Crop Crop { get; set; }
-
     }
 }

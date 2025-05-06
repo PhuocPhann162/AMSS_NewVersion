@@ -102,6 +102,7 @@ namespace AMSS
             services.AddScoped<ISerializeService, SerializeService>();
             services.AddScoped<IRedisCacheService, RedisCacheService>();
             services.AddScoped<IMetatDataService, MetaDataService>();
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
         }
 
         private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)
@@ -124,6 +125,7 @@ namespace AMSS
         {
             services.Configure<StripePaymentConfiguration>(configuration.GetSection("StripeSettings"));
             services.Configure<SupplierConfiguration>(configuration.GetSection("SupplierSettings"));
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings")); 
         }
 
         private static void AddBackgroundService(this IServiceCollection services)

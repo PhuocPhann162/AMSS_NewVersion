@@ -134,6 +134,7 @@ namespace AMSS.Services
             {
                 SupplierId = s.Id,
                 ContactName = s.ContactName,
+                CompanyName = s.Name
             });
 
             return BuildSuccessResponseMessage(response);

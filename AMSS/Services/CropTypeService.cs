@@ -19,33 +19,27 @@ namespace AMSS.Services
 
         public async Task<APIResponse<IEnumerable<CropTypeDto>>> GetAllCropTypesAsync(string? searchString, int? pageNumber, int? pageSize)
         {
-            try
-            {
-                IEnumerable<CropType> lstCropTypes = await _unitOfWork.CropTypeRepository.GetAllWithDetailsAsync();
-                var lstCropTypeDtos = _mapper.Map<IEnumerable<CropTypeDto>>(lstCropTypes);
+            IEnumerable<CropType> lstCropTypes = await _unitOfWork.CropTypeRepository.GetAllWithDetailsAsync();
+            lstCropTypes = lstCropTypes.OrderByDescending(c => c.CreatedAt);
+            var lstCropTypeDtos = _mapper.Map<IEnumerable<CropTypeDto>>(lstCropTypes);
 
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    lstCropTypeDtos = lstCropTypeDtos.Where(u => u.Name!.ToLower().Contains(searchString.ToLower()) || u.Code!.ToLower().Contains(searchString.ToLower())).ToList();
-                }
-                if (pageNumber.HasValue && pageSize.HasValue)
-                {
-                    Pagination pagination = new()
-                    {
-                        CurrentPage = (int)pageNumber,
-                        PageSize = (int)pageSize,
-                        TotalRecords = lstCropTypeDtos.Count()
-                    };
-
-                    var paginatedCropType = lstCropTypeDtos.Skip((int)((pageNumber - 1) * pageSize)).Take((int)pageSize);
-                    return BuildSuccessResponseMessage(paginatedCropType, "Get all Crops successfully", pagination: pagination);
-                }
-                return BuildSuccessResponseMessage(lstCropTypeDtos, "Get all Crops successfully");
-            }
-            catch (Exception ex)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return BuildErrorResponseMessage<IEnumerable<CropTypeDto>>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                lstCropTypeDtos = lstCropTypeDtos.Where(u => u.Name!.ToLower().Contains(searchString.ToLower()) || u.Code!.ToLower().Contains(searchString.ToLower())).ToList();
             }
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                Pagination pagination = new()
+                {
+                    CurrentPage = (int)pageNumber,
+                    PageSize = (int)pageSize,
+                    TotalRecords = lstCropTypeDtos.Count()
+                };
+
+                var paginatedCropType = lstCropTypeDtos.Skip((int)((pageNumber - 1) * pageSize)).Take((int)pageSize);
+                return BuildSuccessResponseMessage(paginatedCropType, "Get all Crops successfully", pagination: pagination);
+            }
+            return BuildSuccessResponseMessage(lstCropTypeDtos, "Get all Crops successfully");
         }
 
         public async Task<APIResponse<CropTypeDto>> CreateCropTypeAsync(CreateCropTypeDto createCropTypeDto)
