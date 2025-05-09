@@ -258,5 +258,38 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<bool>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
             }
         }
+
+        public async Task<APIResponse<Guid>> CreateGrowLocationAsync(CreateGrowLocationDto createGrowLocationDto)
+        {
+            // Validate input
+            if (createGrowLocationDto == null)
+            {
+                return BuildErrorResponseMessage<Guid>("Invalid input: No request to proceed.", HttpStatusCode.BadRequest);
+            }
+
+            // Create the field
+            var newField = new Field
+            {
+                Id = Guid.NewGuid(),
+                Name = createGrowLocationDto.Name?.Trim(),
+                InternalId = createGrowLocationDto.InternalId?.Trim(),
+                LocationType = createGrowLocationDto.LocationType?.Trim(),
+                PlantingFormat = createGrowLocationDto.PlantingFormat?.Trim(),
+                NumberOfBeds = createGrowLocationDto.NumberOfBeds ?? 0,
+                BedLength = (decimal?)createGrowLocationDto.BedLength ?? 0,
+                BedWidth = (decimal?)(createGrowLocationDto.BedWidth ?? 0),
+                Status = createGrowLocationDto.Status?.Trim(),
+                LightProfile = createGrowLocationDto.LightProfile?.Trim(),
+                GrazingRestDays = (int)createGrowLocationDto.GrazingRestDays,
+                Description = createGrowLocationDto.Description?.Trim(),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await _unitOfWork.FieldRepository.AddAsync(newField);
+            await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(newField.Id, "Field created successfully", HttpStatusCode.Created);
+        }
     }
 }

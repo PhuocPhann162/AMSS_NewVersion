@@ -4,6 +4,7 @@ using AMSS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507154552_AddGrowLocationPropsForFieldTable")]
+    partial class AddGrowLocationPropsForFieldTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,9 +356,6 @@ namespace AMSS.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("CreatedAt");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(MAX)");
-
                     b.Property<Guid?>("FarmId")
                         .HasColumnType("uniqueidentifier");
 
@@ -377,7 +377,7 @@ namespace AMSS.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("NumberOfBeds")
+                    b.Property<int>("NumberObBeds")
                         .HasColumnType("int");
 
                     b.Property<string>("PlantingFormat")

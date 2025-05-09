@@ -55,6 +55,16 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
+        [HttpPost("grow-location")]
+        [Authorize(Roles = nameof(Role.ADMIN))]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<Guid>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateGrowLocation([FromBody] CreateGrowLocationDto createGrowLocationDto)
+        {
+            var response = await _fieldService.CreateGrowLocationAsync(createGrowLocationDto);
+            return ProcessResponseMessage(response);
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
