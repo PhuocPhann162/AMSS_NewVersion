@@ -129,23 +129,39 @@ namespace AMSS.Services
             }
             await _unitOfWork.PositionRepository.AddRangeAsync(newPositions);
 
-            // Create the field
-            var newField = new Field()
+
+            if (createFieldDto.FieldId == Guid.Empty)
             {
-                Id = Guid.NewGuid(),
-                Name = createFieldDto.Name.Trim(),
-                Area = createFieldDto.Area,
-                Status = SD.Status_Idle,
-                FarmId = createFieldDto.FarmId,
-                LocationId = newLocation.Id,
-                PolygonAppId = newPolygon.Id,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
+                // Create the field
+                var newField = new Field()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = createFieldDto.Name.Trim(),
+                    Area = createFieldDto.Area,
+                    Status = SD.Status_Idle,
+                    FarmId = createFieldDto.FarmId,
+                    LocationId = newLocation.Id,
+                    PolygonAppId = newPolygon.Id,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+                await _unitOfWork.FieldRepository.AddAsync(newField);
+            }
+            else
+            {
+                // Update existing field 
+                var field = await _unitOfWork.FieldRepository.FirstOrDefaultAsync(x => x.Id == createFieldDto.FieldId);
+                if (field is null) {
+                    return BuildErrorResponseMessage<bool>("This field is not exist", HttpStatusCode.BadRequest);
+                }
+                field.FarmId = createFieldDto.FarmId;
+                field.Area = createFieldDto.Area;
+                field.LocationId = newLocation.Id;
+                field.PolygonAppId = newPolygon.Id;
+                field.UpdatedAt = DateTime.Now;
+            }
 
-            await _unitOfWork.FieldRepository.AddAsync(newField);
             await _unitOfWork.SaveChangeAsync();
-
             return BuildSuccessResponseMessage(true, "Field created successfully", HttpStatusCode.Created);
         }
 
@@ -232,16 +248,16 @@ namespace AMSS.Services
                 List<Position> lstPositionsFromDb = await _unitOfWork.PositionRepository.GetAllAsync(u => u.PolygonAppId == fieldFromDb.PolygonAppId);
                 // Delete Location 
                 await _unitOfWork.LocationRepository.RemoveAsync(fieldFromDb.Location);
-                
+
                 // Delete Positions
                 foreach (Position pos in lstPositionsFromDb)
                 {
                     await _unitOfWork.PositionRepository.RemoveAsync(pos);
                 }
-                
+
                 // Delete PolygonApp 
                 await _unitOfWork.PolygonAppRepository.RemoveAsync(fieldFromDb.PolygonApp);
-                
+
 
 
                 if (fieldFromDb == null)

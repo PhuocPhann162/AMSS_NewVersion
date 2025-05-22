@@ -1,13 +1,13 @@
 ﻿using AMSS.Dto.Crop;
 using AMSS.Dto.FieldCrop;
+using AMSS.Dto.Requests.Crops;
+using AMSS.Dto.Responses;
 using AMSS.Entities;
 using AMSS.Models;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
-using AMSS.Utility;
 using AutoMapper;
-using CloudinaryDotNet.Actions;
-using Microsoft.Data.SqlClient;
+using System.Linq.Expressions;
 using System.Net;
 
 namespace AMSS.Services
@@ -25,24 +25,60 @@ namespace AMSS.Services
             _cloudinaryService = cloudinaryService;
         }
 
-        public async Task<APIResponse<IEnumerable<CropDto>>> GetCropsAsync()
+        public async Task<APIResponse<PaginationResponse<CropDto>>> GetPlantingCropsAsync(GetPlantingCropsRequest request)
         {
-            try
-            {
-                IEnumerable<Crop> lstCrops = await _unitOfWork.CropRepository
-                    .GetAllAsync(includeProperties: "CropType");
-                var lstCropDtos = _mapper.Map<IEnumerable<CropDto>>(lstCrops);
-                if (lstCrops == null)
-                {
-                    return BuildErrorResponseMessage<IEnumerable<CropDto>>("Failed to get all crops", HttpStatusCode.NotFound);
-                }
+            var sortExpressions = new List<SortExpression<Crop>>();
 
-                return BuildSuccessResponseMessage(lstCropDtos, "Get all Crops successfully");
-            }
-            catch (Exception ex)
+            var sortFieldMap = new Dictionary<string, Expression<Func<Crop, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                return BuildErrorResponseMessage<IEnumerable<CropDto>>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["Name"] = x => x.Name,
+            };
+
+            // Sort
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<Crop>(sortField, request.OrderByDirection));
             }
+
+            // Filter and Search
+            Expression<Func<Crop, bool>> filter = x =>
+                    (string.IsNullOrEmpty(request.Search) || x.Name.Contains(request.Search) || x.Name.Contains(request.Search));
+
+            var cropsPaginationResult = await _unitOfWork.CropRepository.GetPaginationIncludeAsync(
+                filter,
+                request.CurrentPage,
+                request.Limit,
+                sortExpressions.ToArray(),
+                includes: [x => x.CropType]);
+            var response = new PaginationResponse<CropDto>(cropsPaginationResult.CurrentPage, cropsPaginationResult.Limit,
+                            cropsPaginationResult.TotalRow, cropsPaginationResult.TotalPage)
+            {
+                Collection = cropsPaginationResult.Data.Select(x => new CropDto
+                {
+                    Id = x.Id,
+                    Icon = x.Icon,
+                    Name = x.Name,
+                    Cycle = x.Cycle,
+                    Edible = x.Edible,
+                    Soil = x.Soil,
+                    Watering = x.Watering,
+                    Maintenance = x.Maintenance,
+                    HardinessZone = x.HardinessZone,
+                    Indoor = x.Indoor,
+                    Propagation = x.Propagation,
+                    CareLevel = x.CareLevel,
+                    GrowthRate = x.GrowthRate,
+                    Description = x.Description,
+                    CultivatedArea = x.CultivatedArea,
+                    PlantedDate = x.PlantedDate,
+                    ExpectedDate = x.ExpectedDate,
+                    Quantity = x.Quantity,
+                    CropTypeName = x.CropType.Type,
+                    CreatedAt = x.CreatedAt
+                })
+            };
+            return BuildSuccessResponseMessage(response);
         }
         public async Task<APIResponse<CropDto>> GetCropByIdAsync(string id)
         {
@@ -164,31 +200,59 @@ namespace AMSS.Services
 
         public async Task<APIResponse<bool>> DeleteCropAsync(string id)
         {
-            try
+            if (string.IsNullOrEmpty(id))
             {
-                if (string.IsNullOrEmpty(id))
-                {
-                    return BuildErrorResponseMessage<bool>("ID not found!", HttpStatusCode.NotFound);
-                }
-
-                var cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
-                if (cropFromDb == null)
-                {
-                    return BuildErrorResponseMessage<bool>("This crop does not exist!", HttpStatusCode.NotFound);
-                }
-
-                await _cloudinaryService.DeleteImageAsync(cropFromDb.PublicImageId);
-                int milliseconds = 2000;
-                Thread.Sleep(milliseconds);
-
-                await _unitOfWork.CropRepository.RemoveAsync(cropFromDb);
-                await _unitOfWork.SaveChangeAsync();
-                return BuildSuccessResponseMessage(true, "Crop deleted successfully !");
+                return BuildErrorResponseMessage<bool>("ID not found!", HttpStatusCode.NotFound);
             }
-            catch (Exception ex)
+
+            var cropFromDb = await _unitOfWork.CropRepository.GetAsync(u => u.Id.Equals(Guid.Parse(id)));
+            if (cropFromDb == null)
             {
-                return BuildErrorResponseMessage<bool>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
+                return BuildErrorResponseMessage<bool>("This crop does not exist!", HttpStatusCode.NotFound);
             }
+
+            await _cloudinaryService.DeleteImageAsync(cropFromDb.PublicImageId);
+            int milliseconds = 2000;
+            Thread.Sleep(milliseconds);
+
+            await _unitOfWork.CropRepository.RemoveAsync(cropFromDb);
+            await _unitOfWork.SaveChangeAsync();
+            return BuildSuccessResponseMessage(true, "Crop deleted successfully !");
+        }
+
+        public async Task<APIResponse<bool>> AddPlantingCropsAsync(AddPlantingCropRequest addPlantingCropRequest)
+        {
+            var fieldCrops = new FieldCrop()
+            {
+                Id = Guid.NewGuid(),
+                FieldId = addPlantingCropRequest.FieldId,
+                CropId = addPlantingCropRequest.CropId,
+                Quantity = addPlantingCropRequest.Quantity,
+                Status = addPlantingCropRequest.Status,
+                Unit = addPlantingCropRequest.Unit,
+                Notes = addPlantingCropRequest.Notes.Trim() ?? string.Empty,
+                CreatedAt = DateTime.Now
+            };
+
+            await _unitOfWork.FieldCropRepository.CreateAsync(fieldCrops);
+            return BuildSuccessResponseMessage(true, "Add plating crops successfully");
+        }
+
+        public async Task<APIResponse<bool>> RemovePlantingCropAsync(RemovePlantingCropRequest request)
+        {
+            var fieldCrop = await _unitOfWork.FieldCropRepository.GetAsync(
+                x => x.FieldId == request.FieldId && x.CropId == request.CropId);
+
+            if (fieldCrop == null)
+            {
+                return BuildErrorResponseMessage<bool>("Planting crop not found", HttpStatusCode.NotFound);
+            }
+
+            await _unitOfWork.FieldCropRepository.RemoveAsync(fieldCrop);
+            await _unitOfWork.SaveChangeAsync();
+            
+            return BuildSuccessResponseMessage(true, "Planting crop removed successfully");
         }
     }
+    
 }

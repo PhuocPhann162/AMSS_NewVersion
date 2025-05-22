@@ -5,7 +5,7 @@ namespace AMSS.Dto.Responses.Commodities
 {
     public class GetCommoditiesResponse
     {
-        public Guid CommdityId { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 

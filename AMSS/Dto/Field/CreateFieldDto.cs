@@ -17,6 +17,8 @@ namespace AMSS.Dto.Field
         [Required]
         public Guid FarmId { get; set; }
 
+        public Guid? FieldId { get; set; }
+
         public CreateLocationDto Location { get; set; }
         public CreatePolygonDto Polygon { get; set; }
     }

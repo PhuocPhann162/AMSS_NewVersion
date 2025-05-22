@@ -19,6 +19,13 @@ namespace AMSS.Repositories.IRepository
             int pageSize = 10,
             params SortExpression<TEntity>[] sortExpressions);
 
+        Task<PaginationResult<TEntity>> GetPaginationIncludeAsync(
+            Expression<Func<TEntity, bool>> expression = null,
+            int page = 0,
+            int pageSize = 10,
+            SortExpression<TEntity>[] sortExpressions = null,
+            Expression<Func<TEntity, object>>[] includes = null);
+
         IQueryable<TEntity> GetQueryAble(
            int page = 0,
            int pageSize = 10,

@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AMSS.Dto.CropType;
 using AMSS.Dto.FieldCrop;
 using AMSS.Dto.Suppliers;
+using AMSS.Entities;
 using AMSS.Models.Suppliers;
 
 namespace AMSS.Dto.Crop
@@ -37,14 +39,14 @@ namespace AMSS.Dto.Crop
         public string Description { get; set; }
         public double CultivatedArea { get; set; }
 
-        public DateTime PlantedDate { get; set; }
+        public DateTime? PlantedDate { get; set; }
 
-        public DateTime ExpectedDate { get; set; }
+        public DateTime? ExpectedDate { get; set; }
 
         public int Quantity { get; set; } = 0;
 
-
         public Guid CropTypeId { get; set; }
+        public string CropTypeName { get; set; }
         public IEnumerable<FieldCropDto> FieldCrops { get; set; }
 
         public SupplierDto Supplier { get; set; }

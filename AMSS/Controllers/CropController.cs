@@ -1,5 +1,7 @@
 ﻿using AMSS.Dto.Crop;
 using AMSS.Dto.FieldCrop;
+using AMSS.Dto.Requests.Crops;
+using AMSS.Dto.Responses;
 using AMSS.Entities;
 using AMSS.Enums;
 using AMSS.Services.IService;
@@ -19,12 +21,12 @@ namespace AMSS.Controllers
             _cropService = cropService;
         }
 
-        [HttpGet]
+        [HttpGet("plating-crops")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<IEnumerable<CropDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCrops()
+        [ProducesResponseType(typeof(APIResponse<PaginationResponse<CropDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPlatingCrops([FromQuery]GetPlantingCropsRequest request)
         {
-            var response = await _cropService.GetCropsAsync();
+            var response = await _cropService.GetPlantingCropsAsync(request);
             return ProcessResponseMessage(response);
         }
 
@@ -44,6 +46,15 @@ namespace AMSS.Controllers
         public async Task<IActionResult> GetCropsByFieldId(string fieldId)
         {
             var response = await _cropService.GetCropsByFieldIdAsync(fieldId);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpPost("add-crop-planting")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddCropsPlatingField([FromBody] AddPlantingCropRequest addPlantingCropRequest)
+        {
+            var response = await _cropService.AddPlantingCropsAsync(addPlantingCropRequest);
             return ProcessResponseMessage(response);
         }
 
@@ -74,6 +85,15 @@ namespace AMSS.Controllers
         public async Task<IActionResult> DeleteCrop(string id)
         {
             var response = await _cropService.DeleteCropAsync(id);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpDelete("remove-planting-crop")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemovePlantingCrop([FromQuery] RemovePlantingCropRequest request)
+        {
+            var response = await _cropService.RemovePlantingCropAsync(request);
             return ProcessResponseMessage(response);
         }
     }

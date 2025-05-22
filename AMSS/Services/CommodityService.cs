@@ -40,7 +40,7 @@ namespace AMSS.Services
             {
                 Collection = commoditiesPaginationResult.Data.Select(x => new GetCommoditiesResponse
                 {
-                    CommdityId = x.Id,  
+                    Id = x.Id,  
                     Name = x.Name,
                     Description = x.Description,
                     Category = x.Category, 

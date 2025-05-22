@@ -5,16 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AMSS.Entities
 {
-#nullable enable
-    public class FieldCrop
+    public class FieldCrop : BaseModel<Guid>
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column(TypeName = "uniqueidentifier")]
-        public Guid Id { get; set; }
 
         [Column(TypeName = "uniqueidentifier")]
         public Guid? FieldId { get; set; }
+
         [ForeignKey("FieldId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.SetNull)]
@@ -22,9 +18,18 @@ namespace AMSS.Entities
 
         [Column(TypeName = "uniqueidentifier")]
         public Guid? CropId { get; set; }
+
         [ForeignKey("CropId")]
         [ValidateNever]
         [DeleteBehavior(DeleteBehavior.SetNull)]
         public virtual Crop? Crop { get; set; }
+
+        public int Quantity { get; set; }
+
+        public string Status { get; set; }
+
+        public string Unit { get; set; }
+
+        public string? Notes { get; set; }
     }
 }

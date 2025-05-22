@@ -118,6 +118,7 @@ namespace AMSS.Services
                 CountryName = countryWithRequest.CountryName,
                 PhoneCode = registrationDto.PhoneCode,
                 PhoneNumber = registrationDto.PhoneNumber,
+                IsActive = true,
                 ProvinceName = !string.IsNullOrEmpty(provinceName) ? provinceName : null,
                 ProvinceCode = registrationDto.ProvinceCode ?? null,
                 CreatedAt = DateTime.Now,

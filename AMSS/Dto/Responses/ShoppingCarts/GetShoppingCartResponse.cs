@@ -1,4 +1,6 @@
-﻿namespace AMSS.Dto.Responses.ShoppingCarts
+﻿using AMSS.Enums;
+
+namespace AMSS.Dto.Responses.ShoppingCarts
 {
     public class GetShoppingCartResponse
     {
@@ -16,6 +18,8 @@
         public Guid Id { get; set; }
         public int Quantity { get; set; }
         public string CommodityName { get; set; }
+        public string CommodityImage { get; set; }
+        public CommodityCategory CommodityCategory { get; set; }
         public decimal Price { get; set; }
     }
 }

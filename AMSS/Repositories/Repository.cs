@@ -199,5 +199,30 @@ namespace AMSS.Repositories
 
             return await query.ToPaginationAsync(page, pageSize);
         }
+
+        public async Task<PaginationResult<TEntity>> GetPaginationIncludeAsync(
+            Expression<Func<TEntity, bool>> expression,
+            int page,
+            int pageSize,
+            SortExpression<TEntity>[] sortExpressions,
+            Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            query = GetOrderedQueryable(query, sortExpressions);
+
+            return await query.ToPaginationAsync(page, pageSize);
+        }
+
     }
 }
