@@ -37,7 +37,7 @@ namespace AMSS.Services
                 Audience = _jwtOptions.Audience,
                 Issuer = _jwtOptions.Issuer,
                 Subject = new ClaimsIdentity(claimList),
-                Expires = DateTime.Now.AddHours(1),
+                Expires = DateTime.Now.AddHours(8),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHanler.CreateToken(tokenDescriptor);

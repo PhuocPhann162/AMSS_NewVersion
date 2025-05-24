@@ -12,8 +12,7 @@ namespace AMSS.Models.Commodities
 
         [Column(TypeName = "nvarchar(500)")]
         public string Description { get; set; }
-
-        [Column(TypeName = "nvarchar(100)")]
+    
         public CommodityCategory Category { get; set; }
         
         [Column(TypeName = "decimal(18,6)")]

@@ -103,6 +103,7 @@ namespace AMSS
             services.AddScoped<IRedisCacheService, RedisCacheService>();
             services.AddScoped<IMetatDataService, MetaDataService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IPaymentService, PaymentService>();
         }
 
         private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)

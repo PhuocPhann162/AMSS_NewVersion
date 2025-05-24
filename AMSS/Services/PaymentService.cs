@@ -21,7 +21,7 @@ namespace AMSS.Services
 
         public async Task<APIResponse<MakePaymentResponse>> MakePaymentAsync(Guid userId)
         {
-            var shoppingCart = await _unitOfWork.ShoppingCartRepository.FirstOrDefaultAsync(x => x.UserId == userId);
+            var shoppingCart = await _unitOfWork.ShoppingCartRepository.GetShoppingCartByUserIdAsync(userId);
             if (shoppingCart is null || shoppingCart.CartItems is null || shoppingCart.CartItems.Count() == 0) 
             {
                 return BuildErrorResponseMessage<MakePaymentResponse>("Not found shopping cart with userID: " + userId, HttpStatusCode.NotFound);
@@ -58,7 +58,13 @@ namespace AMSS.Services
 
             var responsePayment = new MakePaymentResponse()
             {
-
+                Id = shoppingCart.Id, 
+                UserId = shoppingCart.UserId, 
+                CouponCode = shoppingCart.CouponCode,
+                Discount = shoppingCart.Discount, 
+                CartTotal = shoppingCart.CartTotal, 
+                StripePaymentIntentId = shoppingCart.StripePaymentIntentId,
+                ClientSecret = shoppingCart.ClientSecret
             };
 
             return BuildSuccessResponseMessage(responsePayment);
