@@ -8,6 +8,9 @@ using AMSS.Services.IService;
 using AutoMapper;
 using System.Net;
 using AMSS.Models;
+using System.Linq.Expressions;
+using AMSS.Dto.Suppliers;
+using AMSS.Dto.Crop;
 
 namespace AMSS.Services
 {
@@ -27,14 +30,28 @@ namespace AMSS.Services
         {
             var sortExpressions = new List<SortExpression<Commodity>>();
 
-            if(!string.IsNullOrEmpty(request.OrderBy) && 
-                string.Equals(request.OrderBy, "CreatedAt", StringComparison.OrdinalIgnoreCase))
+            var sortFieldMap = new Dictionary<string, Expression<Func<Commodity, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                var sortExpression = new SortExpression<Commodity>(p => p.CreatedAt, request.OrderByDirection);
-                sortExpressions.Add(sortExpression);
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["Name"] = x => x.Name,
+                ["Price"] = x => x.Price,
+                ["ExpirationDate"] = x => x.ExpirationDate
+            };
+
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<Commodity>(sortField, request.OrderByDirection));
             }
 
-            var commoditiesPaginationResult = await _unitOfWork.CommodityRepository.GetAsync(null, request.CurrentPage, request.Limit, sortExpressions.ToArray());
+            Expression<Func<Commodity, bool>> filter = x =>
+                   (request.Categories == null || request.Categories.Count() == 0 || request.Categories.Contains(x.Category)) &&
+                   (request.Statuses == null || request.Statuses.Count() == 0 || request.Statuses.Contains(x.Status)) &&
+                   (string.IsNullOrEmpty(request.Search) || x.Name.Contains(request.Search));
+
+            var commoditiesPaginationResult = await _unitOfWork.CommodityRepository.GetAsync(
+                filter, 
+                request.CurrentPage, request.Limit, 
+                sortExpressions.ToArray());
             var response = new PaginationResponse<GetCommoditiesResponse>(commoditiesPaginationResult.CurrentPage, commoditiesPaginationResult.Limit,
                             commoditiesPaginationResult.TotalRow, commoditiesPaginationResult.TotalPage)
             {
@@ -43,15 +60,16 @@ namespace AMSS.Services
                     Id = x.Id,  
                     Name = x.Name,
                     Description = x.Description,
-                    Category = x.Category, 
+                    Category = (int)x.Category, 
                     Price = x.Price,
                     Image = x.Image, 
                     ExpirationDate = x.ExpirationDate, 
-                    Status = x.Status, 
+                    Status = (int)x.Status, 
                     SupplierId = x.SupplierId, 
                     CropId = x.CropId
                 })
             };
+
             return BuildSuccessResponseMessage(response);
         }
 
@@ -62,15 +80,17 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<GetCommodityResponse>("Not valid ID commodity", HttpStatusCode.BadRequest);
             }
 
-            var commodity = await _unitOfWork.CommodityRepository.FirstOrDefaultAsync(x => x.Id == id);
+            var commodity = await _unitOfWork.CommodityRepository.GetAsync(x => x.Id == id, includeProperties: "Supplier,Crop");
             if(commodity == null)
             {
                 return BuildErrorResponseMessage<GetCommodityResponse>("Not found this commodity", HttpStatusCode.NotFound);
             }
 
             var response = _mapper.Map<GetCommodityResponse>(commodity);
+            response.Supplier = _mapper.Map<SupplierDto>(commodity.Supplier);
+            response.Crop = _mapper.Map<CropDto>(commodity.Crop);
 
-            return BuildSuccessResponseMessage(response, "Get commodity by ID successfully", HttpStatusCode.Created);
+            return BuildSuccessResponseMessage(response, "Get commodity by ID successfully");
         }
 
         public async Task<APIResponse<bool>> CreateCommodityAsync(CreateCommodityRequest request)

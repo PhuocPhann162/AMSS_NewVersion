@@ -1,4 +1,6 @@
-﻿using AMSS.Entities;
+﻿using AMSS.Dto.Crop;
+using AMSS.Dto.Suppliers;
+using AMSS.Entities;
 using AMSS.Enums;
 using System.Text.Json.Serialization;
 
@@ -24,5 +26,7 @@ namespace AMSS.Dto.Responses.Commodities
 
         public string CropName { get; set; }
 
+        public SupplierDto Supplier { get; set; }
+        public CropDto Crop { get; set; }
     }
 }

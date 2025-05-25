@@ -13,7 +13,7 @@ namespace AMSS.Dto.Responses.Commodities
 
         public string SpecialTag { get; set; }
 
-        public CommodityCategory Category { get; set; }
+        public int Category { get; set; }
 
         public decimal Price { get; set; }
 
@@ -21,7 +21,7 @@ namespace AMSS.Dto.Responses.Commodities
 
         public DateTime? ExpirationDate { get; set; }
 
-        public CommodityStatus Status { get; set; }
+        public int Status { get; set; }
 
         public Guid SupplierId { get; set; }
 
