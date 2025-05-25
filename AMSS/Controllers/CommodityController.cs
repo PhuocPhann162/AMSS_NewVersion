@@ -29,7 +29,7 @@ namespace AMSS.Controllers
 
         [HttpGet("{id:guid}")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<GetCommoditiesResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse<GetCommodityResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCommodityAsync(Guid id)
         {
             var response = await _commodityService.GetCommodityByIdAsync(id);
