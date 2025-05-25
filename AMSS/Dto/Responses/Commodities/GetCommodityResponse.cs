@@ -1,13 +1,11 @@
 ﻿using AMSS.Dto.Crop;
 using AMSS.Dto.Suppliers;
-using AMSS.Entities;
-using AMSS.Enums;
-using System.Text.Json.Serialization;
 
 namespace AMSS.Dto.Responses.Commodities
 {
     public class GetCommodityResponse
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
         public string Description { get; set; }
