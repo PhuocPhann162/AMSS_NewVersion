@@ -17,9 +17,10 @@ namespace AMSS.Dto.Responses.ShoppingCarts
     {
         public Guid Id { get; set; }
         public int Quantity { get; set; }
+        public Guid CommodityId { get; set; }
         public string CommodityName { get; set; }
         public string CommodityImage { get; set; }
-        public CommodityCategory CommodityCategory { get; set; }
+        public int CommodityCategory { get; set; }
         public decimal Price { get; set; }
     }
 }

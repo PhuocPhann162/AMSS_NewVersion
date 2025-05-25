@@ -18,7 +18,7 @@ namespace AMSS.Services
         }
         public async Task<APIResponse<GetShoppingCartResponse>> GetShoppingCartAsync(Guid userId)
         {
-            var shoppingCart = await _unitOfWork.ShoppingCartRepository.FirstOrDefaultAsync(u => u.UserId == userId); ;
+            var shoppingCart = await _unitOfWork.ShoppingCartRepository.GetAsync(u => u.UserId == userId, includeProperties: "CartItems,CartItems.Commodity"); ;
 
             if (shoppingCart is null)
             {
@@ -48,14 +48,20 @@ namespace AMSS.Services
                 CartTotal = shoppingCart.CartTotal,
                 StripePaymentIntentId = shoppingCart.StripePaymentIntentId,
                 ClientSecret = shoppingCart.ClientSecret,
-                CartItems = shoppingCart.CartItems.Select(ci => new CartItemDto
+                CartItems = shoppingCart.CartItems != null 
+                ? shoppingCart.CartItems.Select(ci => new CartItemDto
                 {
                     Id = ci.Id,
                     Quantity = ci.Quantity,
+                    CommodityId = ci.CommodityId,
+                    Price = ci.Commodity?.Price ?? 0,
                     CommodityName = ci.Commodity?.Name,
-                    Price = ci.Commodity?.Price ?? 0
+                    CommodityImage = ci.Commodity?.Image,
+                    CommodityCategory = (int)(ci.Commodity?.Category ?? 0)
                 }).ToList()
+                : new List<CartItemDto>()
             };
+
 
             return BuildSuccessResponseMessage(response);
         }
@@ -73,7 +79,7 @@ namespace AMSS.Services
             // when a user updates an existing item count 
             // when a user removes an existing item
 
-            var shoppingCart = await _unitOfWork.ShoppingCartRepository.FirstOrDefaultAsync(u => u.UserId == userId);
+            var shoppingCart = await _unitOfWork.ShoppingCartRepository.GetAsync(u => u.UserId == userId, includeProperties: "CartItems");
             var commodity = await _unitOfWork.CommodityRepository.FirstOrDefaultAsync(u => u.Id == request.CommodityId);
             if (commodity == null)
             {
@@ -90,7 +96,7 @@ namespace AMSS.Services
                     CommodityId = request.CommodityId,
                     Quantity = request.UpdateQuantityBy,
                     ShoppingCartId = newCart.Id,
-                    Commodity = null
+                    CreatedAt = DateTime.Now
                 };
                 await _unitOfWork.CartItemRepository.AddAsync(newCartItem);
             }
@@ -106,7 +112,7 @@ namespace AMSS.Services
                         CommodityId = request.CommodityId,
                         Quantity = request.UpdateQuantityBy,
                         ShoppingCartId = shoppingCart.Id,
-                        Commodity = null
+                        CreatedAt = DateTime.Now,
                     };
                     await _unitOfWork.CartItemRepository.AddAsync(newCartItem);
                 }

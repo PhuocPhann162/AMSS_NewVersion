@@ -29,9 +29,9 @@ namespace AMSS.Controllers
         [HttpPost("add-update-item")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddOrUpdateItemInCartAsync([FromBody] AddOrUpdateItemInCartRequest request, Guid userId)
+        public async Task<IActionResult> AddOrUpdateItemInCartAsync([FromBody] AddOrUpdateItemInCartRequest request)
         {
-            var response = await _shoppingCartService.AddOrUpdateItemInCartAsync(request, userId);
+            var response = await _shoppingCartService.AddOrUpdateItemInCartAsync(request, AuthenticatedUserId);
             return ProcessResponseMessage(response);
         }
 
