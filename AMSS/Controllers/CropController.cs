@@ -5,6 +5,7 @@ using AMSS.Dto.Responses;
 using AMSS.Entities;
 using AMSS.Enums;
 using AMSS.Services.IService;
+using AMSS.Services.IService.IGeneratePdf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -15,10 +16,12 @@ namespace AMSS.Controllers
     [ApiController]
     public class CropController : BaseController<CropController>
     {
-       private readonly ICropService _cropService;
-        public CropController(ICropService cropService)
+        private readonly ICropService _cropService;
+        private readonly IHarvestExportService _harvestExportService;
+        public CropController(ICropService cropService, IHarvestExportService harvestExportService)
         {
             _cropService = cropService;
+            _harvestExportService = harvestExportService;
         }
 
         [HttpGet("plating-crops")]
@@ -94,6 +97,16 @@ namespace AMSS.Controllers
         public async Task<IActionResult> RemovePlantingCrop([FromQuery] RemovePlantingCropRequest request)
         {
             var response = await _cropService.RemovePlantingCropAsync(request);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpPost("export-harvest")]
+        [Authorize(Roles = nameof(Role.ADMIN))]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportHarvestInvoiceAsync([FromBody] HarvestExportData request)
+        {
+            var response = await _harvestExportService.GenerateHarvestExportPdfAsync(request);
             return ProcessResponseMessage(response);
         }
     }

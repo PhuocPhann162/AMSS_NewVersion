@@ -15,6 +15,10 @@ using AMSS.Services.BackgroundJob;
 using AMSS.Constants;
 using Microsoft.AspNetCore.Mvc;
 using AMSS.Models;
+using AMSS.Services.IService.IGeneratePdf;
+using AMSS.Services.GeneratePdf;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 namespace AMSS
 {
@@ -104,6 +108,8 @@ namespace AMSS
             services.AddScoped<IMetatDataService, MetaDataService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IHarvestExportService, HarvestExportService>();
+            services.AddScoped<IGeneratePdfService, GeneratePdfService>();
         }
 
         private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)
@@ -114,6 +120,7 @@ namespace AMSS
             services.AddBackgroundService();
             services.AddConfigurationSettings(configuration);
             services.AddErrorValidateCustomService(configuration);
+            services.AddPdfService();
         }
 
         private static void AddSmtpService(this IServiceCollection services, IConfiguration configuration)
@@ -141,6 +148,12 @@ namespace AMSS
                 option.Configuration = configuration.GetConnectionString("Redis");
                 option.InstanceName = "Noavaris_";
             });
+        }
+
+        private static void AddPdfService(this IServiceCollection services)
+        {
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            services.AddTransient<IPdfConverter, PdfConverter>();
         }
 
         private static void AddErrorValidateCustomService(this IServiceCollection services, IConfiguration configuration)

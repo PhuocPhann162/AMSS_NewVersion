@@ -18,7 +18,7 @@ namespace AMSS.Services.GeneratePdf
             _blobService = blobService;
         }
 
-        private async Task<string> ConvertAndUploadBlobFileAsync
+        public async Task<string> ConvertAndUploadBlobFileAsync
             (string html, string fileName, Guid modelId)
         {
             var strBase64 = Convert.ToBase64String(_converter.ConvertWithPage(html, Orientation.Portrait));

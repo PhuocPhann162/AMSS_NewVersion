@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using AMSS.Dto.Farm;
+﻿using AMSS.Dto.Farm;
 using AMSS.Dto.FieldCrop;
 using AMSS.Dto.Location;
 using AMSS.Dto.Polygon;
@@ -18,12 +16,30 @@ namespace AMSS.Dto.Field
         public string Status { get; set; }
 
         public Guid FarmId { get; set; }
+
         public Guid LocationId { get; set; }
+
         public Guid PolygonAppId { get; set; }
 
+        public string InternalId { get; set; }
+
+        public string PlantingFormat { get; set; }
+
+        public string LocationType { get; set; }
+
+        public string LightProfile { get; set; }
+
+        public int GrazingRestDays { get; set; }
+
+        public int NumberOfBeds { get; set; }
+
+        public decimal? BedLength { get; set; }
+
+        public decimal? BedWidth { get; set; }
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdatedAt { get; set; }
-        public DateTime DeletedAt { get; set; }
 
         public LocationDto Location { get; set; }
         public FarmDto Farm { get; set; }

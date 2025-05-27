@@ -33,7 +33,7 @@ namespace AMSS.Services
                 }
 
                 var lstFieldsDto = _mapper.Map<IEnumerable<FieldDto>>(lstFields);
-
+                lstFieldsDto.OrderByDescending(x => x.CreatedAt);
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -58,6 +58,7 @@ namespace AMSS.Services
                     var paginatedField = lstFieldsDto.Skip((int)((pageNumber - 1) * pageSize)).Take((int)pageSize);
                     return BuildSuccessResponseMessage(paginatedField, "Get all Fields successfully", pagination: pagination);
                 }
+
                 return BuildSuccessResponseMessage(lstFieldsDto, "Get all Fields successfully");
             }
             catch (Exception ex)
