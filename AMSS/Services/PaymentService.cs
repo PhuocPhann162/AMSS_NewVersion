@@ -1,4 +1,5 @@
 ﻿using AMSS.Dto.Responses.Payment;
+using AMSS.Dto.Responses.ShoppingCarts;
 using AMSS.Entities;
 using AMSS.Infrastructures.Configurations;
 using AMSS.Repositories.IRepository;
@@ -26,6 +27,17 @@ namespace AMSS.Services
             {
                 return BuildErrorResponseMessage<MakePaymentResponse>("Not found shopping cart with userID: " + userId, HttpStatusCode.NotFound);
             }
+
+            var userCartItems = shoppingCart.CartItems.Select(x => new CartItemDto()
+            {
+                Id = x.Id,
+                Quantity = x.Quantity,
+                CommodityId = x.CommodityId, 
+                CommodityName = x.Commodity.Name, 
+                CommodityImage = x.Commodity.Image,
+                CommodityCategory = (int)x.Commodity.Category, 
+                Price = x.Commodity.Price
+            });
 
             #region Create Payment Intent
             StripeConfiguration.ApiKey = _stripeConfiguration.SecretKey;
@@ -64,7 +76,8 @@ namespace AMSS.Services
                 Discount = shoppingCart.Discount, 
                 CartTotal = shoppingCart.CartTotal, 
                 StripePaymentIntentId = shoppingCart.StripePaymentIntentId,
-                ClientSecret = shoppingCart.ClientSecret
+                ClientSecret = shoppingCart.ClientSecret,
+                CartItems = userCartItems
             };
 
             return BuildSuccessResponseMessage(responsePayment);

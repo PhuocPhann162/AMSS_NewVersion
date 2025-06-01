@@ -7,7 +7,7 @@ namespace AMSS.Dto.Responses.Payment
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string? CouponCode { get; set; }
-        public ICollection<CartItemDto> CartItems { get; set; }
+        public IEnumerable<CartItemDto> CartItems { get; set; }
 
         public decimal Discount { get; set; }
         public decimal CartTotal { get; set; }
