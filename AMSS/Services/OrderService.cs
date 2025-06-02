@@ -7,6 +7,7 @@ using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
 using AMSS.Models.OrderHeaders;
 using System.Net;
+using AMSS.Models.OrderDetails;
 
 namespace AMSS.Services
 {
@@ -78,8 +79,28 @@ namespace AMSS.Services
 
         public async Task<APIResponse<Guid>> CreateOrderAsync(CreateOrderRequest request, Guid userId)
         {
+            if(userId == Guid.Empty)
+            {
+                return BuildErrorResponseMessage<Guid>("User not found", HttpStatusCode.NotFound);
+            }
+
             var newOrder = new OrderHeader(request, userId);
             await _unitOfWork.OrderHeaderRepository.AddAsync(newOrder);
+
+            var newOrderDetails = request.OrderDetails.Select(x => new OrderDetail()
+            {
+                Id = Guid.NewGuid(),
+                OrderHeaderId = newOrder.Id, 
+                CommodityId = x.CommodityId,
+                Quantity = x.Quantity, 
+                ItemName = x.ItemName, 
+                Price = x.Price,
+                CreatedAt = DateTime.Now, 
+                UpdatedAt = DateTime.Now
+
+            });
+            await _unitOfWork.OrderDetailRepository.AddRangeAsync(newOrderDetails);
+
             await _unitOfWork.SaveChangeAsync();
 
             return BuildSuccessResponseMessage(newOrder.Id, "Order created successfully", HttpStatusCode.Created);

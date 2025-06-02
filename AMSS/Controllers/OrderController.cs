@@ -9,7 +9,7 @@ using AMSS.Dto.Responses.Orders;
 
 namespace AMSS.Controllers
 {
-    [Route("api/order")]
+    [Route("api/orders")]
     [ApiController]
     public class OrderController : BaseController<OrderController>
     {

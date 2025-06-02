@@ -13,15 +13,16 @@ namespace AMSS.Models.OrderHeaders
 
         public OrderHeader(CreateOrderRequest request, Guid userId)
         {
+            Id = Guid.NewGuid();
             ApplicationUserId = userId;
             PickupName = request.PickupName?.Trim();
             PickupEmail = request.PickupEmail?.Trim();
             PickupPhoneNumber = request.PickupPhoneNumber?.Trim();
             OrderTotal = request.OrderTotal;
-            CouponCode = request.CouponCode;
+            CouponCode = request.CouponCode.Trim();
             DiscountAmount = request.DiscountAmount;
             OrderDate = DateTime.Now;
-            Status = OrderStatus.Pending;
+            Status = request.Status;
             TotalItems = request.TotalItems;
             StripePaymentIntentID = request.StripePaymentIntentID;
             CreatedAt = DateTime.Now;

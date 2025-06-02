@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AMSS.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace AMSS.Dto.Requests.Orders
 {
@@ -28,6 +29,7 @@ namespace AMSS.Dto.Requests.Orders
         [Range(0, double.MaxValue, ErrorMessage = "Discount amount must be a positive value")]
         public decimal DiscountAmount { get; set; }
 
+        public OrderStatus Status { get; set; }
         public string StripePaymentIntentID { get; set; }
 
         [Required]
