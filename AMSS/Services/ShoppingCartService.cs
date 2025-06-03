@@ -119,8 +119,7 @@ namespace AMSS.Services
                 else
                 {
                     // item already exist in the cart and we have to update quantity 
-                    int newQuantity = cartItemInCart.Quantity + request.UpdateQuantityBy;
-                    if (request.UpdateQuantityBy == 0 || newQuantity <= 0)
+                    if (request.UpdateQuantityBy <= 0)
                     {
                         // remove cart item from cart and if it is the only item then remove cart 
                         await _unitOfWork.CartItemRepository.RemoveAsync(cartItemInCart);
@@ -132,7 +131,7 @@ namespace AMSS.Services
                     }
                     else
                     {
-                        cartItemInCart.Quantity = newQuantity;
+                        cartItemInCart.Quantity = request.UpdateQuantityBy;
                     }
                 }
             }
