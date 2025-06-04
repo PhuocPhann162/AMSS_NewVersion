@@ -19,7 +19,7 @@ namespace AMSS.Models.OrderHeaders
             PickupEmail = request.PickupEmail?.Trim();
             PickupPhoneNumber = request.PickupPhoneNumber?.Trim();
             OrderTotal = request.OrderTotal;
-            CouponCode = request.CouponCode.Trim();
+            CouponCode = !string.IsNullOrEmpty(request.CouponCode) ? request.CouponCode.Trim() : string.Empty;
             DiscountAmount = request.DiscountAmount;
             OrderDate = DateTime.Now;
             Status = request.Status;

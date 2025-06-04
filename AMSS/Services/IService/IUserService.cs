@@ -13,6 +13,6 @@ namespace AMSS.Services.IService
         Task<APIResponse<bool>> LockUnlockAsync(string? id);
         Task<APIResponse<bool>> RoleManagementAsync(string userId, string role);
         Task<APIResponse<bool>> UpdateInfoAsync(string userId, UpdateUserDto updateUserDto);
-
+        Task<APIResponse<bool>> UpdateUserLocationAsync(Guid userId, UpdateUserLocationRequest request);
     }
 }

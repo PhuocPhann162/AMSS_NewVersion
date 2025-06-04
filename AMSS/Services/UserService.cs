@@ -12,6 +12,7 @@ using System.Linq.Expressions;
 using System.Net;
 using AMSS.Dto.Responses.Users;
 using Microsoft.OpenApi.Extensions;
+using AMSS.Entities.Locations;
 
 namespace AMSS.Services
 {
@@ -176,6 +177,37 @@ namespace AMSS.Services
             {
                 return BuildErrorResponseMessage<bool>(ex.Message, (HttpStatusCode)StatusCodes.Status500InternalServerError);
             }
+        }
+
+        public async Task<APIResponse<bool>> UpdateUserLocationAsync(Guid userId, UpdateUserLocationRequest request)
+        {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
+            if(user is null) 
+            {
+                return BuildErrorResponseMessage<bool>("User does not exist", HttpStatusCode.NotFound);
+            }
+
+            var newLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Address = request.StreetAddress, 
+                Lat = request.Lat,
+                Lng = request.Lng,
+                CountryCode = user.CountryCode,
+                City = user.ProvinceName,
+                ApplicationUserId = userId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,   
+            };
+
+            await _unitOfWork.LocationRepository.AddAsync(newLocation);
+
+            // update user street address 
+            user.StreetAddress = request.StreetAddress;
+
+            await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(true);
         }
     }
 }

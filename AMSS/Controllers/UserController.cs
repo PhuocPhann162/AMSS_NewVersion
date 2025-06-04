@@ -63,5 +63,15 @@ namespace AMSS.Controllers
             var response = await _userService.UpdateInfoAsync(userId, updateUserDto);
             return ProcessResponseMessage(response);
         }
+
+        [Authorize]
+        [HttpPut("address")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateUserLocationAsync([FromBody] UpdateUserLocationRequest request)
+        {
+            var response = await _userService.UpdateUserLocationAsync(AuthenticatedUserId, request);
+            return ProcessResponseMessage(response);
+        }
     }
 }
