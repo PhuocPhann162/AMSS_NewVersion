@@ -88,7 +88,7 @@ namespace AMSS.Services
             if (shoppingCart == null && request.UpdateQuantityBy > 0)
             {
                 // create a shopping cart && add cartItem
-                ShoppingCart newCart = new() { UserId = userId };
+                ShoppingCart newCart = new() { UserId = userId, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now };
                 await _unitOfWork.ShoppingCartRepository.AddAsync(newCart);
 
                 CartItem newCartItem = new()
@@ -96,7 +96,7 @@ namespace AMSS.Services
                     CommodityId = request.CommodityId,
                     Quantity = request.UpdateQuantityBy,
                     ShoppingCartId = newCart.Id,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now    
                 };
                 await _unitOfWork.CartItemRepository.AddAsync(newCartItem);
             }
@@ -123,7 +123,7 @@ namespace AMSS.Services
                     {
                         // remove cart item from cart and if it is the only item then remove cart 
                         await _unitOfWork.CartItemRepository.RemoveAsync(cartItemInCart);
-                        if (shoppingCart.CartItems.Count() == 1)
+                        if (shoppingCart.CartItems.Count() == 0)
                         {
                             shoppingCart.CartTotal = 0;
                             await _unitOfWork.ShoppingCartRepository.RemoveAsync(shoppingCart);
