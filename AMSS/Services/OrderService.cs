@@ -8,34 +8,77 @@ using AMSS.Services.IService;
 using AMSS.Models.OrderHeaders;
 using System.Net;
 using AMSS.Models.OrderDetails;
+using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
+using AMSS.Utility;
+using AMSS.Enums;
 
 namespace AMSS.Services
 {
     public class OrderService : BaseService, IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public OrderService(IUnitOfWork unitOfWork)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+
+        public OrderService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public async Task<APIResponse<PaginationResponse<GetOrdersResponse>>> GetOrdersAsync(GetOrdersRequest request, Guid userId)
         {
+
+            var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId.ToString());
+            if(user is null)
+            {
+                return BuildErrorResponseMessage<PaginationResponse<GetOrdersResponse>>("User does not exist", HttpStatusCode.BadRequest);
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+
             var sortExpressions = new List<SortExpression<OrderHeader>>();
 
-            if (!string.IsNullOrEmpty(request.OrderBy) &&
-                string.Equals(request.OrderBy, "CreatedAt", StringComparison.OrdinalIgnoreCase))
+            var sortFieldMap = new Dictionary<string, Expression<Func<OrderHeader, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                var sortExpression = new SortExpression<OrderHeader>(p => p.CreatedAt, request.OrderByDirection);
-                sortExpressions.Add(sortExpression);
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["PickupName"] = x => x.PickupName,
+                ["OrderTotal"] = x => x.OrderTotal,
+                ["OrderDate"] = x => x.OrderDate
+            };
+
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<OrderHeader>(sortField, request.OrderByDirection));
             }
 
-            var orderHeadersPaginationResult = await _unitOfWork.OrderHeaderRepository.GetAsync(x => x.ApplicationUserId == userId, request.CurrentPage, request.Limit, sortExpressions.ToArray());
+            // filter
+            Expression<Func<OrderHeader, bool>> filter;
+            if (!roles.Equals(Role.ADMIN))
+            {
+                filter = x =>
+                    (request.Statuses == null || request.Statuses.Count() == 0 || request.Statuses.Contains(x.Status)) &&
+                    (string.IsNullOrEmpty(request.Search) || x.PickupName.Contains(request.Search) || x.PickupEmail.Contains(request.Search));
+            }
+            else
+            {
+                filter = x =>
+                    (request.Statuses == null || request.Statuses.Count() == 0 || request.Statuses.Contains(x.Status)) &&
+                    (string.IsNullOrEmpty(request.Search) || x.PickupName.Contains(request.Search) || x.PickupEmail.Contains(request.Search)) &&
+                    x.ApplicationUserId == userId;
+            }
+
+            var orderHeadersPaginationResult = await _unitOfWork.OrderHeaderRepository.GetAsync(
+                filter, 
+                request.CurrentPage, 
+                request.Limit, 
+                sortExpressions.ToArray());
             var response = new PaginationResponse<GetOrdersResponse>(orderHeadersPaginationResult.CurrentPage, orderHeadersPaginationResult.Limit,
                             orderHeadersPaginationResult.TotalRow, orderHeadersPaginationResult.TotalPage)
             {
                 Collection = orderHeadersPaginationResult.Data.Select(x => new GetOrdersResponse
                 {
+                    Id = x.Id,
                     PickupName = x.PickupName,
                     PickupEmail = x.PickupEmail,    
                     PickupPhoneNumber = x.PickupPhoneNumber,
@@ -79,12 +122,15 @@ namespace AMSS.Services
 
         public async Task<APIResponse<Guid>> CreateOrderAsync(CreateOrderRequest request, Guid userId)
         {
-            if(userId == Guid.Empty)
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
+            if(user is null)
             {
                 return BuildErrorResponseMessage<Guid>("User not found", HttpStatusCode.NotFound);
             }
 
-            var newOrder = new OrderHeader(request, userId);
+            var location = await _unitOfWork.LocationRepository.FirstOrDefaultAsync(x => x.ApplicationUserId == userId);
+
+            var newOrder = new OrderHeader(request, userId, location.Id);
             await _unitOfWork.OrderHeaderRepository.AddAsync(newOrder);
 
             var newOrderDetails = request.OrderDetails.Select(x => new OrderDetail()

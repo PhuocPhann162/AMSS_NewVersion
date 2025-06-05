@@ -6,6 +6,7 @@ namespace AMSS.Dto.Responses.Orders
 {
     public class GetOrdersResponse
     {
+        public Guid Id { get; set; }
         public string PickupName { get; set; }
 
         public string PickupPhoneNumber { get; set; }

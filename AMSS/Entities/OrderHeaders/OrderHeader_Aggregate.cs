@@ -11,7 +11,7 @@ namespace AMSS.Models.OrderHeaders
             
         }
 
-        public OrderHeader(CreateOrderRequest request, Guid userId)
+        public OrderHeader(CreateOrderRequest request, Guid userId, Guid locationId)
         {
             Id = Guid.NewGuid();
             ApplicationUserId = userId;
@@ -23,6 +23,7 @@ namespace AMSS.Models.OrderHeaders
             DiscountAmount = request.DiscountAmount;
             OrderDate = DateTime.Now;
             Status = request.Status;
+            LocationId = locationId;
             TotalItems = request.TotalItems;
             StripePaymentIntentID = request.StripePaymentIntentID;
             CreatedAt = DateTime.Now;
