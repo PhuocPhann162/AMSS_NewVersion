@@ -30,7 +30,7 @@ namespace AMSS.Controllers
 
         [HttpGet("{id:guid}")]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<GetCommoditiesResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse<GetOrderResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrderByIdAsync(Guid id)
         {
             var response = await _orderService.GetOrderByIdAsync(id);

@@ -10,26 +10,28 @@ using System.Net;
 using AMSS.Models.OrderDetails;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
-using AMSS.Utility;
 using AMSS.Enums;
+using AutoMapper;
+using AMSS.Dto.Location;
 
 namespace AMSS.Services
 {
     public class OrderService : BaseService, IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public OrderService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public OrderService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<APIResponse<PaginationResponse<GetOrdersResponse>>> GetOrdersAsync(GetOrdersRequest request, Guid userId)
         {
-
             var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId.ToString());
             if(user is null)
             {
@@ -99,7 +101,7 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<GetOrderResponse>("Not valid ID order", HttpStatusCode.BadRequest);
             }
 
-            var orderHeader = await _unitOfWork.OrderHeaderRepository.FirstOrDefaultAsync(x => x.Id == id);
+            var orderHeader = await _unitOfWork.OrderHeaderRepository.GetAsync(x => x.Id == id, includeProperties: "OrderDetails,OrderDetails.Commodity");
             if (orderHeader == null)
             {
                 return BuildErrorResponseMessage<GetOrderResponse>("Not found this order", HttpStatusCode.NotFound);
@@ -107,14 +109,26 @@ namespace AMSS.Services
 
             var response = new GetOrderResponse()
             {
+                Id = orderHeader.Id,
                 PickupName = orderHeader.PickupName,
                 PickupEmail = orderHeader.PickupEmail,
                 PickupPhoneNumber = orderHeader.PickupPhoneNumber,
                 DiscountAmount = orderHeader.DiscountAmount,
+                CouponCode = orderHeader.CouponCode,
                 OrderDate = orderHeader.OrderDate,
                 OrderTotal = orderHeader.OrderTotal,
                 Status = orderHeader.Status,
                 TotalItems = orderHeader.TotalItems,
+                Location = _mapper.Map<LocationDto>(orderHeader.Location),
+                OrderDetails = orderHeader.OrderDetails.Select(x => new OrderDetailDto
+                {
+                    OrderHeaderId = x.OrderHeaderId,
+                    CommodityId = x.CommodityId,
+                    Commodity = _mapper.Map<CommodityDto>(x.Commodity),
+                    ItemName = x.ItemName, 
+                    Price = x.Price,
+                    Quantity = x.Quantity
+                })
             };
 
             return BuildSuccessResponseMessage(response, "Get Order by ID successfully", HttpStatusCode.Created);

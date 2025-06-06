@@ -9,6 +9,7 @@ using AMSS.Dto.Polygon;
 using AMSS.Dto.Position;
 using AMSS.Dto.Province;
 using AMSS.Dto.Responses.Commodities;
+using AMSS.Dto.Responses.Orders;
 using AMSS.Dto.SeriesMetric;
 using AMSS.Dto.SocialMetric;
 using AMSS.Dto.SocialYear;
@@ -85,6 +86,7 @@ namespace AMSS.Utility
 
                 // Commodity 
                 config.CreateMap<Commodity, GetCommodityResponse>().ReverseMap();
+                config.CreateMap<Commodity, CommodityDto>().ReverseMap();
 
                 // Supplier 
                 config.CreateMap<Supplier, SupplierDto>().ReverseMap();
