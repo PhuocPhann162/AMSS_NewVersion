@@ -87,7 +87,7 @@ namespace AMSS.Services
                     DiscountAmount = x.DiscountAmount,
                     OrderDate = x.OrderDate,
                     OrderTotal = x.OrderTotal,
-                    Status = x.Status,
+                    Status = (int)x.Status,
                     TotalItems = x.TotalItems,
                 })
             };
@@ -117,7 +117,7 @@ namespace AMSS.Services
                 CouponCode = orderHeader.CouponCode,
                 OrderDate = orderHeader.OrderDate,
                 OrderTotal = orderHeader.OrderTotal,
-                Status = orderHeader.Status,
+                Status = (int)orderHeader.Status,
                 TotalItems = orderHeader.TotalItems,
                 Location = _mapper.Map<LocationDto>(orderHeader.Location),
                 OrderDetails = orderHeader.OrderDetails.Select(x => new OrderDetailDto

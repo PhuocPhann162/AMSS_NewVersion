@@ -21,7 +21,7 @@ namespace AMSS.Dto.Responses.Orders
 
         public DateTime OrderDate { get; set; }
 
-        public OrderStatus Status { get; set; }
+        public int Status { get; set; }
 
         public int TotalItems { get; set; }
 
