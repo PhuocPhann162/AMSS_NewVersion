@@ -94,14 +94,14 @@ namespace AMSS.Services
             return BuildSuccessResponseMessage(response);
         }
 
-        public async Task<APIResponse<GetOrderResponse>> GetOrderByIdAsync(Guid id)
+        public async Task<APIResponse<GetOrderResponse>> GetOrderByIdAsync(Guid id) 
         {
             if (id == Guid.Empty)
             {
                 return BuildErrorResponseMessage<GetOrderResponse>("Not valid ID order", HttpStatusCode.BadRequest);
             }
 
-            var orderHeader = await _unitOfWork.OrderHeaderRepository.GetAsync(x => x.Id == id, includeProperties: "OrderDetails,OrderDetails.Commodity");
+            var orderHeader = await _unitOfWork.OrderHeaderRepository.GetAsync(x => x.Id == id, includeProperties: "OrderDetails,OrderDetails.Commodity,Location");
             if (orderHeader == null)
             {
                 return BuildErrorResponseMessage<GetOrderResponse>("Not found this order", HttpStatusCode.NotFound);
