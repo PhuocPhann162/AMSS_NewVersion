@@ -8,7 +8,7 @@ using System.Net.Mime;
 
 namespace AMSS.Controllers
 {
-    [Route("api/coupon")]
+    [Route("api/coupons")]
     [ApiController]
     public class CouponController : BaseController<CouponController>
     {

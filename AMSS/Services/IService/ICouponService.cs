@@ -8,7 +8,7 @@ namespace AMSS.Services.IService
     public interface ICouponService
     {
         Task<APIResponse<PaginationResponse<GetCouponsResponse>>> GetCouponsAsync(GetCouponsRequest request);
-        Task<APIResponse<GetCouponResponse>> GetCouponByIdAsync(Guid id);
+        Task<APIResponse<GetCouponsResponse>> GetCouponByIdAsync(Guid id);
         Task<APIResponse<Guid>> CreateCouponAsync(CreateCouponRequest request);
         Task<APIResponse<bool>> UpdateCouponAsync(Guid id, UpdateCouponRequest request);
     }

@@ -9,6 +9,7 @@ using AMSS.Dto.Polygon;
 using AMSS.Dto.Position;
 using AMSS.Dto.Province;
 using AMSS.Dto.Responses.Commodities;
+using AMSS.Dto.Responses.Coupons;
 using AMSS.Dto.Responses.Orders;
 using AMSS.Dto.SeriesMetric;
 using AMSS.Dto.SocialMetric;
@@ -20,6 +21,7 @@ using AMSS.Entities;
 using AMSS.Entities.Locations;
 using AMSS.Entities.Polygon;
 using AMSS.Models.Commodities;
+using AMSS.Models.Coupons;
 using AMSS.Models.Suppliers;
 using AutoMapper;
 
@@ -90,6 +92,10 @@ namespace AMSS.Utility
 
                 // Supplier 
                 config.CreateMap<Supplier, SupplierDto>().ReverseMap();
+
+                // Coupon 
+                config.CreateMap<Coupon, GetCouponsResponse>().ReverseMap();
+                config.CreateMap<Coupon, CommodityDto>().ReverseMap();
             });
 
             return mappingConfig;

@@ -8,6 +8,8 @@ using AMSS.Services.IService;
 using AMSS.Models.Coupons;
 using System.Net;
 using AutoMapper;
+using System.Linq.Expressions;
+using System.ComponentModel;
 
 namespace AMSS.Services
 {
@@ -25,20 +27,38 @@ namespace AMSS.Services
         {
             var sortExpressions = new List<SortExpression<Coupon>>();
 
-            if (!string.IsNullOrEmpty(request.OrderBy) &&
-                string.Equals(request.OrderBy, "CreatedAt", StringComparison.OrdinalIgnoreCase))
+            var sortFieldMap = new Dictionary<string, Expression<Func<Coupon, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                var sortExpression = new SortExpression<Coupon>(p => p.CreatedAt, request.OrderByDirection);
-                sortExpressions.Add(sortExpression);
+                ["Title"] = x => x.Title,
+                ["DiscountAmount"] = x => x.DiscountAmount,
+                ["Expiration"] = x => x.Expiration
+            };
+
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<Coupon>(sortField, request.OrderByDirection));
+            } 
+            else
+            {
+                sortExpressions.Add(new SortExpression<Coupon>(x => x.CreatedAt, ListSortDirection.Descending));
             }
 
-            var couponsPaginationResult = await _unitOfWork.CouponRepository.GetAsync(null, request.CurrentPage, request.Limit, sortExpressions.ToArray());
+            Expression<Func<Coupon, bool>> filter = x =>
+                   (string.IsNullOrEmpty(request.Search) || x.Title.Contains(request.Search) || x.Code.Contains(request.Search));
+
+            var couponsPaginationResult = await _unitOfWork.CouponRepository.GetAsync(
+                filter,
+                request.CurrentPage, request.Limit,
+                sortExpressions.ToArray()
+            );
             var response = new PaginationResponse<GetCouponsResponse>(couponsPaginationResult.CurrentPage, couponsPaginationResult.Limit,
                             couponsPaginationResult.TotalRow, couponsPaginationResult.TotalPage)
             {
                 Collection = couponsPaginationResult.Data.Select(x => new GetCouponsResponse
                 {
-                    CouponId = x.Id, 
+                    Id = x.Id, 
+                    Title = x.Title,
+                    Description = x.Description,
                     Code = x.Code, 
                     DiscountAmount = x.DiscountAmount,
                     MinAmount = x.MinAmount, 
@@ -49,20 +69,20 @@ namespace AMSS.Services
             return BuildSuccessResponseMessage(response);
         }
 
-        public async Task<APIResponse<GetCouponResponse>> GetCouponByIdAsync(Guid id)
+        public async Task<APIResponse<GetCouponsResponse>> GetCouponByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return BuildErrorResponseMessage<GetCouponResponse>("Not valid ID coupon", HttpStatusCode.BadRequest);
+                return BuildErrorResponseMessage<GetCouponsResponse>("Not valid ID coupon", HttpStatusCode.BadRequest);
             }
 
             var coupon = await _unitOfWork.CouponRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (coupon == null)
             {
-                return BuildErrorResponseMessage<GetCouponResponse>("Not found this coupon", HttpStatusCode.NotFound);
+                return BuildErrorResponseMessage<GetCouponsResponse>("Not found this coupon", HttpStatusCode.NotFound);
             }
 
-            var response = _mapper.Map<GetCouponResponse>(coupon);
+            var response = _mapper.Map<GetCouponsResponse>(coupon);
 
             return BuildSuccessResponseMessage(response, "Get coupon by ID successfully", HttpStatusCode.Created);
         }

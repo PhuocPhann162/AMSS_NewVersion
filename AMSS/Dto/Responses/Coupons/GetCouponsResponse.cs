@@ -4,7 +4,9 @@ namespace AMSS.Dto.Responses.Coupons
 {
     public class GetCouponsResponse
     {
-        public Guid CouponId { get; set; }
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public string Code { get; set; }
         public decimal DiscountAmount { get; set; }
         public decimal MinAmount { get; set; }

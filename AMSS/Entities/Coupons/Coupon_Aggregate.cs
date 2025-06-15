@@ -13,6 +13,8 @@ namespace AMSS.Models.Coupons
         public Coupon(CreateCouponRequest request)
         {
             Id = Guid.NewGuid();
+            Title = request.Title.Trim();
+            Description = request.Description.Trim();
             Code = request.Code.Trim();
             DiscountAmount = request.DiscountAmount;
             MinAmount = request.MinAmount;
@@ -23,6 +25,8 @@ namespace AMSS.Models.Coupons
 
         public void Update(UpdateCouponRequest request)
         {
+            Title = request.Title.Trim();
+            Description = request.Description.Trim();
             Code = request.Code.Trim();
             DiscountAmount = request.DiscountAmount;
             MinAmount = request.MinAmount;
