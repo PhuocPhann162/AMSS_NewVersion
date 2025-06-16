@@ -38,7 +38,7 @@ namespace AMSS.Controllers
         [HttpPost("apply-coupon")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ApplyCouponAsync([FromQuery] ApplyCouponRequest request)
+        public async Task<IActionResult> ApplyCouponAsync([FromBody] ApplyCouponRequest request)
         {
             var response = await _shoppingCartService.ApplyCouponAsync(request, AuthenticatedUserId);
             return ProcessResponseMessage(response);

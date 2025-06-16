@@ -43,12 +43,16 @@ namespace AMSS.Services
             StripeConfiguration.ApiKey = _stripeConfiguration.SecretKey;
             shoppingCart.CartTotal = shoppingCart.CartItems.Sum(u => u.Quantity * u.Commodity.Price);
 
+
             if (!string.IsNullOrEmpty(shoppingCart.CouponCode))
             {
                 var coupon = await _unitOfWork.CouponRepository.FirstOrDefaultAsync(u => u.Code == shoppingCart.CouponCode);
-
-                shoppingCart.Discount = shoppingCart.CartTotal > coupon.MinAmount 
-                                                            ? coupon.DiscountAmount : 0;
+                if (coupon != null && shoppingCart.CartTotal > coupon.MinAmount)
+                {
+                    var discountAmount = shoppingCart.CartTotal * coupon.DiscountAmount / 100;
+                    shoppingCart.CartTotal -= discountAmount;
+                    shoppingCart.Discount = discountAmount;
+                }
             }
             else
             {

@@ -20,6 +20,7 @@ namespace AMSS.Dto.Responses.ShoppingCarts
         public Guid CommodityId { get; set; }
         public string CommodityName { get; set; }
         public string CommodityImage { get; set; }
+        public string CommodityDescription { get; set; }
         public int CommodityCategory { get; set; }
         public decimal Price { get; set; }
     }

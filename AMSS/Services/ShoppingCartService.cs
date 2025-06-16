@@ -35,8 +35,9 @@ namespace AMSS.Services
                 var coupon = await _unitOfWork.CouponRepository.FirstOrDefaultAsync(u => u.Code == shoppingCart.CouponCode);
                 if (coupon != null && shoppingCart.CartTotal > coupon.MinAmount)
                 {
-                    shoppingCart.CartTotal -= coupon.DiscountAmount;
-                    shoppingCart.Discount = coupon.DiscountAmount;
+                    var discountAmount = shoppingCart.CartTotal * coupon.DiscountAmount / 100;
+                    shoppingCart.CartTotal -= discountAmount;
+                    shoppingCart.Discount = discountAmount;
                 }
             }
 
@@ -57,6 +58,7 @@ namespace AMSS.Services
                     Price = ci.Commodity?.Price ?? 0,
                     CommodityName = ci.Commodity?.Name,
                     CommodityImage = ci.Commodity?.Image,
+                    CommodityDescription = ci.Commodity?.Description,
                     CommodityCategory = (int)(ci.Commodity?.Category ?? 0)
                 }).ToList()
                 : new List<CartItemDto>()
@@ -155,7 +157,6 @@ namespace AMSS.Services
             {
                 shoppingCart.CouponCode = request.CouponCode;
             }
-            shoppingCart.Update();
             await _unitOfWork.SaveChangeAsync();
             return BuildSuccessResponseMessage(true);
         }
