@@ -1,12 +1,16 @@
 ﻿using AMSS.Data;
 using AMSS.Entities.CartItems;
+using AMSS.Entities.ChatRooms;
+using AMSS.Entities.ChatRoomUsers;
 using AMSS.Entities.Commodities;
 using AMSS.Entities.Coupons;
+using AMSS.Entities.Messages;
 using AMSS.Entities.ShoppingCarts;
 using AMSS.Entities.Stocks;
 using AMSS.Entities.Suppliers;
 using AMSS.Models.OrderDetails;
 using AMSS.Models.OrderHeaders;
+using AMSS.Repositories.ChatHubRepository;
 using AMSS.Repositories.IRepository;
 
 namespace AMSS.Repositories
@@ -37,6 +41,9 @@ namespace AMSS.Repositories
         public ICartItemRepository CartItemRepository { get; private set; }
         public IStockRepository StockRepository { get; private set; }
         public ISupplierRepository SupplierRepository { get; private set; }
+        public IMessageRepository MessageRepository { get; private set; }
+        public IChatRoomRepository ChatRoomRepository { get; private set; }
+        public IChatRoomUserRepository ChatRoomUserRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -63,6 +70,9 @@ namespace AMSS.Repositories
             CartItemRepository = new CartItemRepository(_db);
             StockRepository = new StockRepository(_db);
             SupplierRepository = new SupplierRepository(_db);
+            MessageRepository = new MessageRepository(_db);
+            ChatRoomRepository = new ChatRoomRepository(_db);
+            ChatRoomUserRepository = new ChatRoomUserRepository(_db);
         }
 
         public async Task<int> SaveChangeAsync()

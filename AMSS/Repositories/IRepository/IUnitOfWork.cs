@@ -1,6 +1,9 @@
 ﻿using AMSS.Entities.CartItems;
+using AMSS.Entities.ChatRooms;
+using AMSS.Entities.ChatRoomUsers;
 using AMSS.Entities.Commodities;
 using AMSS.Entities.Coupons;
+using AMSS.Entities.Messages;
 using AMSS.Entities.ShoppingCarts;
 using AMSS.Entities.Stocks;
 using AMSS.Entities.Suppliers;
@@ -25,7 +28,6 @@ namespace AMSS.Repositories.IRepository
         ISeriesMetricRepository SeriesMetricRepository { get; }
         ISocialMetricRepository SocialMetricRepository { get; }
         ISocialYearRepository SocialYearRepository { get; }
-
         ICommodityRepository CommodityRepository { get; }
         ICouponRepository CouponRepository { get; }
         IOrderHeaderRepository OrderHeaderRepository { get; }
@@ -34,6 +36,9 @@ namespace AMSS.Repositories.IRepository
         ICartItemRepository CartItemRepository { get; }
         IStockRepository StockRepository { get; }
         ISupplierRepository SupplierRepository { get; }
+        IMessageRepository MessageRepository { get; }
+        IChatRoomRepository ChatRoomRepository { get; }
+        IChatRoomUserRepository ChatRoomUserRepository { get; }
 
         Task<int> SaveChangeAsync();
     }

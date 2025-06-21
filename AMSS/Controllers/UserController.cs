@@ -8,12 +8,12 @@ using AMSS.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using System.Text.Json;
 
 namespace AMSS.Controllers
 {
     [Route("api/user")]
     [ApiController]
+    [Authorize]
     public class UserController : BaseController<UserController>
     {
         private readonly IUserService _userService;
@@ -23,7 +23,6 @@ namespace AMSS.Controllers
             _userService = userService;
         }
 
-        [Authorize]
         [HttpGet("customers")]
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
@@ -48,23 +47,21 @@ namespace AMSS.Controllers
         [Authorize(Roles = nameof(Role.ADMIN))]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RoleManagementAsync(string userId, [FromForm] string role)
+        public async Task<IActionResult> RoleManagementAsync([FromQuery] string role)
         {
-            var response = await _userService.RoleManagementAsync(userId, role);
+            var response = await _userService.RoleManagementAsync(AuthenticatedUserId.ToString(), role);
             return ProcessResponseMessage(response);
         }
 
-        [Authorize]
         [HttpPut("updateInfo/{userId}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateInfo(string userId, [FromBody] UpdateUserDto updateUserDto)
+        public async Task<IActionResult> UpdateInfo([FromBody] UpdateUserDto updateUserDto)
         {
-            var response = await _userService.UpdateInfoAsync(userId, updateUserDto);
+            var response = await _userService.UpdateInfoAsync(AuthenticatedUserId, updateUserDto);
             return ProcessResponseMessage(response);
         }
 
-        [Authorize]
         [HttpPut("address")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]

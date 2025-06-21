@@ -4,6 +4,7 @@ using AMSS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMSS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250618164701_InitializeMessageChatSystem")]
+    partial class InitializeMessageChatSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,12 +167,17 @@ namespace AMSS.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("UpdatedAt");
 
-                    b.Property<string>("UserId")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChatRoomId");
+
+                    b.HasIndex("UserId1");
 
                     b.HasIndex("UserId", "ChatRoomId");
 
@@ -188,7 +196,10 @@ namespace AMSS.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("CreatedAt");
 
-                    b.Property<string>("CreatedById")
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -210,7 +221,7 @@ namespace AMSS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("CreatedById1");
 
                     b.ToTable("ChatRooms", "Novaris");
                 });
@@ -613,7 +624,10 @@ namespace AMSS.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("bit");
 
-                    b.Property<string>("SenderId")
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SenderId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("SentAt")
@@ -631,7 +645,7 @@ namespace AMSS.Migrations
 
                     b.HasIndex("ChatRoomId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("SenderId1");
 
                     b.ToTable("Messages", "Novaris");
                 });
@@ -1421,7 +1435,7 @@ namespace AMSS.Migrations
 
                     b.HasOne("AMSS.Entities.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("ChatRoom");
 
@@ -1432,7 +1446,7 @@ namespace AMSS.Migrations
                 {
                     b.HasOne("AMSS.Entities.ApplicationUser", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedById1");
 
                     b.Navigation("CreatedBy");
                 });
@@ -1527,7 +1541,7 @@ namespace AMSS.Migrations
 
                     b.HasOne("AMSS.Entities.ApplicationUser", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId1");
 
                     b.Navigation("ChatRoom");
 

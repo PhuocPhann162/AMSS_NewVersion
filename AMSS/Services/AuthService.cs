@@ -48,7 +48,7 @@ namespace AMSS.Services
             ApplicationUser user = await _unitOfWork.UserRepository.GetAsync(u => u.UserName!.ToLower() == username.ToLower() && !u.IsDeleted);
             if (user == null)
             {
-                return BuildErrorResponseMessage<LoginResponseDto>("Username does not exist", HttpStatusCode.Unauthorized);
+                return BuildErrorResponseMessage<LoginResponseDto>("Username does not exist", HttpStatusCode.BadRequest);
             }
             if (!user.IsActive)
             {
@@ -57,7 +57,7 @@ namespace AMSS.Services
             var isValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
             if (!isValid)
             {
-                return BuildErrorResponseMessage<LoginResponseDto>("Password was incorrect", HttpStatusCode.Unauthorized);
+                return BuildErrorResponseMessage<LoginResponseDto>("Password was incorrect", HttpStatusCode.BadRequest);
             }
 
             // if user was found, generate JWT Token

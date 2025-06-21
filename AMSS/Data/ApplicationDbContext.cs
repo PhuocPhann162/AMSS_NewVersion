@@ -1,5 +1,8 @@
 ﻿using AMSS.Entities;
+using AMSS.Entities.ChatRooms;
+using AMSS.Entities.ChatRoomUsers;
 using AMSS.Entities.Locations;
+using AMSS.Entities.Messages;
 using AMSS.Entities.Polygon;
 using AMSS.Models.CartItems;
 using AMSS.Models.Commodities;
@@ -44,6 +47,9 @@ namespace AMSS.Data
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<ChatRoom> ChatRooms { get; set; }
+        public DbSet<ChatRoomUser> ChatRoomUsers { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -2,6 +2,7 @@ using AMSS;
 using AMSS.Attributes;
 using AMSS.Data;
 using AMSS.Entities;
+using AMSS.Hubs;
 using AMSS.Services;
 using AMSS.Services.IService;
 using AMSS.Utility;
@@ -77,10 +78,34 @@ builder.Services.AddAuthentication(u =>
         ValidateIssuer = false,
         ValidateAudience = false,
     };
+    u.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Get token from query string for SignalR
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 // CORS config
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000") 
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials().WithExposedHeaders("*"); 
+    });
+});
 
 // Controller config
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -119,9 +144,11 @@ if (app.Environment.IsEnvironment("Localhost") || app.Environment.IsDevelopment(
 
 app.UseExceptionHandler("/error");
 
+app.MapHub<ChatHub>("/chathub").RequireAuthorization();
+
 app.UseHttpsRedirection();
 
-app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 

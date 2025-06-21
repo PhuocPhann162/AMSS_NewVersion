@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using AMSS.Enums;
 using System.Text.Json.Serialization;
@@ -42,6 +41,10 @@ namespace AMSS.Entities
         public bool IsActive { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public bool IsOnline { get; set; }
+
+        public DateTime? LastSeen { get; set; }
 
         [NotMapped]
         [JsonConverter(typeof(JsonStringEnumConverter))]

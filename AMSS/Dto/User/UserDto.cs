@@ -32,6 +32,10 @@ namespace AMSS.Dto.User
 
         public string Avatar { get; set; }
 
+        public bool IsOnline { get; set; }
+
+        public DateTime? LastSeen { get; set; }
+
         public Role Role { get; set; }
 
         public DateTime CreatedAt { get; set; }

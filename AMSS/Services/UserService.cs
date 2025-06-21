@@ -134,15 +134,15 @@ namespace AMSS.Services
             }
         }
 
-        public async Task<APIResponse<bool>> UpdateInfoAsync(string userId, UpdateUserDto updateUserDto)
+        public async Task<APIResponse<bool>> UpdateInfoAsync(Guid userId, UpdateUserDto updateUserDto)
         {
             try
             {
-                if (string.IsNullOrEmpty(userId) || updateUserDto == null)
+                if (string.IsNullOrEmpty(userId.ToString()) || updateUserDto == null)
                 {
                     return BuildErrorResponseMessage<bool>("Invalid User ID", HttpStatusCode.BadRequest);
                 }
-                ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId && !u.IsDeleted, false);
+                ApplicationUser userFromDb = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId.ToString() && !u.IsDeleted, false);
                 if (userFromDb == null)
                 {
                     return BuildErrorResponseMessage<bool>("User does not exist", HttpStatusCode.BadRequest);

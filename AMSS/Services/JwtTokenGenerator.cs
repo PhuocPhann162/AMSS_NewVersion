@@ -24,6 +24,7 @@ namespace AMSS.Services
 
             var claimList = new List<Claim>
             {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim("id", user.Id),
                 new Claim("fullName", user.FullName),
                 new Claim(JwtRegisteredClaimNames.Email, user.UserName),

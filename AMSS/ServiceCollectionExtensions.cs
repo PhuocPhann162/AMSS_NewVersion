@@ -19,6 +19,8 @@ using AMSS.Services.IService.IGeneratePdf;
 using AMSS.Services.GeneratePdf;
 using DinkToPdf.Contracts;
 using DinkToPdf;
+using AMSS.Services.IService.IChatService;
+using AMSS.Services.ChatService;
 
 namespace AMSS
 {
@@ -110,6 +112,7 @@ namespace AMSS
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IHarvestExportService, HarvestExportService>();
             services.AddScoped<IGeneratePdfService, GeneratePdfService>();
+            services.AddScoped<IChatService, ChatService>();
         }
 
         private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)
@@ -119,8 +122,9 @@ namespace AMSS
             services.AddRedisCacheService(configuration);
             services.AddBackgroundService();
             services.AddConfigurationSettings(configuration);
-            services.AddErrorValidateCustomService(configuration);
+            services.AddErrorValidateCustomService();
             services.AddPdfService();
+            services.AddSignalRService();
         }
 
         private static void AddSmtpService(this IServiceCollection services, IConfiguration configuration)
@@ -156,7 +160,7 @@ namespace AMSS
             services.AddTransient<IPdfConverter, PdfConverter>();
         }
 
-        private static void AddErrorValidateCustomService(this IServiceCollection services, IConfiguration configuration)
+        private static void AddErrorValidateCustomService(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
             services.Configure<ApiBehaviorOptions>(options =>
@@ -169,6 +173,11 @@ namespace AMSS
                     return result;
                 };
             });
+        }
+
+        private static void AddSignalRService(this IServiceCollection services)
+        {
+            services.AddSignalR();
         }
     }
 }
