@@ -3,7 +3,6 @@ using AMSS.Dto.Responses;
 using AMSS.Dto.Responses.Users;
 using AMSS.Dto.User;
 using AMSS.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AMSS.Services.IService
 {
@@ -14,5 +13,6 @@ namespace AMSS.Services.IService
         Task<APIResponse<bool>> RoleManagementAsync(string userId, string role);
         Task<APIResponse<bool>> UpdateInfoAsync(Guid userId, UpdateUserDto updateUserDto);
         Task<APIResponse<bool>> UpdateUserLocationAsync(Guid userId, UpdateUserLocationRequest request);
+        Task<APIResponse<bool>> ChangePasswordAsync(Guid userId, ChangePasswordRequest request);
     }
 }

@@ -13,6 +13,8 @@ using System.Net;
 using AMSS.Dto.Responses.Users;
 using Microsoft.OpenApi.Extensions;
 using AMSS.Entities.Locations;
+using AMSS.Infrastructures.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace AMSS.Services
 {
@@ -20,11 +22,13 @@ namespace AMSS.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SupplierConfiguration _supplierConfiguration;
 
-        public UserService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public UserService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IOptionsMonitor<SupplierConfiguration> supplierConfiguration)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _supplierConfiguration = supplierConfiguration.CurrentValue;
         }
 
         public async Task<APIResponse<PaginationResponse<GetCustomersResponse>>> GetCustomersAsync(GetCustomersRequest request)
@@ -48,7 +52,7 @@ namespace AMSS.Services
                     (request.CountryCodes == null || !request.CountryCodes.Any() || request.CountryCodes.Contains(x.CountryCode)) &&
                     (string.IsNullOrEmpty(request.Search) || x.FullName.Contains(request.Search) || x.Email.Contains(request.Search));
 
-            var suppliersPaginationResult = await _unitOfWork.UserRepository.GetUsersByRoleAsync(   
+            var suppliersPaginationResult = await _unitOfWork.UserRepository.GetUsersByRoleAsync(
                 Role.CUSTOMER.GetDisplayName(),
                 filter,
                 request.CurrentPage,
@@ -60,14 +64,14 @@ namespace AMSS.Services
                 Collection = suppliersPaginationResult.Data.Select(x => new GetCustomersResponse
                 {
                     Id = Guid.Parse(x.Id),
-                    FullName = x.FullName, 
+                    FullName = x.FullName,
                     Email = x.Email,
-                    Address = x.StreetAddress, 
-                    CountryCode = x.CountryCode, 
+                    Address = x.StreetAddress,
+                    CountryCode = x.CountryCode,
                     CountryName = x.CountryName,
                     ProvinceCode = x.ProvinceCode,
                     ProvinceName = x.ProvinceName,
-                    PhoneCode = x.PhoneCode, 
+                    PhoneCode = x.PhoneCode,
                     PhoneNumber = x.PhoneNumber,
                     CreatedAt = x.CreatedAt,
                     IsActive = x.IsActive
@@ -182,7 +186,7 @@ namespace AMSS.Services
         public async Task<APIResponse<bool>> UpdateUserLocationAsync(Guid userId, UpdateUserLocationRequest request)
         {
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
-            if(user is null) 
+            if (user is null)
             {
                 return BuildErrorResponseMessage<bool>("User does not exist", HttpStatusCode.NotFound);
             }
@@ -190,14 +194,14 @@ namespace AMSS.Services
             var newLocation = new Location()
             {
                 Id = Guid.NewGuid(),
-                Address = request.StreetAddress, 
+                Address = request.StreetAddress,
                 Lat = request.Lat,
                 Lng = request.Lng,
                 CountryCode = user.CountryCode,
                 City = user.ProvinceName,
                 ApplicationUserId = userId,
                 CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,   
+                UpdatedAt = DateTime.Now,
             };
 
             await _unitOfWork.LocationRepository.AddAsync(newLocation);
@@ -206,6 +210,60 @@ namespace AMSS.Services
             user.StreetAddress = request.StreetAddress;
 
             await _unitOfWork.SaveChangeAsync();
+
+            return BuildSuccessResponseMessage(true);
+        }
+
+        public async Task<APIResponse<bool>> ChangePasswordAsync(Guid userId, ChangePasswordRequest request)
+        {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
+            if (user is null)
+            {
+                return BuildErrorResponseMessage<bool>("User does not exist", HttpStatusCode.NotFound);
+            }
+
+            if(user.Role is Role.ADMIN)
+            {
+                // Hash new password
+                user.Password = BCrypt.Net.BCrypt.HashPassword(_supplierConfiguration.DefaultPassword);
+
+                // Save changes
+                await _unitOfWork.UserRepository.Update(user);
+                await _unitOfWork.SaveChangeAsync();
+
+
+                return BuildSuccessResponseMessage(true);
+            }
+
+            if (!string.IsNullOrEmpty(request.CurrentPassword))
+            {
+                if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.Password))
+                {
+                    return BuildErrorResponseMessage<bool>("Current password is incorrect", HttpStatusCode.BadRequest);
+                }
+            }
+            else
+            {
+                return BuildErrorResponseMessage<bool>("Current password is required", HttpStatusCode.BadRequest);
+            }
+
+            if (string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                return BuildErrorResponseMessage<bool>("New password is required", HttpStatusCode.BadRequest);
+            }
+
+            if (BCrypt.Net.BCrypt.Verify(request.NewPassword, user.Password))
+            {
+                return BuildErrorResponseMessage<bool>("New password must be different from current password", HttpStatusCode.BadRequest);
+            }
+
+            // Hash new password
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            // Save changes
+            await _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.SaveChangeAsync();
+
 
             return BuildSuccessResponseMessage(true);
         }

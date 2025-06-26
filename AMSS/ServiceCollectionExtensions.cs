@@ -113,6 +113,7 @@ namespace AMSS
             services.AddScoped<IHarvestExportService, HarvestExportService>();
             services.AddScoped<IGeneratePdfService, GeneratePdfService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IReportService, ReportService>();
         }
 
         private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)

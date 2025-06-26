@@ -51,7 +51,7 @@ namespace AMSS.Dto.Responses.Orders
 
         public string Description { get; set; }
 
-        public CommodityCategory Category { get; set; }
+        public int Category { get; set; }
 
         public decimal Price { get; set; }
 

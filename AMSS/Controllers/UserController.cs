@@ -7,6 +7,7 @@ using AMSS.Enums;
 using AMSS.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Net.Mime;
 
 namespace AMSS.Controllers
@@ -68,6 +69,15 @@ namespace AMSS.Controllers
         public async Task<IActionResult> UpdateUserLocationAsync([FromBody] UpdateUserLocationRequest request)
         {
             var response = await _userService.UpdateUserLocationAsync(AuthenticatedUserId, request);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpPut("change-password")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request)
+        {
+            var response = await _userService.ChangePasswordAsync(AuthenticatedUserId, request);
             return ProcessResponseMessage(response);
         }
     }

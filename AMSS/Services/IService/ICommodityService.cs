@@ -11,5 +11,6 @@ namespace AMSS.Services.IService
         Task<APIResponse<GetCommodityResponse>> GetCommodityByIdAsync(Guid id);
         Task<APIResponse<bool>> CreateCommodityAsync(CreateCommodityRequest request);
         Task<APIResponse<bool>> UpdateCommodityAsync(Guid id, UpdateCommodityRequest request);
+        Task<APIResponse<GetOriginResponse>> GetOriginAsync(Guid id);
     }
 }

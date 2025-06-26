@@ -53,5 +53,14 @@ namespace AMSS.Controllers
             var response = await _commodityService.UpdateCommodityAsync(id, request);
             return ProcessResponseMessage(response);
         }
+
+        [HttpGet("{id:guid}/origin")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<GetOriginResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetOriginAsync(Guid id)
+        {
+            var response = await _commodityService.GetOriginAsync(id);
+            return ProcessResponseMessage(response);
+        }
     }
 }

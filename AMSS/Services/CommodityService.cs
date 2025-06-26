@@ -127,5 +127,25 @@ namespace AMSS.Services
             await _unitOfWork.SaveChangeAsync();
             return BuildSuccessResponseMessage(true, "Commodity updated successfully", HttpStatusCode.OK);
         }
+
+        public async Task<APIResponse<GetOriginResponse>> GetOriginAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BuildErrorResponseMessage<GetOriginResponse>("Not valid ID commodity", HttpStatusCode.BadRequest);
+            }
+
+            var commodity = await _unitOfWork.CommodityRepository.GetCommodityOriginAsync(id);
+            if (commodity == null)
+            {
+                return BuildErrorResponseMessage<GetOriginResponse>("Not found this commodity", HttpStatusCode.NotFound);
+            }
+
+            var response = _mapper.Map<GetOriginResponse>(commodity);
+            response.Supplier = _mapper.Map<SupplierDto>(commodity.Supplier);
+            response.Crop = _mapper.Map<CropDto>(commodity.Crop);
+
+            return BuildSuccessResponseMessage(response, "Get commodity by ID successfully");
+        }
     }
 }

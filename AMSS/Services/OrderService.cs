@@ -33,7 +33,7 @@ namespace AMSS.Services
         public async Task<APIResponse<PaginationResponse<GetOrdersResponse>>> GetOrdersAsync(GetOrdersRequest request, Guid userId)
         {
             var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId.ToString());
-            if(user is null)
+            if (user is null)
             {
                 return BuildErrorResponseMessage<PaginationResponse<GetOrdersResponse>>("User does not exist", HttpStatusCode.BadRequest);
             }
@@ -71,9 +71,9 @@ namespace AMSS.Services
             }
 
             var orderHeadersPaginationResult = await _unitOfWork.OrderHeaderRepository.GetAsync(
-                filter, 
-                request.CurrentPage, 
-                request.Limit, 
+                filter,
+                request.CurrentPage,
+                request.Limit,
                 sortExpressions.ToArray());
             var response = new PaginationResponse<GetOrdersResponse>(orderHeadersPaginationResult.CurrentPage, orderHeadersPaginationResult.Limit,
                             orderHeadersPaginationResult.TotalRow, orderHeadersPaginationResult.TotalPage)
@@ -82,7 +82,7 @@ namespace AMSS.Services
                 {
                     Id = x.Id,
                     PickupName = x.PickupName,
-                    PickupEmail = x.PickupEmail,    
+                    PickupEmail = x.PickupEmail,
                     PickupPhoneNumber = x.PickupPhoneNumber,
                     DiscountAmount = x.DiscountAmount,
                     OrderDate = x.OrderDate,
@@ -94,7 +94,7 @@ namespace AMSS.Services
             return BuildSuccessResponseMessage(response);
         }
 
-        public async Task<APIResponse<GetOrderResponse>> GetOrderByIdAsync(Guid id) 
+        public async Task<APIResponse<GetOrderResponse>> GetOrderByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
@@ -125,7 +125,7 @@ namespace AMSS.Services
                     OrderHeaderId = x.OrderHeaderId,
                     CommodityId = x.CommodityId,
                     Commodity = _mapper.Map<CommodityDto>(x.Commodity),
-                    ItemName = x.ItemName, 
+                    ItemName = x.ItemName,
                     Price = x.Price,
                     Quantity = x.Quantity
                 })
@@ -137,7 +137,7 @@ namespace AMSS.Services
         public async Task<APIResponse<Guid>> CreateOrderAsync(CreateOrderRequest request, Guid userId)
         {
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
-            if(user is null)
+            if (user is null)
             {
                 return BuildErrorResponseMessage<Guid>("User not found", HttpStatusCode.NotFound);
             }
@@ -150,12 +150,12 @@ namespace AMSS.Services
             var newOrderDetails = request.OrderDetails.Select(x => new OrderDetail()
             {
                 Id = Guid.NewGuid(),
-                OrderHeaderId = newOrder.Id, 
+                OrderHeaderId = newOrder.Id,
                 CommodityId = x.CommodityId,
-                Quantity = x.Quantity, 
-                ItemName = x.ItemName, 
+                Quantity = x.Quantity,
+                ItemName = x.ItemName,
                 Price = x.Price,
-                CreatedAt = DateTime.Now, 
+                CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
 
             });
@@ -173,11 +173,16 @@ namespace AMSS.Services
                 return BuildErrorResponseMessage<bool>("Not valid ID Order", HttpStatusCode.BadRequest);
             }
             var orderHeader = await _unitOfWork.OrderHeaderRepository.FirstOrDefaultAsync(x => x.Id == id);
-            if (orderHeader == null)
+            if (orderHeader is null)
             {
                 return BuildErrorResponseMessage<bool>("Not found this Order", HttpStatusCode.NotFound);
             }
-            orderHeader.Update(request, userId);
+            var currentUser = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
+            if(currentUser.Role is not Role.ADMIN)
+            {
+                return BuildErrorResponseMessage<bool>("You cannot access this Order", HttpStatusCode.BadRequest);
+            }
+            orderHeader.Update(request);
             await _unitOfWork.SaveChangeAsync();
             return BuildSuccessResponseMessage(true, "Order updated successfully", HttpStatusCode.OK);
         }

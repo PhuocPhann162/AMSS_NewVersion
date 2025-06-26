@@ -1,6 +1,7 @@
 ﻿using AMSS.Aggregates;
 using AMSS.Dto.Requests.Orders;
 using AMSS.Enums;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace AMSS.Models.OrderHeaders
 {
@@ -30,18 +31,12 @@ namespace AMSS.Models.OrderHeaders
             UpdatedAt = DateTime.Now;
         }
 
-        public void Update(UpdateOrderRequest request, Guid userId)
+        public void Update(UpdateOrderRequest request)
         {
-            ApplicationUserId = userId;
-            PickupName = request.PickupName?.Trim();
-            PickupEmail = request.PickupEmail?.Trim();
-            PickupPhoneNumber = request.PickupPhoneNumber?.Trim();
-            OrderTotal = request.OrderTotal;
-            CouponCode = request.CouponCode;
-            DiscountAmount = request.DiscountAmount;
-            OrderDate = DateTime.Now;
-            Status = OrderStatus.Pending;
-            TotalItems = request.TotalItems;
+            PickupName = !string.IsNullOrWhiteSpace(request.PickupName) ? request.PickupName.Trim() : PickupName;
+            PickupEmail = !string.IsNullOrWhiteSpace(request.PickupEmail) ? request.PickupEmail.Trim() : PickupEmail;
+            PickupPhoneNumber = !string.IsNullOrWhiteSpace(request.PickupPhoneNumber) ? request.PickupPhoneNumber.Trim() : PickupPhoneNumber;
+            Status = request.Status; 
             UpdatedAt = DateTime.Now;
         }
     }
