@@ -34,7 +34,7 @@ namespace AMSS.Controllers
         [ProducesResponseType(typeof(APIResponse<GetRevenueResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GeOrderStatisticAsync(GetRevenueRequest request)
         {
-            var response = await _reportService.GetRevenueAsync(request);
+            var response = await _reportService.GetOrderStatisticAsync(request);
             return ProcessResponseMessage(response);
         }
     }

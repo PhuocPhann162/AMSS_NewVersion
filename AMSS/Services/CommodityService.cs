@@ -11,6 +11,7 @@ using AMSS.Models;
 using System.Linq.Expressions;
 using AMSS.Dto.Suppliers;
 using AMSS.Dto.Crop;
+using AMSS.Dto.Field;
 
 namespace AMSS.Services
 {
@@ -144,6 +145,10 @@ namespace AMSS.Services
             var response = _mapper.Map<GetOriginResponse>(commodity);
             response.Supplier = _mapper.Map<SupplierDto>(commodity.Supplier);
             response.Crop = _mapper.Map<CropDto>(commodity.Crop);
+
+            var fieldCrops = await _unitOfWork.FieldCropRepository.GetAllAsync(x => x.CropId == response.Crop.Id, includeProperties: "Field,Field.Farm,Field.Location");
+
+            response.Fields = fieldCrops.Select(fc => _mapper.Map<FieldDto>(fc.Field));
 
             return BuildSuccessResponseMessage(response, "Get commodity by ID successfully");
         }

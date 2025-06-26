@@ -7,6 +7,6 @@ namespace AMSS.Services.IService
     public interface IReportService
     {
         Task<APIResponse<GetRevenueResponse>> GetRevenueAsync(GetRevenueRequest request);
-        Task<APIResponse<GetRevenueResponse>> GetOrderStatisticAsync(GetRevenueRequest request);
+        Task<APIResponse<GetOrderStatisticResponse>> GetOrderStatisticAsync(GetRevenueRequest request);
     }
 }

@@ -88,6 +88,7 @@ namespace AMSS.Utility
 
                 // Commodity 
                 config.CreateMap<Commodity, GetCommodityResponse>().ReverseMap();
+                config.CreateMap<Commodity, GetOriginResponse>().ReverseMap();
                 config.CreateMap<Commodity, CommodityDto>().ReverseMap();
 
                 // Supplier 

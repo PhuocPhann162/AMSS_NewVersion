@@ -18,6 +18,8 @@ namespace AMSS.Services
             _unitOfWork = unitOfWork;
         }
 
+       
+
         public async Task<APIResponse<GetRevenueResponse>> GetRevenueAsync(GetRevenueRequest request)
         {
             List<OrderHeader> lstOrders = await _unitOfWork.OrderHeaderRepository.GetAllAsync();
@@ -59,7 +61,7 @@ namespace AMSS.Services
 
                 for (int i = 1; i <= 12; i++)
                 {
-                    IEnumerable<OrderHeader> ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Month == i && u.OrderDate.Date.Year == year);
+                    IEnumerable<OrderHeader> ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Month == i && u.OrderDate.Date.Year == request.Year);
                     if (ordersFromDb.Count() > 0)
                     {
                         decimal totalForMonth = ordersFromDb.Sum(o => o.OrderTotal - o.DiscountAmount);
@@ -96,6 +98,11 @@ namespace AMSS.Services
                 return BuildSuccessResponseMessage(revenueStatisticDTO);
             }
             return BuildSuccessResponseMessage(revenueStatisticDTO);
+        }
+
+        public Task<APIResponse<GetOrderStatisticResponse>> GetOrderStatisticAsync(GetRevenueRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }
