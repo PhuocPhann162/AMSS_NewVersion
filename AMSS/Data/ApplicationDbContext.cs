@@ -1,4 +1,5 @@
 ﻿using AMSS.Entities;
+using AMSS.Entities.CareLogs;
 using AMSS.Entities.ChatRooms;
 using AMSS.Entities.ChatRoomUsers;
 using AMSS.Entities.Locations;
@@ -38,7 +39,6 @@ namespace AMSS.Data
         public DbSet<SeriesMetric> SeriesMetrics { get; set; }
         public DbSet<SocialMetric> SocialMetrics { get; set; }
         public DbSet<SocialYear> SocialYears { get; set; }
-        
         public DbSet<Commodity> Commodities { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Stock> Stocks { get; set; }
@@ -50,6 +50,7 @@ namespace AMSS.Data
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatRoomUser> ChatRoomUsers { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<CareLog> Carelogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

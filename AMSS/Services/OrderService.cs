@@ -56,7 +56,7 @@ namespace AMSS.Services
 
             // filter
             Expression<Func<OrderHeader, bool>> filter;
-            if (!roles.Equals(Role.ADMIN))
+            if (roles.Contains(Role.ADMIN.ToString()))
             {
                 filter = x =>
                     (request.Statuses == null || request.Statuses.Count() == 0 || request.Statuses.Contains(x.Status)) &&

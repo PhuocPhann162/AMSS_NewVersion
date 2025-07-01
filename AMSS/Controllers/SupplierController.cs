@@ -1,4 +1,5 @@
-﻿using AMSS.Dto.Requests.Suppliers;
+﻿using AMSS.Dto.Crop;
+using AMSS.Dto.Requests.Suppliers;
 using AMSS.Dto.Responses;
 using AMSS.Dto.Responses.Suppliers;
 using AMSS.Entities;
@@ -63,6 +64,15 @@ namespace AMSS.Controllers
         public async Task<IActionResult> UpdateCommodityAsync(Guid id, [FromBody] UpdateSupplierRequest request)
         {
             var response = await _supplierService.UpdateSupplierAsync(id, request);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpGet("get-crops")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<PaginationResponse<CropDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCropsBySuppliersAsync([FromQuery] GetCropsBySupplierRequest request)
+        {
+            var response = await _supplierService.GetCropsBySuppliersAsync(AuthenticatedUserId, request);
             return ProcessResponseMessage(response);
         }
     }

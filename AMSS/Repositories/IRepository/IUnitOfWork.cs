@@ -1,4 +1,5 @@
-﻿using AMSS.Entities.CartItems;
+﻿using AMSS.Entities.CareLogs;
+using AMSS.Entities.CartItems;
 using AMSS.Entities.ChatRooms;
 using AMSS.Entities.ChatRoomUsers;
 using AMSS.Entities.Commodities;
@@ -39,6 +40,7 @@ namespace AMSS.Repositories.IRepository
         IMessageRepository MessageRepository { get; }
         IChatRoomRepository ChatRoomRepository { get; }
         IChatRoomUserRepository ChatRoomUserRepository { get; }
+        ICareLogRepository CareLogRepository { get; }
 
         Task<int> SaveChangeAsync();
     }

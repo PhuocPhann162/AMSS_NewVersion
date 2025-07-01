@@ -4,8 +4,6 @@ using AMSS.Entities;
 using AMSS.Models.OrderHeaders;
 using AMSS.Repositories.IRepository;
 using AMSS.Services.IService;
-using Azure;
-using System.Net;
 
 namespace AMSS.Services
 {
@@ -18,15 +16,13 @@ namespace AMSS.Services
             _unitOfWork = unitOfWork;
         }
 
-       
-
         public async Task<APIResponse<GetRevenueResponse>> GetRevenueAsync(GetRevenueRequest request)
         {
             List<OrderHeader> lstOrders = await _unitOfWork.OrderHeaderRepository.GetAllAsync();
             var revenueStatisticDTO = new GetRevenueResponse();
             if (request.Type == "daily")
             {
-                int daysInMonth = DateTime.DaysInMonth(request.Year, request.Month);
+                var daysInMonth = DateTime.DaysInMonth(request.Year, request.Month);
                 revenueStatisticDTO = new()
                 {
                     DaysInMonth = daysInMonth,
@@ -36,7 +32,7 @@ namespace AMSS.Services
 
                 for (int i = 1; i <= daysInMonth; i++)
                 {
-                    DateTime currentDate = new DateTime(request.Year, request.Month, i);
+                    var currentDate = new DateTime(request.Year, request.Month, i);
                     IEnumerable<OrderHeader> ordersFromDb = lstOrders.Where(u => u.OrderDate.Date == currentDate.Date);
                     if (ordersFromDb.Count() > 0)
                     {
@@ -48,12 +44,12 @@ namespace AMSS.Services
                         revenueStatisticDTO.RevenueData.Add(0);
                     }
                 }
-               
+
                 return BuildSuccessResponseMessage(revenueStatisticDTO);
             }
             else if (request.Type == "monthly")
             {
-                revenueStatisticDTO = new ()
+                revenueStatisticDTO = new()
                 {
                     Label = "Monthly Revenue Statistic",
                     RevenueData = new(),
@@ -61,7 +57,7 @@ namespace AMSS.Services
 
                 for (int i = 1; i <= 12; i++)
                 {
-                    IEnumerable<OrderHeader> ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Month == i && u.OrderDate.Date.Year == request.Year);
+                    var ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Month == i && u.OrderDate.Date.Year == request.Year);
                     if (ordersFromDb.Count() > 0)
                     {
                         decimal totalForMonth = ordersFromDb.Sum(o => o.OrderTotal - o.DiscountAmount);
@@ -84,7 +80,7 @@ namespace AMSS.Services
 
                 for (int i = request.Year; i <= request.EndYear; i++)
                 {
-                    IEnumerable<OrderHeader> ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Year == i);
+                    var ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Year == i);
                     if (ordersFromDb.Count() > 0)
                     {
                         decimal totalForYear = ordersFromDb.Sum(o => o.OrderTotal - o.DiscountAmount);
@@ -100,9 +96,81 @@ namespace AMSS.Services
             return BuildSuccessResponseMessage(revenueStatisticDTO);
         }
 
-        public Task<APIResponse<GetOrderStatisticResponse>> GetOrderStatisticAsync(GetRevenueRequest request)
+        public async Task<APIResponse<GetOrderStatisticResponse>> GetOrderStatisticAsync(GetRevenueRequest request)
         {
-            throw new NotImplementedException();
+            var lstOrders = await _unitOfWork.OrderHeaderRepository.GetAllAsync();
+            var ordersStatisticDTO = new GetOrderStatisticResponse();
+            if (request.Type == "daily")
+            {
+                var daysInMonth = DateTime.DaysInMonth(request.Year, request.Month);
+                ordersStatisticDTO = new()
+                {
+                    DaysInMonth = daysInMonth,
+                    Label = "Daily Number Of Orders Statistic",
+                    OrdersData = new(),
+                };
+
+                for (int i = 1; i <= daysInMonth; i++)
+                {
+                    var currentDate = new DateTime(request.Year, request.Month, i);
+                    IEnumerable<OrderHeader> ordersFromDb = lstOrders.Where(u => u.OrderDate.Date == currentDate.Date);
+                    if (ordersFromDb.Count() > 0)
+                    {
+                        ordersStatisticDTO.OrdersData.Add(ordersFromDb.Count());
+                    }
+                    else
+                    {
+                        ordersStatisticDTO.OrdersData.Add(0);
+                    }
+                }
+                return BuildSuccessResponseMessage(ordersStatisticDTO);
+            }
+            else if (request.Type == "monthly")
+            {
+                ordersStatisticDTO = new()
+                {
+                    Label = "Monthly Number Of Orders Statistic",
+                    OrdersData = new(),
+                };
+
+                for (int i = 1; i <= 12; i++)
+                {
+                    var ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Month == i && u.OrderDate.Date.Year == request.Year);
+                    if (ordersFromDb.Count() > 0)
+                    {
+                        ordersStatisticDTO.OrdersData.Add(ordersFromDb.Count());
+                    }
+                    else
+                    {
+                        ordersStatisticDTO.OrdersData.Add(0);
+                    }
+                }
+                return BuildSuccessResponseMessage(ordersStatisticDTO);
+            }
+            else if (request.Type == "yearly" && request.EndYear > 0)
+            {
+                ordersStatisticDTO = new()
+                {
+                    Label = "Yearly Number Of Orders Statistic",
+                    OrdersData = new(),
+                };
+
+                for (int i = request.Year; i <= request.EndYear; i++)
+                {
+                    var ordersFromDb = lstOrders.Where(u => u.OrderDate.Date.Year == i);
+                    if (ordersFromDb.Count() > 0)
+                    {
+                        ordersStatisticDTO.OrdersData.Add(ordersFromDb.Count());
+                    }
+                    else
+                    {
+                        ordersStatisticDTO.OrdersData.Add(0);
+                    }
+                }
+                return BuildSuccessResponseMessage(ordersStatisticDTO);
+            }
+
+            return BuildSuccessResponseMessage(ordersStatisticDTO);
         }
     }
 }

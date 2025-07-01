@@ -1,4 +1,5 @@
 ﻿using AMSS.Data;
+using AMSS.Entities.CareLogs;
 using AMSS.Entities.CartItems;
 using AMSS.Entities.ChatRooms;
 using AMSS.Entities.ChatRoomUsers;
@@ -44,6 +45,7 @@ namespace AMSS.Repositories
         public IMessageRepository MessageRepository { get; private set; }
         public IChatRoomRepository ChatRoomRepository { get; private set; }
         public IChatRoomUserRepository ChatRoomUserRepository { get; private set; }
+        public ICareLogRepository CareLogRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -73,6 +75,7 @@ namespace AMSS.Repositories
             MessageRepository = new MessageRepository(_db);
             ChatRoomRepository = new ChatRoomRepository(_db);
             ChatRoomUserRepository = new ChatRoomUserRepository(_db);
+            CareLogRepository = new CareLogRepository(_db); 
         }
 
         public async Task<int> SaveChangeAsync()

@@ -1,4 +1,5 @@
 ﻿using AMSS.Dto.Crop;
+using AMSS.Dto.Field;
 using AMSS.Dto.FieldCrop;
 using AMSS.Dto.Requests.Crops;
 using AMSS.Dto.Responses;
@@ -107,6 +108,15 @@ namespace AMSS.Controllers
         public async Task<IActionResult> ExportHarvestInvoiceAsync([FromBody] HarvestExportData request)
         {
             var response = await _harvestExportService.GenerateHarvestExportPdfAsync(request);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpGet("crop/{cropId:guid}/fields")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<PaginationResponse<FieldDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetFieldsByCropAsync(Guid cropId, [FromQuery] GetFieldsByCropRequest request)
+        {
+            var response = await _cropService.GetFieldsByCropAsync(AuthenticatedUserId, cropId, request);
             return ProcessResponseMessage(response);
         }
     }

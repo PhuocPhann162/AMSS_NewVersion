@@ -114,6 +114,7 @@ namespace AMSS
             services.AddScoped<IGeneratePdfService, GeneratePdfService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<ICareLogService, CareLogService>();
         }
 
         private static void AddExternalReferences(this IServiceCollection services, IConfiguration configuration)

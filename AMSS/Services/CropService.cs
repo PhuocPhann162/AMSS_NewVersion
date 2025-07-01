@@ -1,5 +1,8 @@
 ﻿using AMSS.Dto.Crop;
+using AMSS.Dto.Farm;
+using AMSS.Dto.Field;
 using AMSS.Dto.FieldCrop;
+using AMSS.Dto.Location;
 using AMSS.Dto.Requests.Crops;
 using AMSS.Dto.Responses;
 using AMSS.Entities;
@@ -250,9 +253,72 @@ namespace AMSS.Services
 
             await _unitOfWork.FieldCropRepository.RemoveAsync(fieldCrop);
             await _unitOfWork.SaveChangeAsync();
-            
+
             return BuildSuccessResponseMessage(true, "Planting crop removed successfully");
         }
+
+        public async Task<APIResponse<PaginationResponse<FieldDto>>> GetFieldsByCropAsync(Guid supplierId, Guid cropId, GetFieldsByCropRequest request)
+        {
+            var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(supplierId);
+            if (supplier is null)
+            {
+                return BuildErrorResponseMessage<PaginationResponse<FieldDto>>("Not valid ID supplier", HttpStatusCode.BadRequest);
+            }
+
+            var crop = await _unitOfWork.CropRepository.GetByIdAsync(supplierId);
+            if (crop is null)
+            {
+                return BuildErrorResponseMessage<PaginationResponse<FieldDto>>("Not valid ID crop", HttpStatusCode.BadRequest);
+            }
+
+            var sortExpressions = new List<SortExpression<FieldCrop>>();
+
+            var sortFieldMap = new Dictionary<string, Expression<Func<FieldCrop, object>>>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["CreatedAt"] = x => x.CreatedAt,
+            };
+
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<FieldCrop>(sortField, request.OrderByDirection));
+            }
+
+            Expression<Func<FieldCrop, bool>> filter = x =>
+                   (x.CropId == cropId) &&
+                   (string.IsNullOrEmpty(request.Search) || x.Field.Name.Contains(request.Search));
+
+            var cropsPaginationResult = await _unitOfWork.FieldCropRepository.GetPaginationIncludeAsync(
+                filter,
+                request.CurrentPage, request.Limit,
+                sortExpressions.ToArray(),
+                includes: [x => x.Field, x => x.Field.Location,
+                            x => x.Field.Farm]);
+
+            var response = new PaginationResponse<FieldDto>(cropsPaginationResult.CurrentPage, cropsPaginationResult.Limit,
+                            cropsPaginationResult.TotalRow, cropsPaginationResult.TotalPage)
+            {
+                Collection = cropsPaginationResult.Data.Select(x => new FieldDto
+                {
+                    Id = x.Id,
+                    Name = x.Field.Name, 
+                    Area = x.Field.Area,
+                    Status = x.Field.Status,
+                    InternalId = x.Field.InternalId,
+                    PlantingFormat = x.Field.PlantingFormat,
+                    LocationType = x.Field.LocationType,
+                    LightProfile = x.Field.LightProfile,
+                    GrazingRestDays = x.Field.GrazingRestDays,
+                    NumberOfBeds = x.Field.NumberOfBeds,
+                    BedLength = x.Field.BedLength,
+                    BedWidth = x.Field.BedWidth,
+                    CreatedAt = x.CreatedAt,
+                    Location = _mapper.Map<LocationDto>(x.Field.Location),
+                    Farm = _mapper.Map<FarmDto>(x.Field.Farm),
+                })
+            };
+
+            return BuildSuccessResponseMessage(response);
+        }
     }
-    
+
 }
