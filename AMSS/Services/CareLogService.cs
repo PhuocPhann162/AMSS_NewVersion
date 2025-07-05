@@ -44,7 +44,7 @@ namespace AMSS.Services
 
         public async Task<APIResponse<PaginationResponse<CareLogDto>>> GetCareLogsAsync(Guid userId, GetCareLogsRequest request)
         {
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
             if (user is null)
             {
                 return BuildErrorResponseMessage<PaginationResponse<CareLogDto>>("Not valid ID supplier", HttpStatusCode.BadRequest);
