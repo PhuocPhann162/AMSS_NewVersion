@@ -317,7 +317,7 @@ namespace AMSS.Services
 
         public async Task<APIResponse<PaginationResponse<CropDto>>> GetCropsAsync(Guid userId, GetCropsBySupplierRequest request)
         {
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId.ToString());
             if (user is null)
             {
                 return BuildErrorResponseMessage<PaginationResponse<CropDto>>("Not valid ID user", HttpStatusCode.BadRequest);

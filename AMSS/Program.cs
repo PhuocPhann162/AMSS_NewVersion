@@ -100,7 +100,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000") 
+            .WithOrigins("http://localhost:3000",
+                        "https://5bd1-183-81-79-177.ngrok-free.app"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials().WithExposedHeaders("*"); 
