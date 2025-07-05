@@ -113,7 +113,7 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpGet("crop/{cropId:guid}/fields")]
+        [HttpGet("{cropId:guid}/fields")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<PaginationResponse<FieldDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFieldsByCropAsync(Guid cropId, [FromQuery] GetFieldsByCropRequest request)
