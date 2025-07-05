@@ -67,13 +67,6 @@ namespace AMSS.Controllers
             return ProcessResponseMessage(response);
         }
 
-        [HttpGet("get-crops")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(APIResponse<PaginationResponse<CropDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCropsBySuppliersAsync([FromQuery] GetCropsBySupplierRequest request)
-        {
-            var response = await _supplierService.GetCropsBySuppliersAsync(AuthenticatedUserId, request);
-            return ProcessResponseMessage(response);
-        }
+        
     }
 }

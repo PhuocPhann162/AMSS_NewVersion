@@ -2,9 +2,11 @@
 using AMSS.Dto.Field;
 using AMSS.Dto.FieldCrop;
 using AMSS.Dto.Requests.Crops;
+using AMSS.Dto.Requests.Suppliers;
 using AMSS.Dto.Responses;
 using AMSS.Entities;
 using AMSS.Enums;
+using AMSS.Services;
 using AMSS.Services.IService;
 using AMSS.Services.IService.IGeneratePdf;
 using Microsoft.AspNetCore.Authorization;
@@ -117,6 +119,15 @@ namespace AMSS.Controllers
         public async Task<IActionResult> GetFieldsByCropAsync(Guid cropId, [FromQuery] GetFieldsByCropRequest request)
         {
             var response = await _cropService.GetFieldsByCropAsync(AuthenticatedUserId, cropId, request);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpGet("get-all")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<PaginationResponse<CropDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllCropsAsync([FromQuery] GetCropsBySupplierRequest request)
+        {
+            var response = await _cropService.GetCropsAsync(AuthenticatedUserId, request);
             return ProcessResponseMessage(response);
         }
     }

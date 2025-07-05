@@ -2,6 +2,7 @@
 using AMSS.Dto.Field;
 using AMSS.Dto.FieldCrop;
 using AMSS.Dto.Requests.Crops;
+using AMSS.Dto.Requests.Suppliers;
 using AMSS.Dto.Responses;
 using AMSS.Entities;
 
@@ -18,6 +19,6 @@ namespace AMSS.Services.IService
         Task<APIResponse<bool>> DeleteCropAsync(string id);
         Task<APIResponse<bool>> RemovePlantingCropAsync(RemovePlantingCropRequest request);
         Task<APIResponse<PaginationResponse<FieldDto>>> GetFieldsByCropAsync(Guid supplierId, Guid cropId, GetFieldsByCropRequest request);
-
+        Task<APIResponse<PaginationResponse<CropDto>>> GetCropsAsync(Guid userId, GetCropsBySupplierRequest request);
     }
 }

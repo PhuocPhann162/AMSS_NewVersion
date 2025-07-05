@@ -1,5 +1,4 @@
-﻿using AMSS.Dto.Crop;
-using AMSS.Dto.Requests.Suppliers;
+﻿using AMSS.Dto.Requests.Suppliers;
 using AMSS.Dto.Responses;
 using AMSS.Dto.Responses.Suppliers;
 using AMSS.Entities;
@@ -18,7 +17,5 @@ namespace AMSS.Services.IService
         Task<APIResponse<Guid>> CreateSupplierAsync(CreateSupplierRequest request);
 
         Task<APIResponse<bool>> UpdateSupplierAsync(Guid id, UpdateSupplierRequest request);
-
-        Task<APIResponse<PaginationResponse<CropDto>>> GetCropsBySuppliersAsync(Guid supplierId, GetCropsBySupplierRequest request);
     }
 }

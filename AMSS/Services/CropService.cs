@@ -4,6 +4,7 @@ using AMSS.Dto.Field;
 using AMSS.Dto.FieldCrop;
 using AMSS.Dto.Location;
 using AMSS.Dto.Requests.Crops;
+using AMSS.Dto.Requests.Suppliers;
 using AMSS.Dto.Responses;
 using AMSS.Entities;
 using AMSS.Models;
@@ -259,13 +260,7 @@ namespace AMSS.Services
 
         public async Task<APIResponse<PaginationResponse<FieldDto>>> GetFieldsByCropAsync(Guid supplierId, Guid cropId, GetFieldsByCropRequest request)
         {
-            var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(supplierId);
-            if (supplier is null)
-            {
-                return BuildErrorResponseMessage<PaginationResponse<FieldDto>>("Not valid ID supplier", HttpStatusCode.BadRequest);
-            }
-
-            var crop = await _unitOfWork.CropRepository.GetByIdAsync(supplierId);
+            var crop = await _unitOfWork.CropRepository.GetByIdAsync(cropId);
             if (crop is null)
             {
                 return BuildErrorResponseMessage<PaginationResponse<FieldDto>>("Not valid ID crop", HttpStatusCode.BadRequest);
@@ -314,6 +309,63 @@ namespace AMSS.Services
                     CreatedAt = x.CreatedAt,
                     Location = _mapper.Map<LocationDto>(x.Field.Location),
                     Farm = _mapper.Map<FarmDto>(x.Field.Farm),
+                })
+            };
+
+            return BuildSuccessResponseMessage(response);
+        }
+
+        public async Task<APIResponse<PaginationResponse<CropDto>>> GetCropsAsync(Guid userId, GetCropsBySupplierRequest request)
+        {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            if (user is null)
+            {
+                return BuildErrorResponseMessage<PaginationResponse<CropDto>>("Not valid ID user", HttpStatusCode.BadRequest);
+            }
+
+            var sortExpressions = new List<SortExpression<Crop>>();
+
+            var sortFieldMap = new Dictionary<string, Expression<Func<Crop, object>>>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["Name"] = x => x.Name,
+            };
+
+            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
+            {
+                sortExpressions.Add(new SortExpression<Crop>(sortField, request.OrderByDirection));
+            }
+
+            Expression<Func<Crop, bool>> filter = x =>
+                   (string.IsNullOrEmpty(request.Search) || x.Name.Contains(request.Search));
+
+            var cropsPaginationResult = await _unitOfWork.CropRepository.GetAsync(
+                filter,
+                request.CurrentPage, request.Limit,
+                sortExpressions.ToArray());
+            var response = new PaginationResponse<CropDto>(cropsPaginationResult.CurrentPage, cropsPaginationResult.Limit,
+                            cropsPaginationResult.TotalRow, cropsPaginationResult.TotalPage)
+            {
+                Collection = cropsPaginationResult.Data.Select(x => new CropDto
+                {
+                    Id = x.Id,
+                    Icon = x.Icon,
+                    Name = x.Name,
+                    Cycle = x.Cycle,
+                    Edible = x.Edible,
+                    Soil = x.Soil,
+                    Watering = x.Watering,
+                    Maintenance = x.Maintenance,
+                    HardinessZone = x.HardinessZone,
+                    Indoor = x.Indoor,
+                    Propagation = x.Propagation,
+                    CareLevel = x.CareLevel,
+                    GrowthRate = x.GrowthRate,
+                    Description = x.Description,
+                    CultivatedArea = x.CultivatedArea,
+                    PlantedDate = x.PlantedDate,
+                    ExpectedDate = x.ExpectedDate,
+                    Quantity = x.Quantity
                 })
             };
 

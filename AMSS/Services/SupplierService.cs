@@ -1,5 +1,4 @@
-﻿using AMSS.Dto.Crop;
-using AMSS.Dto.Requests.Suppliers;
+﻿using AMSS.Dto.Requests.Suppliers;
 using AMSS.Dto.Responses;
 using AMSS.Dto.Responses.Suppliers;
 using AMSS.Entities;
@@ -137,64 +136,6 @@ namespace AMSS.Services
                 ContactName = s.ContactName,
                 CompanyName = s.Name
             });
-
-            return BuildSuccessResponseMessage(response);
-        }
-
-        public async Task<APIResponse<PaginationResponse<CropDto>>> GetCropsBySuppliersAsync(Guid supplierId, GetCropsBySupplierRequest request)
-        {
-            var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(supplierId);
-            if (supplier is null)
-            {
-                return BuildErrorResponseMessage<PaginationResponse<CropDto>>("Not valid ID supplier", HttpStatusCode.BadRequest);
-            }
-
-            var sortExpressions = new List<SortExpression<Crop>>();
-
-            var sortFieldMap = new Dictionary<string, Expression<Func<Crop, object>>>(StringComparer.OrdinalIgnoreCase)
-            {
-                ["CreatedAt"] = x => x.CreatedAt,
-                ["Name"] = x => x.Name,
-            };
-
-            if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
-            {
-                sortExpressions.Add(new SortExpression<Crop>(sortField, request.OrderByDirection));
-            }
-
-            Expression<Func<Crop, bool>> filter = x =>
-                   (x.SupplierId == supplierId) &&
-                   (string.IsNullOrEmpty(request.Search) || x.Name.Contains(request.Search));
-
-            var cropsPaginationResult = await _unitOfWork.CropRepository.GetAsync(
-                filter,
-                request.CurrentPage, request.Limit,
-                sortExpressions.ToArray());
-            var response = new PaginationResponse<CropDto>(cropsPaginationResult.CurrentPage, cropsPaginationResult.Limit,
-                            cropsPaginationResult.TotalRow, cropsPaginationResult.TotalPage)
-            {
-                Collection = cropsPaginationResult.Data.Select(x => new CropDto
-                {
-                    Id = x.Id,
-                    Icon = x.Icon,
-                    Name = x.Name,
-                    Cycle = x.Cycle,
-                    Edible = x.Edible,
-                    Soil = x.Soil,
-                    Watering = x.Watering,
-                    Maintenance = x.Maintenance,
-                    HardinessZone = x.HardinessZone,
-                    Indoor = x.Indoor,
-                    Propagation = x.Propagation,
-                    CareLevel = x.CareLevel,
-                    GrowthRate = x.GrowthRate,
-                    Description = x.Description,
-                    CultivatedArea = x.CultivatedArea,
-                    PlantedDate = x.PlantedDate,
-                    ExpectedDate= x.ExpectedDate,
-                    Quantity = x.Quantity
-                })
-            };
 
             return BuildSuccessResponseMessage(response);
         }
