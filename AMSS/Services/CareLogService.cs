@@ -87,7 +87,7 @@ namespace AMSS.Services
                 Collection = careLogsPaginationResult.Data.Select(x => new CareLogDto
                 {
                     Id = x.Id,
-                    Type = x.Type,
+                    Type = (int)x.Type,
                     Description = x.Description,
                     Date = x.Date,
                     CropId = x.CropId,

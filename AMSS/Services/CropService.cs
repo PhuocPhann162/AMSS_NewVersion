@@ -294,7 +294,7 @@ namespace AMSS.Services
             {
                 Collection = cropsPaginationResult.Data.Select(x => new FieldDto
                 {
-                    Id = x.Id,
+                    Id = x.Field.Id,
                     Name = x.Field.Name, 
                     Area = x.Field.Area,
                     Status = x.Field.Status,

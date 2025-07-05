@@ -8,7 +8,7 @@ namespace AMSS.Dto.CareLog
     public class CareLogDto
     {
         public Guid Id { get; set; }
-        public CareLogType Type { get; set; }
+        public int Type { get; set; }
 
         public string Description { get; set; }
 
