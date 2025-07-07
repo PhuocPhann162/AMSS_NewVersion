@@ -196,7 +196,7 @@ namespace AMSS.Hubs
             {
                 Content = content,
                 ChatRoomId = privateRoom.Id,
-                Type = MessageType.Text
+                Type = MessageType.Text,
             };
 
             await SendMessageToRoom(messageDto);
@@ -211,12 +211,13 @@ namespace AMSS.Hubs
                 return existingRoom;
 
             // Create new private room
+            var userMessageTo = await _unitOfWork.UserRepository.GetByIdAsync(user2Id.ToString()); 
             var room = new ChatRoom
             {
-                Name = $"Private_{user1Id}_{user2Id}",
+                Name = userMessageTo.FullName,
                 Type = ChatRoomType.Private,
                 CreatedById = user1Id.ToString(),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _unitOfWork.ChatRoomRepository.AddAsync(room);
@@ -224,8 +225,8 @@ namespace AMSS.Hubs
             // Add both users to the room
             var roomUsers = new List<ChatRoomUser>
             {
-                new() { UserId = user1Id.ToString(), ChatRoomId = room.Id, Role = ChatRoomRole.Member },
-                new() { UserId = user2Id.ToString(), ChatRoomId = room.Id, Role = ChatRoomRole.Member }
+                new() { UserId = user1Id.ToString(), ChatRoomId = room.Id, Role = ChatRoomRole.Member, CreatedAt = DateTime.Now },
+                new() { UserId = user2Id.ToString(), ChatRoomId = room.Id, Role = ChatRoomRole.Member, CreatedAt = DateTime.Now }
             };
 
             await _unitOfWork.ChatRoomUserRepository.AddRangeAsync(roomUsers);

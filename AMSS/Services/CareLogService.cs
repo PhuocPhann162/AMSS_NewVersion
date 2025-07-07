@@ -54,7 +54,7 @@ namespace AMSS.Services
 
             var sortFieldMap = new Dictionary<string, Expression<Func<CareLog, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                ["CreatedAt"] = x => x.CreatedAt,
+                ["date"] = x => x.CreatedAt,
             };
 
             if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
