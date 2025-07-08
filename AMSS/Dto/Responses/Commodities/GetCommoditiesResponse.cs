@@ -1,4 +1,5 @@
-﻿using AMSS.Enums;
+﻿using AMSS.Dto.Crop;
+using AMSS.Enums;
 using System.Text.Json.Serialization;
 
 namespace AMSS.Dto.Responses.Commodities
@@ -26,5 +27,7 @@ namespace AMSS.Dto.Responses.Commodities
         public Guid SupplierId { get; set; }
 
         public Guid CropId { get; set; }
+        public string CropName { get; set; }
+        public string SupplierName { get; set; }
     }
 }

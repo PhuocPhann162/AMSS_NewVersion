@@ -54,12 +54,17 @@ namespace AMSS.Services
 
             var sortFieldMap = new Dictionary<string, Expression<Func<CareLog, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                ["date"] = x => x.CreatedAt,
+                ["CreatedAt"] = x => x.CreatedAt,
+                ["Date"] = x => x.Date,
             };
 
             if (!string.IsNullOrEmpty(request.OrderBy) && sortFieldMap.TryGetValue(request.OrderBy, out var sortField))
             {
                 sortExpressions.Add(new SortExpression<CareLog>(sortField, request.OrderByDirection));
+            }
+            else
+            {
+                sortExpressions.Add(new SortExpression<CareLog>(x => x.CreatedAt, request.OrderByDirection));
             }
 
             Expression<Func<CareLog, bool>> filter;
@@ -96,6 +101,7 @@ namespace AMSS.Services
                     Crop = _mapper.Map<CropDto>(x.Crop),
                     Field = _mapper.Map<FieldDto>(x.Field),
                     CreatedBy =  _mapper.Map<UserDto>(x.CreatedBy), 
+                    CreatedAt = x.CreatedAt
                 })
             };
 

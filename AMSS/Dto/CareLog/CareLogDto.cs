@@ -20,9 +20,10 @@ namespace AMSS.Dto.CareLog
 
         public string CreatedById { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public virtual CropDto Crop { get; set; }
         public virtual FieldDto Field { get; set; }
         public virtual UserDto CreatedBy { get; set; }
-
     }
 }

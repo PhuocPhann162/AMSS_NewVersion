@@ -49,10 +49,11 @@ namespace AMSS.Services
                    (request.Statuses == null || request.Statuses.Count() == 0 || request.Statuses.Contains(x.Status)) &&
                    (string.IsNullOrEmpty(request.Search) || x.Name.Contains(request.Search));
 
-            var commoditiesPaginationResult = await _unitOfWork.CommodityRepository.GetAsync(
+            var commoditiesPaginationResult = await _unitOfWork.CommodityRepository.GetPaginationIncludeAsync(
                 filter, 
                 request.CurrentPage, request.Limit, 
-                sortExpressions.ToArray());
+                sortExpressions.ToArray(), 
+                includes: [x => x.Crop, x => x.Supplier]);
             var response = new PaginationResponse<GetCommoditiesResponse>(commoditiesPaginationResult.CurrentPage, commoditiesPaginationResult.Limit,
                             commoditiesPaginationResult.TotalRow, commoditiesPaginationResult.TotalPage)
             {
@@ -67,7 +68,9 @@ namespace AMSS.Services
                     ExpirationDate = x.ExpirationDate, 
                     Status = (int)x.Status, 
                     SupplierId = x.SupplierId, 
-                    CropId = x.CropId
+                    CropId = x.CropId, 
+                    CropName = x.Crop.Name, 
+                    SupplierName = x.Supplier.Name
                 })
             };
 
