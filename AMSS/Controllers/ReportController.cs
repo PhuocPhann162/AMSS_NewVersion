@@ -21,7 +21,7 @@ namespace AMSS.Controllers
         [HttpGet("revenue")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<GetRevenueResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRevenueAsync(GetRevenueRequest request)
+        public async Task<IActionResult> GetRevenueAsync([FromQuery]GetRevenueRequest request)
         {
             var response = await _reportService.GetRevenueAsync(request);
             return ProcessResponseMessage(response);
@@ -30,9 +30,18 @@ namespace AMSS.Controllers
         [HttpGet("orders-statistic")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(APIResponse<GetRevenueResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GeOrderStatisticAsync(GetRevenueRequest request)
+        public async Task<IActionResult> GeOrderStatisticAsync([FromQuery] GetRevenueRequest request)
         {
             var response = await _reportService.GetOrderStatisticAsync(request);
+            return ProcessResponseMessage(response);
+        }
+
+        [HttpGet("total-statistic")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(APIResponse<GetTotalStatisticResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetToTalStatisticAsync([FromQuery] GetTotalStatisticRequest request)
+        {
+            var response = await _reportService.GetToTalStatisticAsync(request);
             return ProcessResponseMessage(response);
         }
     }

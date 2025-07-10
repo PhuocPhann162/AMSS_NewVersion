@@ -101,7 +101,8 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins("http://localhost:3000",
-                        "https://5bd1-183-81-79-177.ngrok-free.app"
+                        "https://5bd1-183-81-79-177.ngrok-free.app",
+                        "https://amss-client.vercel.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
